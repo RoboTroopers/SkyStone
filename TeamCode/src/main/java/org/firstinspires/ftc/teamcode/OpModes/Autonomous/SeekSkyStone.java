@@ -27,12 +27,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.OpModes.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -43,9 +42,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import static android.icu.util.MeasureUnit.DEGREE;
+
 import java.util.List;
 
-import static android.icu.util.MeasureUnit.DEGREE;
+
+
+// TODO: Transporting the skystone under bridge and returning
+
 
 /**
  * This 2019-2020 OpMode illustrates the basics of using the TensorFlow Object Detection API to
@@ -57,7 +62,6 @@ import static android.icu.util.MeasureUnit.DEGREE;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-
 
 
 
@@ -76,12 +80,12 @@ public class SeekSkyStone extends LinearOpMode {
     private DcMotor rightRear;
     private DcMotor leftRear;
     private Servo pinger;
-    
+
     // Distance from the center of the screen that the skystone can be to pick it up
-    private final double skystoneAngleThreshold = 5;
-    
+    private final double skystoneAngleTolerance = 5;
+
     // How much of the screen the skystone needs to take up for the robot to deploy the pinger
-    private final double objectHeightRatioForPinger = 0.8;
+    private final double desiredHeightRatio = 0.8;
 
 
     /*
@@ -145,11 +149,15 @@ public class SeekSkyStone extends LinearOpMode {
             rightRear = hardwareMap.get(DcMotor.class, "rightRear");
             leftRear = hardwareMap.get(DcMotor.class, "leftRear");
             pinger = hardwareMap.get (Servo.class, "pinger");
-            
+
             int stonesCaptured = 0;
-            
+            boolean lockedOn = false;
+            boolean transporting = false;
+            double objectHeightRatio;
+            double speedMultiplier;
+
             waitForStart();
-            
+
             while (opModeIsActive()) {
                 // Strafe right until Skystone found within threshold
                 strafe(-0.5);
@@ -162,38 +170,53 @@ public class SeekSkyStone extends LinearOpMode {
                             telemetry.addData("# Object Detected", updatedRecognitions.size());
                             // step through the list of recognitions and display boundary info.
                             int i = 0;
+                            Recognition nearestSkystone = null;
                             for (Recognition recognition : updatedRecognitions) {
                                 telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
                                 telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
                                         recognition.getLeft(), recognition.getTop());
                                 telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
                                         recognition.getRight(), recognition.getBottom());
-                
+
                                 double objectAngle = recognition.estimateAngleToObject(AngleUnit.DEGREES);
                                 telemetry.addData(String.format("  estimated angle (%d)", i), "%.03f",
                                         objectAngle);
-                                
+
+                                // Gets the nearest skystone (largest height on the screen) to the robot.
+                                if (nearestSkystone != null) {
+                                    // If the previous nearest skystone has been declared and is farther than current recognition, set nearest skystone to current recognition.
+                                    if (recognition.getHeight() > nearestSkystone.getHeight())
+                                        nearestSkystone = recognition;
+                                    //If current recognition is the first skystone recognized, then use it as the nearest skystone.
+                                } else nearestSkystone = recognition;
+
                                 // If skystone angle is within threshold, brake and prepare to make fine adjustments
-                                if (Math.abs(objectAngle) < skystoneAngleThreshold) {
+                                if (Math.abs(objectAngle) < skystoneAngleTolerance && !lockedOn && !transporting) {
                                     brake();
-                                    
-                                    double objectHeightRatio;
-                                    double maxSpeed = 0.25;
-                                    
-                                    do {
-                                        // How much of the screen the skystone takes up vertically out of 1.
-                                        objectHeightRatio = recognition.getHeight()/recognition.getImageHeight();
-                                        telemetry.addData(String.format("  object height ratio (%d)", i), "%.03f",
-                                                objectHeightRatio);
-                                        
-                                        // Turns the robot based on how far from the center and which side of the camera the stone is.
-                                        steer(maxSpeed*(objectAngle/45), maxSpeed*(objectAngle/45));
-                                        
-                                        // Moves towards the skystone until the object takes up enough of the screen. This is when the robot is at the optimal distance to use the pinger.
-                                    } while (objectHeightRatio <= objectHeightRatioForPinger);
-                                    
-                                    telemetry.addData("Done!", objectHeightRatio/objectHeightRatioForPinger);
-                                    
+                                    lockedOn = true;
+                                }
+
+                                if (lockedOn) {
+                                    // How much of the screen the skystone takes up vertically out of 1.
+                                    objectHeightRatio = recognition.getHeight()/recognition.getImageHeight();
+                                    telemetry.addData(String.format("  object height ratio (%d)", i), "%.03f",
+                                            objectHeightRatio);
+
+                                    speedMultiplier = 0.25*(objectHeightRatio/desiredHeightRatio);
+
+                                    // Sets angle based on how far from the center and which side of the camera the stone is.
+                                    objectAngle = recognition.estimateAngleToObject(AngleUnit.DEGREES);
+                                    // Moves towards the skystone until the object takes up enough of the screen. This is when the robot is at the optimal distance to use the pinge
+                                    steer(speedMultiplier*(objectAngle/45), speedMultiplier*(objectAngle/45));
+
+                                    if (recognition.getHeight() > desiredHeightRatio) {
+                                        transporting = true;
+                                        lockedOn = false;
+                                    }
+                                }
+
+                                if (transporting) {
+
                                     // Pinger extends outward to turn the skystone 90 degrees to prepare the skystone for The Succ.
                                     pingerOut();
                                     sleep(1000);
@@ -201,10 +224,13 @@ public class SeekSkyStone extends LinearOpMode {
                                     steer(0.5, 0.5);
                                     sleep(2000);
                                     brake();
-                                    
+                                    telemetry.addData("Done!", "Skystone captured.");
+                                    transporting = false;
+                                    break;
+
                                 }
-                                
-                                
+
+
                                 telemetry.update();
                             }
                         }
@@ -241,15 +267,15 @@ public class SeekSkyStone extends LinearOpMode {
      */
     private void initTfod() {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
-            "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-       tfodParameters.minimumConfidence = 0.8;
-       tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-       tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
+        tfodParameters.minimumConfidence = 0.8;
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
-    
-    
-    
+
+
+
     // Stations the robot in current position
     public void brake() {
         leftFront.setPower(0);
@@ -257,7 +283,7 @@ public class SeekSkyStone extends LinearOpMode {
         leftRear.setPower(0);
         rightRear.setPower(0);
     }
-    
+
     // Moves the left and right side motors
     public void steer(double leftSpeed, double rightSpeed) {
         leftFront.setPower(leftSpeed);
@@ -276,17 +302,23 @@ public class SeekSkyStone extends LinearOpMode {
         rightRear.setPower(speed);
 
     }
-    
+
+
+
+
+
+
     // Extends pinger to its maximum length
     public void pingerOut() {
         pinger.setPosition(0.25);
-        
+
     }
-    
+
     // Retracts pinger into the robot
     public void pingerIn() {
         pinger.setPosition(0);
-        
+
     }
+
 
 }
