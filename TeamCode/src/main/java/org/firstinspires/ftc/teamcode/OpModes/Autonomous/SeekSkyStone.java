@@ -44,6 +44,11 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import static android.icu.util.MeasureUnit.DEGREE;
+import com.qualcomm.robotcore.hardware.AnalogSensor;
+
+
+import org.firstinspires.ftc.teamcode.roboConfig;
+import org.firstinspires.ftc.teamcode.roboConfig.*;
 
 import java.util.List;
 
@@ -80,7 +85,10 @@ public class SeekSkyStone extends LinearOpMode {
     private DcMotor rightRear;
     private DcMotor leftRear;
     private Servo pinger;
-
+    
+    roboConfig robot = new roboConfig();
+    
+    
     // Distance from the center of the screen that the skystone can be to pick it up
     private final double skystoneAngleTolerance = 5;
 
@@ -150,18 +158,27 @@ public class SeekSkyStone extends LinearOpMode {
             leftRear = hardwareMap.get(DcMotor.class, "leftRear");
             pinger = hardwareMap.get (Servo.class, "pinger");
 
-            int stonesCaptured = 0;
+            int skystonesCaptured = 0;
             boolean lockedOn = false;
             boolean transporting = false;
-            double objectHeightRatio;
             double speedMultiplier;
+
+            double objectAngle;
+            double objectHeight;
+            double imageHeight;
+            double objectHeightRatio;
 
             waitForStart();
 
             while (opModeIsActive()) {
                 // Strafe right until Skystone found within threshold
-                strafe(-0.5);
-                while (stonesCaptured < 2) {
+                if (skystonesCaptured < 2)
+                    robot.strafe(-0.5);
+                else {
+                    
+                }
+                
+                while (skystonesCaptured < 2) {
                     if (tfod != null) {
                         // getUpdatedRecognitions() will return null if no new information is available since
                         // the last time that call was made.
@@ -177,11 +194,10 @@ public class SeekSkyStone extends LinearOpMode {
                                         recognition.getLeft(), recognition.getTop());
                                 telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
                                         recognition.getRight(), recognition.getBottom());
-
-                                double objectAngle = recognition.estimateAngleToObject(AngleUnit.DEGREES);
+                                
                                 telemetry.addData(String.format("  estimated angle (%d)", i), "%.03f",
-                                        objectAngle);
-
+                                        recognition.estimateAngleToObject(AngleUnit.DEGREES));
+                                
                                 // Gets the nearest skystone (largest height on the screen) to the robot.
                                 if (nearestSkystone != null) {
                                     // If the previous nearest skystone has been declared and is farther than current recognition, set nearest skystone to current recognition.
@@ -189,50 +205,57 @@ public class SeekSkyStone extends LinearOpMode {
                                         nearestSkystone = recognition;
                                     //If current recognition is the first skystone recognized, then use it as the nearest skystone.
                                 } else nearestSkystone = recognition;
-
-                                // If skystone angle is within threshold, brake and prepare to make fine adjustments
-                                if (Math.abs(objectAngle) < skystoneAngleTolerance && !lockedOn && !transporting) {
-                                    brake();
-                                    lockedOn = true;
-                                }
-
-                                if (lockedOn) {
-                                    // How much of the screen the skystone takes up vertically out of 1.
-                                    objectHeightRatio = recognition.getHeight()/recognition.getImageHeight();
-                                    telemetry.addData(String.format("  object height ratio (%d)", i), "%.03f",
-                                            objectHeightRatio);
-
-                                    speedMultiplier = 0.25*(objectHeightRatio/desiredHeightRatio);
-
-                                    // Sets angle based on how far from the center and which side of the camera the stone is.
-                                    objectAngle = recognition.estimateAngleToObject(AngleUnit.DEGREES);
-                                    // Moves towards the skystone until the object takes up enough of the screen. This is when the robot is at the optimal distance to use the pinge
-                                    steer(speedMultiplier*(objectAngle/45), speedMultiplier*(objectAngle/45));
-
-                                    if (recognition.getHeight() > desiredHeightRatio) {
-                                        transporting = true;
-                                        lockedOn = false;
-                                    }
-                                }
-
-                                if (transporting) {
-
-                                    // Pinger extends outward to turn the skystone 90 degrees to prepare the skystone for The Succ.
-                                    pingerOut();
-                                    sleep(1000);
-                                    pingerIn();
-                                    steer(0.5, 0.5);
-                                    sleep(2000);
-                                    brake();
-                                    telemetry.addData("Done!", "Skystone captured.");
-                                    transporting = false;
-                                    break;
-
-                                }
-
-
-                                telemetry.update();
                             }
+                            
+                            // Sets angle based on how far from the center and which side of the camera the stone is.
+                            objectAngle = nearestSkystone.estimateAngleToObject(AngleUnit.DEGREES);
+                            objectHeight = nearestSkystone.getHeight();
+                            imageHeight = nearestSkystone.getImageHeight();
+                            objectHeightRatio = objectHeight/imageHeight;
+
+                            telemetry.addData(String.format("  object height ratio (%d)", i), "%.03f",
+                                    objectHeightRatio);
+                            
+                            
+                            // If skystone angle is within threshold, brake and prepare to make fine adjustments
+                            if (Math.abs(objectAngle) < skystoneAngleTolerance && !lockedOn && !transporting) {
+                                robot.brake();
+                                lockedOn = true;
+                            }
+
+                            if (lockedOn) {
+                                // How much of the screen the skystone takes up vertically out of 1.
+
+                                speedMultiplier = 0.25*(objectHeightRatio/desiredHeightRatio);
+
+                                
+                                // Moves towards the skystone until the object takes up enough of the screen. This is when the robot is at the optimal distance to use the pinge
+                                robot.steer(speedMultiplier*(objectAngle/45), speedMultiplier*(objectAngle/45));
+
+                                if (objectHeightRatio > desiredHeightRatio) {
+                                    transporting = true;
+                                    lockedOn = false;
+                                }
+                            }
+
+                            if (transporting) {
+
+                                // Pinger extends outward to turn the skystone 90 degrees to prepare the skystone for The Succ.
+                                robot.pingerOut();
+                                sleep(1000);
+                                robot.pingerIn();
+                                robot.steer(0.5, 0.5);
+                                sleep(2000);
+                                robot.brake();
+                                telemetry.addData("Done!", "Skystone captured.");
+                                transporting = false;
+                                break;
+
+                            }
+
+
+                            telemetry.update();
+                        
                         }
                     }
                 }
@@ -274,51 +297,6 @@ public class SeekSkyStone extends LinearOpMode {
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
 
-
-
-    // Stations the robot in current position
-    public void brake() {
-        leftFront.setPower(0);
-        rightFront.setPower(0);
-        leftRear.setPower(0);
-        rightRear.setPower(0);
-    }
-
-    // Moves the left and right side motors
-    public void steer(double leftSpeed, double rightSpeed) {
-        leftFront.setPower(leftSpeed);
-        rightFront.setPower(rightSpeed);
-        leftRear.setPower(leftSpeed);
-        rightRear.setPower(rightSpeed);
-
-    }
-
-    // Moves the robot sideways without turning
-    public void strafe(double speed){
-        // Positive speed strafes right, negative speed strafes left.
-        leftFront.setPower(speed);
-        rightFront.setPower(-speed);
-        leftRear.setPower(-speed);
-        rightRear.setPower(speed);
-
-    }
-
-
-
-
-
-
-    // Extends pinger to its maximum length
-    public void pingerOut() {
-        pinger.setPosition(0.25);
-
-    }
-
-    // Retracts pinger into the robot
-    public void pingerIn() {
-        pinger.setPosition(0);
-
-    }
 
 
 }
