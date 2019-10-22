@@ -30,9 +30,9 @@
 package org.firstinspires.ftc.teamcode.OpModes.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -42,13 +42,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import static android.icu.util.MeasureUnit.DEGREE;
-import com.qualcomm.robotcore.hardware.AnalogSensor;
+import org.firstinspires.ftc.teamcode.RoboConfig;
 
-
-import org.firstinspires.ftc.teamcode.roboConfig;
-import org.firstinspires.ftc.teamcode.roboConfig.*;
 
 import java.util.List;
 
@@ -86,7 +81,7 @@ public class SeekSkyStone extends LinearOpMode {
     private DcMotor leftRear;
     private Servo pinger;
     
-    roboConfig robot = new roboConfig();
+    RoboConfig robot = new RoboConfig();
     
     
     // Distance from the center of the screen that the skystone can be to pick it up
@@ -151,13 +146,11 @@ public class SeekSkyStone extends LinearOpMode {
 
 
         if (opModeIsActive()) {
-
-            rightFront = hardwareMap.get(DcMotor.class, "rightFront");
-            leftFront = hardwareMap.get(DcMotor.class, "leftFront");
-            rightRear = hardwareMap.get(DcMotor.class, "rightRear");
-            leftRear = hardwareMap.get(DcMotor.class, "leftRear");
-            pinger = hardwareMap.get (Servo.class, "pinger");
-
+            
+            RoboConfig robot = new RoboConfig();
+            HardwareMap hardwareMap = new HardwareMap(null);
+            robot.initHardware(hardwareMap);
+            
             int skystonesCaptured = 0;
             boolean lockedOn = false;
             boolean transporting = false;
@@ -175,6 +168,7 @@ public class SeekSkyStone extends LinearOpMode {
                 if (skystonesCaptured < 2)
                     robot.strafe(-0.5);
                 else {
+                    robot.brake();
                     
                 }
                 
@@ -253,9 +247,8 @@ public class SeekSkyStone extends LinearOpMode {
 
                             }
 
-
                             telemetry.update();
-                        
+
                         }
                     }
                 }

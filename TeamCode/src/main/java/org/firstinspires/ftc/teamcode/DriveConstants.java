@@ -25,8 +25,14 @@ public class DriveConstants {
     //Circumference of circle
     public static final double CIRCUMCIRCLE_CIRCUMFERENCE = CIRCUMDIAMETER*Math.PI;
 
+
     public static double inchesToTicks(int inches) {
         return (inches / WHEEL_CIRCUMFERENCE) * 360;
+
+    }
+
+    public static double ticksToInches(int inches) {
+        return (inches * WHEEL_CIRCUMFERENCE) / 360;
 
     }
 

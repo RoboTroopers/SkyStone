@@ -6,10 +6,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import org.firstinspires.ftc.robotcore.external.navigation.*;
+
+import org.firstinspires.ftc.teamcode.DriveConstants.*;
 
 
-public class roboConfig {
-    
+
+public class RoboConfig {
     
     // Motors and sensors
     public DcMotor rightFront = null;
@@ -39,26 +42,11 @@ public class roboConfig {
     public double getXPos(){
         return worldXPosition;
     }
-
+    
     public double getYPos(){
         return worldYPosition;
     }
     
-    public double getWorldAngle_rad() {
-        return worldAngle_rad;
-    }
-    
-    
-    /*public double getXEncoderValue() {
-        //xEncoder.
-            
-        
-    }*/
-    
-    
-
-    
-    //HardwareMap hardwareMap = null;
     
     
     public void initHardware (HardwareMap aHwMap) {
@@ -74,7 +62,7 @@ public class roboConfig {
         
     }
     
-
+    
     
     // Stations the robot in current position
     public void brake() {
@@ -83,7 +71,7 @@ public class roboConfig {
         leftRear.setPower(0);
         rightRear.setPower(0);
     }
-
+    
     // Moves the left and right side motors
     public void steer(double leftSpeed, double rightSpeed) {
         leftFront.setPower(leftSpeed);
@@ -92,7 +80,7 @@ public class roboConfig {
         rightRear.setPower(rightSpeed);
 
     }
-
+    
     // Moves the robot sideways without turning
     public void strafe(double speed){
         // Positive speed strafes right, negative speed strafes left.
@@ -106,33 +94,31 @@ public class roboConfig {
     
     public void updatePos() {
         
-        double xEncoderValue;
-        double xyncoderValue;
-        /*
-        deltaLeftDistance = (getLeftTicks() / oneRotationTicks) * 2.0 * Math.PI * wheelRadius;
-        deltaRightDistance = (getRightTicks() / oneRotationTicks) * 2.0 * Math.PI * wheelRadius;
-        deltaCenterDistance = (getCenterTicks() / oneRotationTicks) * 2.0 * Math.PI * wheelRadius;
-        x  += (((deltaLeftDistance + deltaRightDistance) / 2.0)) * Math.cos(theta);
-        y  += (((deltaLeftDistance + deltaRightDistance) / 2.0)) * Math.sin(theta);
-        theta  += (deltaLeftDistance - deltaRightDistance) / wheelDistanceApart;
-        resetTicks();
-       */ 
+        double horizontalEncoderValue = xEncoder.readRawVoltage();
+        double verticalEncoderValue = yEncoder.readRawVoltage();
+        worldAngle_rad = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle;
+        
+        double newWorldX = verticalEncoderValue*Math.cos(worldAngle_rad);
+        double newWorldY = verticalEncoderValue*Math.sin(worldAngle_rad);
+        worldXPosition = newWorldX;
+        worldYPosition = newWorldY;
+        
+        
     }
-
-
+    
+    
     // Extends pinger to its maximum length
     public void pingerOut() {
         pinger.setPosition(0.25);
-
+        
     }
-
+    
+    
     // Retracts pinger into the robot
     public void pingerIn() {
         pinger.setPosition(0);
-
+    
     }
-
-
 
 
 
