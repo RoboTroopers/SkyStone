@@ -3,6 +3,9 @@ package org.firstinspires.ftc.teamcode.OpModes.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.teamcode.RoboConfig;
 
 
 /**
@@ -22,6 +25,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  *
  */
 
+
 @Autonomous
 public class ChallengeOpMode1 extends LinearOpMode {
 
@@ -34,59 +38,35 @@ public class ChallengeOpMode1 extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        frontRightMotor = hardwareMap.get(DcMotor.class, "frontRightMotor");
-        frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeftMotor");
-        rearRightMotor = hardwareMap.get(DcMotor.class, "rearRightMotor");
-        rearLeftMotor = hardwareMap.get(DcMotor.class, "rearLeftMotor");
+        RoboConfig robot = new RoboConfig();
+        HardwareMap hardwareMap = new HardwareMap(null);
+        robot.initHardware(hardwareMap);
 
         telemetry.addData("Status", "Initialized");
-
         telemetry.update();
 
         waitForStart();
 
         while (opModeIsActive()) {
 
-            steer(0.8, 0.8, 3000);
-            steer(0.5, -0.5, 6000);
-            brake();
-            steer(0.8, 0.8, 4000);
-            steer(-0.5, 0.5, 500);
-            brake();
-            steer(0.8, 0.8, 1500);
-            steer(0.5, -0.5, 2000);
-            brake();
+            robot.steer(0.8, 0.8);
+            sleep(3000);
+            robot.steer(0.5, -0.5);
+            sleep(6000);
+            robot.brake();
+            robot.steer(0.8, 0.8);
+            sleep(4000);
+            robot.steer(-0.5, 0.5);
+            sleep(500);
+            robot.brake();
+            robot.steer(0.8, 0.8);
+            sleep(1500);
+            robot.steer(0.5, -0.5);
+            sleep(2000);
+            robot.brake();
 
         }
 
     }
-
-
-    public void steer(double leftSpeed, double rightSpeed, int time) {
-        frontLeftMotor.setPower(leftSpeed);
-        frontRightMotor.setPower(rightSpeed);
-        rearLeftMotor.setPower(leftSpeed);
-        rearRightMotor.setPower(rightSpeed);
-        sleep(time);
-        brake();
-    }
-
-    public void strafe(double frontLeftSpeed, double frontRightSpeed, double rearLeftSpeed, double rearRightSpeed, int time){
-        frontLeftMotor.setPower(frontLeftSpeed);
-        frontRightMotor.setPower(frontLeftSpeed);
-        rearLeftMotor.setPower(rearLeftSpeed);
-        rearRightMotor.setPower(rearRightSpeed);
-        sleep(time);
-        brake();
-
-    }
-
-    public void brake() {
-        frontLeftMotor.setPower(0);
-        frontRightMotor.setPower(0);
-        rearLeftMotor.setPower(0);
-        rearRightMotor.setPower(0);
-
-    }
-
+    
 }

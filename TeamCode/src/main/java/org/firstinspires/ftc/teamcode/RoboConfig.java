@@ -14,17 +14,22 @@ import org.firstinspires.ftc.teamcode.DriveConstants.*;
 
 public class RoboConfig {
     
-    // Motors and sensors
-    public DcMotor rightFront = null;
+    // Motors and servos
     public DcMotor leftFront = null;
-    public DcMotor rightRear = null;
+    public DcMotor rightFront = null;
     public DcMotor leftRear = null;
+    public DcMotor rightRear = null;
+
     public Servo pinger = null;
+    
+    public DcMotor leftIntake = null;
+    public DcMotor rightIntake = null;
+    
     
     // Sensors
     public BNO055IMU imu = null;
-    private AnalogSensor xEncoder = null;
-    private AnalogSensor yEncoder = null;
+    public AnalogSensor xEncoder = null;
+    public AnalogSensor yEncoder = null;
     
     
     //public static double xSpeed = 0;
@@ -50,18 +55,26 @@ public class RoboConfig {
     
     
     public void initHardware (HardwareMap aHwMap) {
-        rightFront = aHwMap.get(DcMotor.class, "rightFront");
+        
         leftFront = aHwMap.get(DcMotor.class, "leftFront");
-        rightRear = aHwMap.get(DcMotor.class, "rightRear");
+        rightFront = aHwMap.get(DcMotor.class, "rightFront");
         leftRear = aHwMap.get(DcMotor.class, "leftRear");
+        rightRear = aHwMap.get(DcMotor.class, "rightRear");
+        rightRear.setDirection(DcMotor.Direction.REVERSE);
+        leftFront.setDirection(DcMotor.Direction.REVERSE);
+        
         pinger = aHwMap.get(Servo.class, "pinger");
+
+        leftIntake = aHwMap.get(DcMotor.class, "leftIntake");
+        rightIntake = aHwMap.get(DcMotor.class, "righIntake");
+        rightIntake.setDirection(DcMotor.Direction.REVERSE);
+        
         
         imu = aHwMap.get(BNO055IMU.class, "imu");
         xEncoder = aHwMap.get(AnalogSensor.class, "xEncoder");
         yEncoder = aHwMap.get(AnalogSensor.class, "yEncoder");
         
     }
-    
     
     
     // Stations the robot in current position
@@ -72,6 +85,7 @@ public class RoboConfig {
         rightRear.setPower(0);
     }
     
+    
     // Moves the left and right side motors
     public void steer(double leftSpeed, double rightSpeed) {
         leftFront.setPower(leftSpeed);
@@ -80,6 +94,7 @@ public class RoboConfig {
         rightRear.setPower(rightSpeed);
 
     }
+    
     
     // Moves the robot sideways without turning
     public void strafe(double speed){

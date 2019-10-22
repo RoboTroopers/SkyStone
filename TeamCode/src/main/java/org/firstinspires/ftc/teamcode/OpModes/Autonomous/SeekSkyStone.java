@@ -49,9 +49,6 @@ import java.util.List;
 
 
 
-// TODO: Transporting the skystone under bridge and returning
-
-
 /**
  * This 2019-2020 OpMode illustrates the basics of using the TensorFlow Object Detection API to
  * determine the position of the Skystone game elements.
@@ -62,7 +59,6 @@ import java.util.List;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-
 
 
 
@@ -118,6 +114,7 @@ public class SeekSkyStone extends LinearOpMode {
      */
     private TFObjectDetector tfod;
 
+    
     @Override
     public void runOpMode() {
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
@@ -169,7 +166,7 @@ public class SeekSkyStone extends LinearOpMode {
                     robot.strafe(-0.5);
                 else {
                     robot.brake();
-                    
+                    // TODO: Transporting the skystone under bridge and returning
                 }
                 
                 while (skystonesCaptured < 2) {
@@ -180,6 +177,7 @@ public class SeekSkyStone extends LinearOpMode {
                         if (updatedRecognitions != null) {
                             telemetry.addData("# Object Detected", updatedRecognitions.size());
                             // step through the list of recognitions and display boundary info.
+                            
                             int i = 0;
                             Recognition nearestSkystone = null;
                             for (Recognition recognition : updatedRecognitions) {
@@ -221,7 +219,6 @@ public class SeekSkyStone extends LinearOpMode {
                                 // How much of the screen the skystone takes up vertically out of 1.
 
                                 speedMultiplier = 0.25*(objectHeightRatio/desiredHeightRatio);
-
                                 
                                 // Moves towards the skystone until the object takes up enough of the screen. This is when the robot is at the optimal distance to use the pinge
                                 robot.steer(speedMultiplier*(objectAngle/45), speedMultiplier*(objectAngle/45));
