@@ -21,6 +21,7 @@ public class DriveConstants {
      * diameter of the circumcircle of the robot, really the distance between centers of 2 diagonal
      * wheels (hypotenuse of wheelbase and track width)
      */
+    
     public static final double CIRCUMDIAMETER = Math.hypot(WHEEL_BASE, TRACK_WIDTH);
     //Circumference of circle
     public static final double CIRCUMCIRCLE_CIRCUMFERENCE = CIRCUMDIAMETER*Math.PI;

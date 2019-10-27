@@ -31,9 +31,7 @@ package org.firstinspires.ftc.teamcode.BasicModules;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -41,10 +39,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-
-import org.firstinspires.ftc.teamcode.DriveConstants;
 import org.firstinspires.ftc.teamcode.Robot;
-
 
 import java.util.List;
 
@@ -222,19 +217,26 @@ public class SeekSkyStone extends LinearOpMode {
                                     lockedOn = false;
                                 }
                             }
-
+                            
                             if (transporting) {
-
+                                
                                 // Pinger extends outward to turn the skystone 90 degrees to prepare the skystone for The Succ.
                                 robot.pingerOut();
                                 sleep(1000);
                                 robot.pingerIn();
-                                robot.steer(0.5, 0.5);
+                                
+                                // Goes forward and sucks in
+                                robot.startSucc(0.9);
+                                robot.forward(0.5);
                                 sleep(2000);
                                 robot.brake();
-                                telemetry.addData("Ladies and gentlemen!", "We gottem.");
-                                robot.goToPosition(30, 20, 0.5, 0, 0.4);
+                                robot.stopSucc();
+                                skystonesCaptured += 1;
                                 
+                                telemetry.addData("Ladies and gentlemen!", "We gottem.");
+                                
+                                robot.goToPosition(30, 20, 0.5, 0, 0.4);
+                                robot.goToPosition(30, 20, 0.5, 0, 0.4);
                                 
                                 transporting = false;
                                 break;
