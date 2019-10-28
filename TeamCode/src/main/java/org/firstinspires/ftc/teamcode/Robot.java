@@ -194,10 +194,11 @@ public class Robot {
         
         double scaleDownFactor = 1.0;
         if (maxRawPower > 1.0) {
-            // Reciprocal of maxRawPower so that when multiplied by ratio, it will equal 1 (full speed)
+            // Reciprocal of maxRawPower so that when multiplied by factor, maxPower == 1 (full speed)
             scaleDownFactor = 1.0/maxRawPower;
         }
         
+        // All motor speeds scaled down (if maxRawPower > 1) but vector is preserved.
         lr_power_raw *= scaleDownFactor;
         rf_power_raw *= scaleDownFactor;
         lr_power_raw *= scaleDownFactor;

@@ -139,7 +139,6 @@ public class SeekSkyStone extends LinearOpMode {
 
         if (opModeIsActive()) {
             
-            HardwareMap hardwareMap = new HardwareMap(null);
             robot.initHardware(hardwareMap);
             
             int skystonesCaptured = 0;
@@ -233,8 +232,8 @@ public class SeekSkyStone extends LinearOpMode {
                                 sleep(2000);
                                 robot.brake();
                                 telemetry.addData("Ladies and gentlemen!", "We gottem.");
-                                robot.goToPosition(30, 20, 0.5, 0, 0.4);
-                                
+                                //robot.goToPosition(30, 20, 0.2, 0, 0.4);
+                                robot.goToPosition(0, 0, 0.3, 0, 0.4);
                                 
                                 transporting = false;
                                 break;
