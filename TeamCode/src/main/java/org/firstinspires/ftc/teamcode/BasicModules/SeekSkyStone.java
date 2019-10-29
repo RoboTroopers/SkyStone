@@ -43,6 +43,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 import org.firstinspires.ftc.teamcode.DriveConstants;
+import org.firstinspires.ftc.teamcode.OdometryThread;
 import org.firstinspires.ftc.teamcode.Robot;
 
 
@@ -72,8 +73,8 @@ public class SeekSkyStone extends LinearOpMode {
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
 
-    Robot robot = new Robot();
-    
+    public Robot robot = new Robot();
+    OdometryThread odometryThread = new OdometryThread(robot);
     
     // Distance from the center of the screen that the skystone can be to pick it up
     private final double skystoneAngleTolerance = 5;
@@ -152,8 +153,11 @@ public class SeekSkyStone extends LinearOpMode {
             double objectHeightRatio;
 
             waitForStart();
-
+            
+            new Thread(odometryThread).start();
+            
             while (opModeIsActive()) {
+                
                 // Strafe right until Skystone found within threshold
                 if (skystonesCaptured < 2)
                     robot.strafe(-0.5);
@@ -162,7 +166,7 @@ public class SeekSkyStone extends LinearOpMode {
                     // TODO: Transporting the skystone under bridge and returning
                 }
                 
-                while (skystonesCaptured < 2) {
+                                while (skystonesCaptured < 2) {
                     if (tfod != null) {
                         // getUpdatedRecognitions() will return null if no new information is available since
                         // the last time that call was made.
