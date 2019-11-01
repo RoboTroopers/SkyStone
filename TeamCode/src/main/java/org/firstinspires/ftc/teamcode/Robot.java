@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
+import static java.lang.Math.toRadians;
 import static org.firstinspires.ftc.teamcode.MathFunctions.inchesToTicks;
 import static org.firstinspires.ftc.teamcode.MathFunctions.restrictToRange;
 
@@ -76,13 +77,22 @@ public class Robot {
     
     
     public void updatePos() {
-        worldAngle_rad = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle;
-
+        
+        worldAngle_rad = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle;
+        
         double xEncoderChange = getXEncoder() - xEncoderLast;
         double yEncoderChange = getYEncoder() - yEncoderLast;
-
-        worldXPosition += yEncoderChange * Math.cos(worldAngle_rad);
-        worldYPosition += yEncoderChange * Math.sin(worldAngle_rad);
+        
+        // Position where the robot would be if the robot had not strafed
+        double forwardShiftX = yEncoderChange * Math.cos(worldAngle_rad);
+        double forwardShiftY = yEncoderChange * Math.sin(worldAngle_rad);
+        
+        // How far the robot's position has shifted as a result of strafing
+        double strafeShiftX = xEncoderChange*Math.cos(worldAngle_rad);
+        double strafeShiftY = yEncoderChange*Math.sin(worldAngle_rad);
+        
+        worldXPosition += forwardShiftX + strafeShiftX;
+        worldYPosition += forwardShiftY + strafeShiftY;
 
         xEncoderLast = getXEncoder();
         yEncoderLast = getYEncoder();
@@ -164,11 +174,11 @@ public class Robot {
     }
     
 
-    void turnToDegrees(float degrees, double maxSpeed) {
-
+    void turnToDegrees(double degrees, double maxSpeed) {
+        
         // positive degrees == right; negative degrees == left
         double turnDegrees = degrees;
-
+        
         double targetRange = 0.5; // Distance from the desired angle that is allowed
         double error = turnDegrees; // Distance from the desired range
         double progress; // Degrees the robot has turned already
@@ -178,15 +188,15 @@ public class Robot {
         while (Math.abs(error) > targetRange) {
             progress = turnDegrees-Math.toDegrees(worldAngle_rad);
             error = progress-turnDegrees;
-
+            
             speed = ((1-(progress/turnDegrees))*maxSpeed)+minSpeed; // Speed starts at maximum and approaches minimum as the gyro value approaches the desired angle. It deccelerates for precision and accuray.
             speed = restrictToRange(speed, minSpeed, maxSpeed);
-
+            
             if (turnDegrees < 0)
                 steer(-speed, speed);
             else
                 steer(speed, -speed);
-
+            
         }
         
     }
@@ -205,10 +215,11 @@ public class Robot {
         
         double scaleDownFactor = 1.0;
         if (maxRawPower > 1.0) {
-            // Reciprocal of maxRawPower so that when multiplied by ratio, it will equal 1 (full speed)
+            // Reciprocal of maxRawPower so that when multiplied by factor, maxPower == 1 (full speed)
             scaleDownFactor = 1.0/maxRawPower;
         }
         
+        // All motor speeds scaled down (if maxRawPower > 1) but vector is preserved.
         lr_power_raw *= scaleDownFactor;
         rf_power_raw *= scaleDownFactor;
         lr_power_raw *= scaleDownFactor;
@@ -241,7 +252,7 @@ public class Robot {
             distanceToTarget = Math.hypot(x - worldXPosition, y - worldYPosition);
 
             double absoluteAngleToTarget = Math.atan2(y - worldYPosition, x - worldXPosition);
-            double relativeAngleToPoint = MathFunctions.angleWrap(absoluteAngleToTarget - (worldAngle_rad - Math.toRadians(90)));
+            double relativeAngleToPoint = MathFunctions.angleWrap(absoluteAngleToTarget - (worldAngle_rad - toRadians(90)));
 
             double relativeXToPoint = Math.cos(relativeAngleToPoint) * distanceToTarget;
             double relativeYToPoint = Math.sin(relativeAngleToPoint) * distanceToTarget;
@@ -252,8 +263,8 @@ public class Robot {
             movement_x = movementXPower * movementSpeed;
             movement_y = movementYPower * movementSpeed;
 
-            double relativeTurnAngle = relativeAngleToPoint - Math.toRadians(180) + Math.toRadians(preferredAngle);
-            movement_turn = Range.clip(relativeTurnAngle / Math.toRadians(30), -1, 1) * turnSpeed;
+            double relativeTurnAngle = relativeAngleToPoint - toRadians(180) + toRadians(preferredAngle);
+            movement_turn = Range.clip(relativeTurnAngle / toRadians(30), -1, 1) * turnSpeed;
             
             moveXYTurn(movement_x, movement_y, movement_turn);
             

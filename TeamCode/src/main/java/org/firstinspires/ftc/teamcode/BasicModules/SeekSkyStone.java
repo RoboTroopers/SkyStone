@@ -31,7 +31,6 @@ package org.firstinspires.ftc.teamcode.BasicModules;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -39,6 +38,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.teamcode.OdometryThread;
 import org.firstinspires.ftc.teamcode.Robot;
 
 import java.util.List;
@@ -67,8 +67,8 @@ public class SeekSkyStone extends LinearOpMode {
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
 
-    Robot robot = new Robot();
-    
+    public Robot robot = new Robot();
+    OdometryThread odometryThread = new OdometryThread(robot);
     
     // Distance from the center of the screen that the skystone can be to pick it up
     private final double skystoneAngleTolerance = 5;
@@ -134,7 +134,6 @@ public class SeekSkyStone extends LinearOpMode {
 
         if (opModeIsActive()) {
             
-            HardwareMap hardwareMap = new HardwareMap(null);
             robot.initHardware(hardwareMap);
             
             int skystonesCaptured = 0;
@@ -148,8 +147,11 @@ public class SeekSkyStone extends LinearOpMode {
             double objectHeightRatio;
 
             waitForStart();
-
+            
+            new Thread(odometryThread).start();
+            
             while (opModeIsActive()) {
+                
                 // Strafe right until Skystone found within threshold
                 if (skystonesCaptured < 2)
                     robot.strafe(-0.5);
@@ -158,7 +160,7 @@ public class SeekSkyStone extends LinearOpMode {
                     // TODO: Transporting the skystone under bridge and returning
                 }
                 
-                while (skystonesCaptured < 2) {
+                                while (skystonesCaptured < 2) {
                     if (tfod != null) {
                         // getUpdatedRecognitions() will return null if no new information is available since
                         // the last time that call was made.
@@ -234,9 +236,10 @@ public class SeekSkyStone extends LinearOpMode {
                                 skystonesCaptured += 1;
                                 
                                 telemetry.addData("Ladies and gentlemen!", "We gottem.");
+
                                 
                                 robot.goToPosition(30, 20, 0.5, 0, 0.4);
-                                robot.goToPosition(30, 20, 0.5, 0, 0.4);
+                                robot.goToPosition(0, 0, 0.3, 0, 0.4);
                                 
                                 transporting = false;
                                 break;
