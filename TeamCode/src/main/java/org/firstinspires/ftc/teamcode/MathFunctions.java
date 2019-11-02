@@ -29,20 +29,21 @@ public class MathFunctions {
         if (value < bottom) value = bottom;
         if (value > top) value = top;
         return value;
+        
     }
 
 
     public static double inchesToTicks(double inches) {
         double ticks = (inches / WHEEL_CIRCUMFERENCE) * 360;
         return ticks;
-
+        
     }
 
 
     public static double ticksToInches(double ticks) {
         double inches = (ticks * WHEEL_CIRCUMFERENCE) / 360;
         return inches;
-
+        
     }
     
     
