@@ -31,6 +31,9 @@ package org.firstinspires.ftc.teamcode.BasicModules;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -38,8 +41,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+
+import org.firstinspires.ftc.teamcode.DriveConstants;
 import org.firstinspires.ftc.teamcode.OdometryThread;
 import org.firstinspires.ftc.teamcode.Robot;
+
 
 import java.util.List;
 
@@ -75,6 +81,16 @@ public class SeekSkyStone extends LinearOpMode {
 
     // How much of the screen the skystone needs to take up for the robot to deploy the pinger
     private final double desiredHeightRatio = 0.8;
+
+    public int skystonesTransported = 0;
+    public boolean lockedOn = false;
+    public boolean transporting = false;
+    public double speedMultiplier;
+
+    public double objectAngle;
+    public double objectHeight;
+    public double imageHeight;
+    public double objectHeightRatio;
 
 
     /*
@@ -135,17 +151,6 @@ public class SeekSkyStone extends LinearOpMode {
         if (opModeIsActive()) {
             
             robot.initHardware(hardwareMap);
-            
-            int skystonesCaptured = 0;
-            boolean lockedOn = false;
-            boolean transporting = false;
-            double speedMultiplier;
-
-            double objectAngle;
-            double objectHeight;
-            double imageHeight;
-            double objectHeightRatio;
-
             waitForStart();
             
             new Thread(odometryThread).start();
@@ -153,14 +158,13 @@ public class SeekSkyStone extends LinearOpMode {
             while (opModeIsActive()) {
                 
                 // Strafe right until Skystone found within threshold
-                if (skystonesCaptured < 2)
+                if (skystonesTransported < 2)
                     robot.strafe(-0.5);
                 else {
                     robot.brake();
-                    // TODO: Transporting the skystone under bridge and returning
                 }
                 
-                                while (skystonesCaptured < 2) {
+                while (skystonesTransported < 2) {
                     if (tfod != null) {
                         // getUpdatedRecognitions() will return null if no new information is available since
                         // the last time that call was made.
@@ -219,30 +223,23 @@ public class SeekSkyStone extends LinearOpMode {
                                     lockedOn = false;
                                 }
                             }
-                            
+
                             if (transporting) {
-                                
+
                                 // Pinger extends outward to turn the skystone 90 degrees to prepare the skystone for The Succ.
                                 robot.pingerOut();
                                 sleep(1000);
                                 robot.pingerIn();
-                                
-                                // Goes forward and sucks in
-                                robot.startSucc(0.9);
-                                robot.forward(0.5);
+                                robot.steer(0.5, 0.5);
                                 sleep(2000);
                                 robot.brake();
-                                robot.stopSucc();
-                                skystonesCaptured += 1;
-                                
                                 telemetry.addData("Ladies and gentlemen!", "We gottem.");
-
-                                
-                                robot.goToPosition(30, 20, 0.5, 0, 0.4);
+                                //robot.goToPosition(30, 20, 0.2, 0, 0.4);
                                 robot.goToPosition(0, 0, 0.3, 0, 0.4);
                                 
                                 transporting = false;
-                                break;
+                                skystonesTransported += 1;
+                                continue;
 
                             }
 
