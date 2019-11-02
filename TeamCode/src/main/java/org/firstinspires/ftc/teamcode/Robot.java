@@ -1,13 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcore.external.navigation.*;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 import static java.lang.Math.toRadians;
 import static org.firstinspires.ftc.teamcode.MathFunctions.inchesToTicks;
@@ -130,9 +131,19 @@ public class Robot {
         leftRear.setPower(0);
         rightRear.setPower(0);
     }
+    
+    
+    // Moves all motors at same power
+    public void forward(double speed) {
+        leftFront.setPower(speed);
+        rightFront.setPower(speed);
+        leftRear.setPower(speed);
+        rightRear.setPower(speed);
 
-
-    // Moves the left and right side motors
+    }
+    
+    
+    // Moves the left and right side motors separate speeds
     public void steer(double leftSpeed, double rightSpeed) {
         leftFront.setPower(leftSpeed);
         rightFront.setPower(rightSpeed);
@@ -292,7 +303,6 @@ public class Robot {
         
     }
 
-
     
     
     // Extends pinger to its maximum length
@@ -308,6 +318,19 @@ public class Robot {
         
     }
     
+    
+    // Retracts pinger into the robot
+    public void startSucc(double speed) {
+        leftIntake.setPower(speed);
+        
+    }
+    
+    
+    // Retracts pinger into the robot
+    public void stopSucc() {
+        leftIntake.setPower(0);
+        
+    }
     
     
 }

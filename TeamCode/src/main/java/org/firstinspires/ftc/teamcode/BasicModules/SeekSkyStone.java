@@ -82,6 +82,16 @@ public class SeekSkyStone extends LinearOpMode {
     // How much of the screen the skystone needs to take up for the robot to deploy the pinger
     private final double desiredHeightRatio = 0.8;
 
+    public int skystonesTransported = 0;
+    public boolean lockedOn = false;
+    public boolean transporting = false;
+    public double speedMultiplier;
+
+    public double objectAngle;
+    public double objectHeight;
+    public double imageHeight;
+    public double objectHeightRatio;
+
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -141,17 +151,6 @@ public class SeekSkyStone extends LinearOpMode {
         if (opModeIsActive()) {
             
             robot.initHardware(hardwareMap);
-            
-            int skystonesCaptured = 0;
-            boolean lockedOn = false;
-            boolean transporting = false;
-            double speedMultiplier;
-
-            double objectAngle;
-            double objectHeight;
-            double imageHeight;
-            double objectHeightRatio;
-
             waitForStart();
             
             new Thread(odometryThread).start();
@@ -159,14 +158,13 @@ public class SeekSkyStone extends LinearOpMode {
             while (opModeIsActive()) {
                 
                 // Strafe right until Skystone found within threshold
-                if (skystonesCaptured < 2)
+                if (skystonesTransported < 2)
                     robot.strafe(-0.5);
                 else {
                     robot.brake();
-                    // TODO: Transporting the skystone under bridge and returning
                 }
                 
-                                while (skystonesCaptured < 2) {
+                while (skystonesTransported < 2) {
                     if (tfod != null) {
                         // getUpdatedRecognitions() will return null if no new information is available since
                         // the last time that call was made.
@@ -240,7 +238,8 @@ public class SeekSkyStone extends LinearOpMode {
                                 robot.goToPosition(0, 0, 0.3, 0, 0.4);
                                 
                                 transporting = false;
-                                break;
+                                skystonesTransported += 1;
+                                continue;
 
                             }
 
