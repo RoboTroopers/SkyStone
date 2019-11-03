@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 
-import static java.lang.Math.*;
-import static org.firstinspires.ftc.teamcode.DriveConstants.*;
+import static java.lang.Math.PI;
+import static org.firstinspires.ftc.teamcode.DriveConstants.WHEEL_CIRCUMFERENCE;
 
 
 public class MathFunctions {
@@ -19,14 +19,14 @@ public class MathFunctions {
         
     }
     
-
+    
     public static double inchesToTicks(double inches) {
         double ticks = (inches / WHEEL_CIRCUMFERENCE) * 360;
         return ticks;
         
     }
-
-
+    
+    
     public static double ticksToInches(double ticks) {
         double inches = (ticks * WHEEL_CIRCUMFERENCE) / 360;
         return inches;

@@ -31,9 +31,6 @@ package org.firstinspires.ftc.teamcode.BasicModules;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -41,11 +38,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-
-import org.firstinspires.ftc.teamcode.DriveConstants;
 import org.firstinspires.ftc.teamcode.OdometryThread;
 import org.firstinspires.ftc.teamcode.Robot;
-
 
 import java.util.List;
 
@@ -71,7 +65,7 @@ public class SeekSkyStone extends LinearOpMode {
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
     
-    public Robot robot = new Robot();
+    public Robot robot = new Robot(0,0,0);
     OdometryThread odometryThread = new OdometryThread(robot);
     
     // Distance from the center of the screen that the skystone can be to pick it up (degrees)
@@ -152,7 +146,6 @@ public class SeekSkyStone extends LinearOpMode {
         telemetry.addData(">", "Press Play to start op mode");
         telemetry.update();
         waitForStart();
-        
         
         
         if (opModeIsActive()) {

@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode;
 public class OdometryThread implements Runnable {
     
     public Robot robot;
-    public int sleepTime;
+    public int sleepTime = 75;
     
     public OdometryThread(Robot arobot) {
         robot = arobot;
