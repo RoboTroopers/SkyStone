@@ -7,26 +7,33 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 @TeleOp(name = "BasicTeleopDrive")
 public class BasicTeleopDrive extends OpMode {
-
+    
+    ///*
     private DcMotor leftFront;
     private DcMotor rightFront;
     private DcMotor leftRear;
     private DcMotor rightRear;
-
-
+    //*/
+    //Robot robot = new Robot()
+    
+    
+    
     @Override
     public void init() {
-
+        ///*
         leftFront = hardwareMap.get(DcMotor.class, "leftFront");
         leftRear = hardwareMap.get(DcMotor.class, "leftRear");
         rightRear = hardwareMap.get(DcMotor.class, "rightRear");
         rightFront = hardwareMap.get(DcMotor.class, "rightFront");
-
+        
         rightRear.setDirection(DcMotor.Direction.REVERSE);
         leftFront.setDirection(DcMotor.Direction.REVERSE);
-
+        
         telemetry.addData("Status", "Initialized");
         telemetry.update();
+        //*/
+        
+        //robot.initHardware();
     }
         
 

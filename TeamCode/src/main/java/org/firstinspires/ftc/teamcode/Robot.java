@@ -12,7 +12,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 import static java.lang.Math.toRadians;
 import static org.firstinspires.ftc.teamcode.MathFunctions.inchesToTicks;
-import static org.firstinspires.ftc.teamcode.MathFunctions.restrictToRange;
 
 
 
@@ -190,7 +189,7 @@ public class Robot {
             error = progress-turnDegrees;
             
             speed = ((1-(progress/turnDegrees))*maxSpeed)+minSpeed; // Speed starts at maximum and approaches minimum as the gyro value approaches the desired angle. It deccelerates for precision and accuray.
-            speed = restrictToRange(speed, minSpeed, maxSpeed);
+            speed = Range.clip(speed, minSpeed, maxSpeed);
             
             if (turnDegrees < 0)
                 steer(-speed, speed);

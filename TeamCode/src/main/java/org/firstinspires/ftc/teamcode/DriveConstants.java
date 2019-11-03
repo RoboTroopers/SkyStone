@@ -31,15 +31,10 @@ public class DriveConstants {
     
     public static final double CIRCUMDIAMETER = Math.hypot(WHEEL_BASE, TRACK_WIDTH);
     public static final double CIRCUMCIRCLE_CIRCUMFERENCE = CIRCUMDIAMETER*Math.PI;
-
-    // How far to the side the camera is placed (left is negative)
-    public static final double WEBCAM_OFFSET = -3;
     
-    // How far off from the center of the robot each encoder is located
-    public static final double Y_ENCODER_OFFSET_X = 0;
-    public static final double Y_ENCODER_OFFSET_Y = 0;
-    public static final double X_ENCODER_OFFSET_X = 0;
-    public static final double X_ENCODER_OFFSET_Y = 0;
+    //How far off the webcam is from the center of the robot
+    public double WEBCAM_OFFSET = -3;
+    
     
     
 }

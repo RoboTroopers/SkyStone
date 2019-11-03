@@ -64,35 +64,42 @@ import java.util.List;
 
 
 
-
-
 @Autonomous(name = "Tensorflow Skystone Detection Autonomous")
 //@Disabled
 public class SeekSkyStone extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
-
+    
     public Robot robot = new Robot();
     OdometryThread odometryThread = new OdometryThread(robot);
     
-    // Distance from the center of the screen that the skystone can be to pick it up
-    private final double skystoneAngleTolerance = 5;
-
+    // Distance from the center of the screen that the skystone can be to pick it up (degrees)
+    private final double skystoneAngleTolerance = 15;
+    
     // How much of the screen the skystone needs to take up for the robot to deploy the pinger
     private final double desiredHeightRatio = 0.8;
-
+    
+    //How far to the side the skystone should be (degrees)
+    public final double desiredHorizontalAngle = 0;
+    
+    
     public int skystonesTransported = 0;
     public boolean lockedOn = false;
     public boolean transporting = false;
-    public double speedMultiplier;
-
+    
     public double objectAngle;
     public double objectHeight;
     public double imageHeight;
+    
+    // How much of the screen the skystone takes up vertically.
     public double objectHeightRatio;
-
-
+    
+    public double speedMultiplier;
+    public double forwardSpeed;
+    public double turnSpeed;
+    
+    
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
      * 'parameters.vuforiaLicenseKey' is initialized is for illustration only, and will not function.
@@ -107,32 +114,32 @@ public class SeekSkyStone extends LinearOpMode {
      */
     private static final String VUFORIA_KEY =
             "AQjY1NP/////AAABmUvaVtQ0nUQ9tejvctez83szc6mfruVEZTBCKtHg2fP0Mj/JZi9/l7fdKbXD9311fPDo7mIzkBaV6RcWT5LY5ksEfoUJXc/ewDYGpkB08zWSHn0C6cP8A2Dxak5l+WsHht7b12+aitu5fDbmIZ8zwtwJ6Lxu3OynVEt95+MfVjfQF2qpSfS0FtgBQMkkBBlTxZPaCkX1/4HJqcZokwgrUZMH5UBvNtSxveBKyHEMznVJiHg3gw6drdIOgfw/+mgdS3Il7MXwMHd13Fm7Un7wyrfcMxOXSqfOOaAymMOCLRQNDUUBJFZF2/QPWZnHHZzEE/nZo7uARlDXDM8aL+JB+chJa9ipx5hhBrvBg7z839Wz";
-
+    
     /**
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
      * localization engine.
      */
     private VuforiaLocalizer vuforia;
-
+    
     /**
      * {@link #tfod} is the variable we will use to store our instance of the TensorFlow Object
      * Detection engine.
      */
     private TFObjectDetector tfod;
-
+    
     
     @Override
     public void runOpMode() {
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
         initVuforia();
-
+        
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
             initTfod();
         } else {
             telemetry.addData("Sorry!", "This device is not compatible with TFOD");
         }
-
+        
         /**
          * Activate TensorFlow Object Detection before we wait for the start command.
          * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
@@ -140,14 +147,14 @@ public class SeekSkyStone extends LinearOpMode {
         if (tfod != null) {
             tfod.activate();
         }
-
+        
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start op mode");
         telemetry.update();
         waitForStart();
-
-
-
+        
+        
+        
         if (opModeIsActive()) {
             
             robot.initHardware(hardwareMap);
@@ -194,12 +201,12 @@ public class SeekSkyStone extends LinearOpMode {
                                 } else nearestSkystone = recognition;
                             }
                             
-                            // Sets angle based on how far from the center and which side of the camera the stone is.
+                            // Set angle based on how far from the center and which side of the camera the stone is.
                             objectAngle = nearestSkystone.estimateAngleToObject(AngleUnit.DEGREES);
                             objectHeight = nearestSkystone.getHeight();
                             imageHeight = nearestSkystone.getImageHeight();
                             objectHeightRatio = objectHeight/imageHeight;
-
+                            
                             telemetry.addData(String.format("  object height ratio (%d)", i), "%.03f",
                                     objectHeightRatio);
                             
@@ -209,24 +216,29 @@ public class SeekSkyStone extends LinearOpMode {
                                 robot.brake();
                                 lockedOn = true;
                             }
-
+                            
                             if (lockedOn) {
-                                // How much of the screen the skystone takes up vertically out of 1.
-
-                                speedMultiplier = 0.25*(objectHeightRatio/desiredHeightRatio);
                                 
-                                // Moves towards the skystone until the object takes up enough of the screen. This is when the robot is at the optimal distance to use the pinge
-                                robot.steer(speedMultiplier*(objectAngle/45), speedMultiplier*(objectAngle/45));
-
+                                forwardSpeed = 0.5;
+                                turnSpeed = (objectAngle/45)*0.5;
+                                
+                                // The "1 - ([ratio])" is used to make robot slower when closer to skystone for precision.
+                                speedMultiplier = (0.25*(1-(objectHeightRatio/desiredHeightRatio)))+0.25;
+                                
+                                // Move towards the skystone until the object takes up enough of the screen.
+                                // This is when the robot is at the optimal distance to use the pinger.
+                                // Also turn simulateously towards skystone while moving forward.
+                                robot.steer((forwardSpeed+turnSpeed)*speedMultiplier, (forwardSpeed-turnSpeed)*speedMultiplier); 
+                                
                                 if (objectHeightRatio > desiredHeightRatio) {
                                     transporting = true;
                                     lockedOn = false;
                                 }
                             }
-
+                            
                             if (transporting) {
-
-                                // Pinger extends outward to turn the skystone 90 degrees to prepare the skystone for The Succ.
+                                
+                                // Extend pinger outward to turn the skystone 90 degrees to prepare the skystone for The Succ.
                                 robot.pingerOut();
                                 sleep(1000);
                                 robot.pingerIn();
@@ -235,27 +247,27 @@ public class SeekSkyStone extends LinearOpMode {
                                 robot.brake();
                                 telemetry.addData("Ladies and gentlemen!", "We gottem.");
                                 //robot.goToPosition(30, 20, 0.2, 0, 0.4);
-                                robot.goToPosition(0, 0, 0.3, 0, 0.4);
+                                //robot.goToPosition(0, 0, 0.3, 0, 0.4);
                                 
-                                transporting = false;
                                 skystonesTransported += 1;
+                                transporting = false;
                                 continue;
-
+                                
                             }
-
+                            
                             telemetry.update();
-
+                            
                         }
                     }
                 }
             }
         }
-
+        
         if (tfod != null) {
             tfod.shutdown();
         }
     }
-
+    
     /**
      * Initialize the Vuforia localization engine.
      */
@@ -264,16 +276,16 @@ public class SeekSkyStone extends LinearOpMode {
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
          */
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-
+        
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
-
+        
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
-
+        
         // Loading trackables is not necessary for the TensorFlow Object Detection engine.
     }
-
+    
     /**
      * Initialize the TensorFlow Object Detection engine.
      */
@@ -285,7 +297,7 @@ public class SeekSkyStone extends LinearOpMode {
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
-
-
-
+    
+    
+    
 }
