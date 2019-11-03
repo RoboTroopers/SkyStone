@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.BasicModules;
+package org.firstinspires.ftc.teamcode.AutonomousOpmodes;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.OdometryThread;
 import org.firstinspires.ftc.teamcode.Robot;
 
 @Autonomous(name = "sexDrive", group = "")
-public class SexDrive extends LinearOpMode {
+public class TestDrive extends LinearOpMode {
 
     Robot robot = new Robot(0,0,0);
 

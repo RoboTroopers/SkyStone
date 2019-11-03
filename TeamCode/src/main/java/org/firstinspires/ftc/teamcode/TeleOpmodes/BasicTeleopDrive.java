@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.BasicModules;
+package org.firstinspires.ftc.teamcode.TeleOpmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -15,7 +15,7 @@ public class BasicTeleopDrive extends OpMode {
     private DcMotor leftRear;
     private DcMotor rightRear;
     */
-    Robot robot = new Robot();
+    Robot robot = new Robot(0,0,0);
     
     
     
@@ -72,9 +72,14 @@ public class BasicTeleopDrive extends OpMode {
         }
         
         
-        while(gamepad1.right_trigger > 0.5) {
-            robot.leftIntake.setPower(1);
-            robot.rightIntake.setPower(1);
+        if(gamepad1.right_trigger > 0.5) {
+            robot.leftFront.setPower(1);
+            robot.rightFront.setPower(1);
+        }
+        
+        else {
+            robot.leftFront.setPower(0);
+            robot.rightFront.setPower(0);
         }
 
 
