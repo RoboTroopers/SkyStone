@@ -82,7 +82,6 @@ public class BasicTeleopDrive extends OpMode {
             robot.rightFront.setPower(0);
         }
 
-
         telemetry.addData("Status", "Running");
         telemetry.addData("front left power", robot.leftFront.getPower());
         telemetry.addData("front right power", robot.rightFront.getPower());
@@ -91,9 +90,6 @@ public class BasicTeleopDrive extends OpMode {
         telemetry.addData("left intake power", robot.leftIntake.getPower());
         telemetry.addData("right intake power", robot.rightIntake.getPower());
         telemetry.update();
-
     }
-
-
 }
 
