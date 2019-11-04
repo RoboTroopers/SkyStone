@@ -1,6 +1,6 @@
-package org.firstinspires.ftc.teamcode.neilppProject.company;
+package org.firstinspires.ftc.teamcode.ppProject.company;
 
-import org.firstinspires.ftc.teamcode.neilppProject.RobotUtilities.MovementVars;
+import org.firstinspires.ftc.teamcode.ppProject.RobotUtilities.MovementVars;
 
 public class Robot {
     public static boolean usingComputer = true;

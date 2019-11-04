@@ -28,7 +28,7 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.neilppProject.company;
+package org.firstinspires.ftc.teamcode.ppProject.company;
 
 /**
  * Utility class for performing range operations

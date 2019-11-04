@@ -1,7 +1,7 @@
-package org.firstinspires.ftc.teamcode.neilppProject.RobotUtilities;
+package org.firstinspires.ftc.teamcode.ppProject.RobotUtilities;
 
-import static org.firstinspires.ftc.teamcode.neilppProject.company.Robot.worldAngle_rad;
-import static org.firstinspires.ftc.teamcode.neilppProject.treamcode.MathFunctions.AngleWrap;
+import static org.firstinspires.ftc.teamcode.ppProject.company.Robot.worldAngle_rad;
+import static org.firstinspires.ftc.teamcode.ppProject.treamcode.MathFunctions.AngleWrap;
 
 public class SpeedOmeter {
     private static long lastUpdateStartTime = 0;

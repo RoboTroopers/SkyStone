@@ -1,4 +1,6 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Robot;
+
+import android.provider.Settings;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -6,9 +8,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.teamcode.DriveConstants;
+import org.firstinspires.ftc.teamcode.FieldConstants;
+import org.firstinspires.ftc.teamcode.MathFunctions;
+import org.firstinspires.ftc.teamcode.Odometry.GlobalPositionTracker;
 
 import static java.lang.Math.toRadians;
 import static org.firstinspires.ftc.teamcode.MathFunctions.inchesToTicks;
@@ -18,67 +21,32 @@ import static org.firstinspires.ftc.teamcode.MathFunctions.inchesToTicks;
 public class Robot {
     
     // Motors and servos
-    public DcMotor leftFront = null;
-    public DcMotor rightFront = null;
-    public DcMotor leftRear = null;
-    public DcMotor rightRear = null;
+    public DcMotor leftFront;
+    public DcMotor rightFront;
+    public DcMotor leftRear;
+    public DcMotor rightRear;
 
-    public Servo pinger = null;
+    public Servo pinger;
 
-    public DcMotor leftIntake = null;
-    public DcMotor rightIntake = null;
-    
+    public DcMotor leftIntake;
+    public DcMotor rightIntake;
     
     // Sensors
-    public BNO055IMU imu = null;
-    public DcMotor xEncoder = null;
-    public DcMotor yEncoder = null;
+    public BNO055IMU imu;
+    public DcMotor xEncoder;
+    public DcMotor yEncoder;
     
     
-    // Odometry variables
-    public double xSpeed = 0;
-    public double ySpeed = 0;
-    public double turnSpeed = 0;
-    
-    public double movement_x;
-    public double movement_y;
-    public double movement_turn;
-    
-    
-    
-    public double worldXPosition;
-    public double worldYPosition;
-    public double worldAngle_rad;
-    
-
-    public double getXPos(){
-        return worldXPosition;
-    }
-    public double getYPos() { return worldYPosition; }
-    
-    public double xEncoderLast;
-    public double yEncoderLast;
-    
-    public double getXEncoder() { 
-        updatePos();
+    public double getXEncoder() {
+        odometry.updatePos();
         return xEncoder.getCurrentPosition();
     }
-    
+
     public double getYEncoder() {
-        updatePos();
+        odometry.updatePos();
         return yEncoder.getCurrentPosition();
     }
-    
-    
-    
-    public Robot(double startXInches, double startYInches, double startWorldAngle_Degrees) {
-        worldXPosition = startXInches;
-        worldYPosition = startYInches;
-        worldAngle_rad = toRadians(startWorldAngle_Degrees);
-        
-    }
-    
-    
+
     public void resetEncoders() {
         xEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         yEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -86,31 +54,34 @@ public class Robot {
         xEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
     
-    
-    public void updatePos() {
-        
-        worldAngle_rad = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).firstAngle;
-        
-        double xEncoderChange = getXEncoder() - xEncoderLast;
-        double yEncoderChange = getYEncoder() - yEncoderLast;
-        
-        // Position where the robot would be if the robot had not strafed
-        double forwardShiftX = yEncoderChange * Math.cos(worldAngle_rad);
-        double forwardShiftY = yEncoderChange * Math.sin(worldAngle_rad);
-        
-        // How far the robot's position has shifted as a result of strafing
-        double strafeShiftX = xEncoderChange*Math.cos(worldAngle_rad);
-        double strafeShiftY = yEncoderChange*Math.sin(worldAngle_rad);
-        
-        worldXPosition += forwardShiftX + strafeShiftX;
-        worldYPosition += forwardShiftY + strafeShiftY;
-        
-        xEncoderLast = getXEncoder();
-        yEncoderLast = getYEncoder();
-        
-        
+
+    public GlobalPositionTracker odometry;
+
+    public double worldXPosition;
+    public double worldYPosition;
+    public double worldAngle_rad;
+
+
+    public double getXPos(){
+        return worldXPosition;
     }
     
+    public double getYPos() {
+        return worldYPosition;
+    }
+    
+
+    public double movement_x;
+    public double movement_y;
+    public double movement_turn;
+
+
+
+    public Robot(double xInches, double yInches, double degrees) {
+        
+        odometry.setPosition(this, xInches, yInches, toRadians(degrees));
+        
+    }
     
     public void initHardware (HardwareMap aHwMap) {
         
@@ -127,7 +98,6 @@ public class Robot {
         rightIntake = aHwMap.get(DcMotor.class, "rightIntake");
         rightIntake.setDirection(DcMotor.Direction.REVERSE);
         
-        
         imu = aHwMap.get(BNO055IMU.class, "imu");
         xEncoder = aHwMap.get(DcMotor.class, "xEncoder");
         yEncoder = aHwMap.get(DcMotor.class, "yEncoder");
@@ -135,7 +105,7 @@ public class Robot {
         
     }
     
-    
+
     // Stations the robot in current position
     public void brake() {
         leftFront.setPower(0);
@@ -202,6 +172,42 @@ public class Robot {
         
         brake();
     }
+
+
+    public void goToPosition(double xInches, double yInches, double movementSpeed, double preferredAngle, double turnSpeed) {
+        double accuracyRange = inchesToTicks(0.5);
+        double x = inchesToTicks(xInches);
+        double y = inchesToTicks(yInches);
+        double distanceToTarget = Math.hypot(x - worldXPosition, y - worldYPosition);
+
+
+
+        while (!(distanceToTarget > -accuracyRange && distanceToTarget < accuracyRange)) {
+            distanceToTarget = Math.hypot(x - worldXPosition, y - worldYPosition);
+
+            double absoluteAngleToTarget = Math.atan2(y - worldYPosition, x - worldXPosition);
+            double relativeAngleToPoint = MathFunctions.angleWrap(absoluteAngleToTarget - (worldAngle_rad - toRadians(90)));
+
+            double relativeXToPoint = Math.cos(relativeAngleToPoint) * distanceToTarget;
+            double relativeYToPoint = Math.sin(relativeAngleToPoint) * distanceToTarget;
+
+            double movementXPower = relativeXToPoint / (Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint));
+            double movementYPower = relativeYToPoint / (Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint));
+
+            movement_x = movementXPower * movementSpeed;
+            movement_y = movementYPower * movementSpeed;
+
+            double relativeTurnAngle = relativeAngleToPoint - toRadians(180) + preferredAngle;
+            movement_turn = Range.clip(relativeTurnAngle / toRadians(30), -1, 1) * turnSpeed;
+
+            if(Math.abs(distanceToTarget) < 3) {
+                movement_turn = 0;
+            }
+
+            moveXYTurn(movement_x, movement_y, movement_turn);
+
+        }
+    }
     
     
     public void moveXYTurn(double x, double y, double turn) {
@@ -237,43 +243,6 @@ public class Robot {
         if (rightRear.getPower() != rr_power_raw)
             rightRear.setPower(rr_power_raw);
         
-    }
-    
-    
-    
-    public void goToPosition(double xInches, double yInches, double movementSpeed, double preferredAngle, double turnSpeed) {
-        double accuracyRange = inchesToTicks(0.5);
-        double x = inchesToTicks(xInches);
-        double y = inchesToTicks(yInches);
-        double distanceToTarget = Math.hypot(x - worldXPosition, y - worldYPosition);
-        
-        
-        
-        while (!(distanceToTarget > -accuracyRange && distanceToTarget < accuracyRange)) {
-            distanceToTarget = Math.hypot(x - worldXPosition, y - worldYPosition);
-            
-            double absoluteAngleToTarget = Math.atan2(y - worldYPosition, x - worldXPosition);
-            double relativeAngleToPoint = MathFunctions.angleWrap(absoluteAngleToTarget - (worldAngle_rad - toRadians(90)));
-            
-            double relativeXToPoint = Math.cos(relativeAngleToPoint) * distanceToTarget;
-            double relativeYToPoint = Math.sin(relativeAngleToPoint) * distanceToTarget;
-            
-            double movementXPower = relativeXToPoint / (Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint));
-            double movementYPower = relativeYToPoint / (Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint));
-            
-            movement_x = movementXPower * movementSpeed;
-            movement_y = movementYPower * movementSpeed;
-            
-            double relativeTurnAngle = relativeAngleToPoint - toRadians(180) + toRadians(preferredAngle);
-            movement_turn = Range.clip(relativeTurnAngle / toRadians(30), -1, 1) * turnSpeed;
-            
-            if(Math.abs(distanceToTarget) < 3) {
-                movement_turn = 0;
-            }
-            
-            moveXYTurn(movement_x, movement_y, movement_turn);
-                
-        }        
     }
     
     
