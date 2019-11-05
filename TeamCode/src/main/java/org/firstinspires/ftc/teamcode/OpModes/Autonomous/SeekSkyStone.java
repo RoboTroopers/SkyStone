@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.AutonomousOpmodes;
+package org.firstinspires.ftc.teamcode.OpModes.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -39,10 +39,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.Odometry.OdometryThread;
-import org.firstinspires.ftc.teamcode.Robot.Robot;
+import org.firstinspires.ftc.teamcode.Hardware.Robot;
+import org.firstinspires.ftc.teamcode.Utilities.DriveConstants;
+import org.firstinspires.ftc.teamcode.Utilities.FieldPosition;
 
 import java.util.List;
-
 
 
 /**
@@ -58,13 +59,14 @@ import java.util.List;
 
 
 
-@Autonomous(name = "Tensorflow Skystone Detection Autonomous")
+@Autonomous(name = "Tensorflow Skystone Detection Autonomous", group="Autonomous")
 //@Disabled
 public class SeekSkyStone extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
     
+    FieldPosition position = new FieldPosition(2, 0, DriveConstants.TRACK_WIDTH/2, DriveConstants.WHEEL_BASE/2);
     public Robot robot = new Robot(0,0,0);
     OdometryThread odometryThread = new OdometryThread(robot);
     
@@ -81,19 +83,31 @@ public class SeekSkyStone extends LinearOpMode {
     public int skystonesTransported = 0;
     public boolean lockedOn = false;
     public boolean transporting = false;
+
     
+    public enum ProgramState {
+        SEARCHING,
+        LOCKED_ON,
+        TRANSPORTING,
+        FINALIZING
+        
+    }
+
+
     public double objectAngle;
     public double objectHeight;
     public double imageHeight;
-    
+
     // How much of the screen the skystone takes up vertically.
     public double objectHeightRatio;
-    
+
     public double speedMultiplier;
     public double forwardSpeed;
     public double turnSpeed;
     
     
+
+
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
      * 'parameters.vuforiaLicenseKey' is initialized is for illustration only, and will not function.
@@ -159,9 +173,9 @@ public class SeekSkyStone extends LinearOpMode {
                 
                 // Strafe right until Skystone found within threshold
                 if (skystonesTransported < 2)
-                    robot.strafe(-0.5);
+                    robot.driveTrain.strafe(-0.5);
                 else {
-                    robot.brake();
+                    robot.driveTrain.brake();
                 }
                 
                 while (skystonesTransported < 2) {
@@ -206,7 +220,7 @@ public class SeekSkyStone extends LinearOpMode {
                             
                             // If skystone angle is within threshold, brake and prepare to make fine adjustments
                             if (Math.abs(objectAngle) < skystoneAngleTolerance && !lockedOn && !transporting) {
-                                robot.brake();
+                                robot.driveTrain.brake();
                                 lockedOn = true;
                             }
                             
@@ -221,7 +235,7 @@ public class SeekSkyStone extends LinearOpMode {
                                 // Move towards the skystone until the object takes up enough of the screen.
                                 // This is when the robot is at the optimal distance to use the pinger.
                                 // Also turn simulateously towards skystone while moving forward.
-                                robot.steer((forwardSpeed+turnSpeed)*speedMultiplier, (forwardSpeed-turnSpeed)*speedMultiplier); 
+                                robot.driveTrain.steer((forwardSpeed+turnSpeed)*speedMultiplier, (forwardSpeed-turnSpeed)*speedMultiplier); 
                                 
                                 if (objectHeightRatio > desiredHeightRatio) {
                                     transporting = true;
@@ -232,12 +246,12 @@ public class SeekSkyStone extends LinearOpMode {
                             if (transporting) {
                                 
                                 // Extend pinger outward to turn the skystone 90 degrees to prepare the skystone for The Succ.
-                                robot.pingerOut();
+                                robot.intake.pingerOut();
                                 sleep(1000);
-                                robot.pingerIn();
-                                robot.steer(0.5, 0.5);
+                                robot.intake.pingerIn();
+                                robot.driveTrain.steer(0.5, 0.5);
                                 sleep(2000);
-                                robot.brake();
+                                robot.driveTrain.brake();
                                 telemetry.addData("Ladies and gentlemen!", "We gottem.");
                                 //robot.goToPosition(30, 20, 0.2, 0, 0.4);
                                 //robot.goToPosition(0, 0, 0.3, 0, 0.4);

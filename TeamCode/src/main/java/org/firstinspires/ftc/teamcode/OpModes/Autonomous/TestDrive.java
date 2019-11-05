@@ -1,13 +1,13 @@
-package org.firstinspires.ftc.teamcode.AutonomousOpmodes;
+package org.firstinspires.ftc.teamcode.OpModes.Autonomous;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Odometry.OdometryThread;
-import org.firstinspires.ftc.teamcode.Robot.Robot;
+import org.firstinspires.ftc.teamcode.Hardware.Robot;
 
-@Autonomous(name = "sexDrive", group = "")
+@Autonomous(name = "TestDrive", group = "Autonomous")
 public class TestDrive extends LinearOpMode {
 
     Robot robot = new Robot(0,0,0);
@@ -20,11 +20,12 @@ public class TestDrive extends LinearOpMode {
 
         waitForStart();
         t1.start();
-        robot.goToPosition(0, 24, 0.5, 0, 0.25);
+        robot.advancedMovement.goToPosition(0, 24, 0.5, 0, 0.25);
         telemetry.addData("programX", robot.odometry.worldXPosition);
         telemetry.addData("programY", robot.odometry.worldYPosition);
-        telemetry.addData("currXLeft", robot.leftFront.getCurrentPosition());
-        telemetry.addData("currXRight", robot.rightFront.getCurrentPosition());
+        telemetry.addData("programY", robot.odometry.worldYPosition);
+        telemetry.addData("currXLeft", robot.sensors.horizontalEncoder.getCurrentPosition());
+        telemetry.addData("currXRight", robot.sensors.horizontalEncoder.getCurrentPosition());
         
     }
 }

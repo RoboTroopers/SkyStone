@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.ppProject.treamcode;
 
-import org.opencv.core.Point;
+import org.firstinspires.ftc.teamcode.ppProject.core.Point;
+
 
 public class CurvePoint {
     public double x;
@@ -42,10 +43,10 @@ public class CurvePoint {
     
     public Point toPoint(){
         return new Point(x, y);
-        
+
     }
-    
-    
+
+
     public void setPoint(Point point) {
         x = point.x;
         y = point.y;

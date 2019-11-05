@@ -8,12 +8,8 @@ import static java.lang.Math.*;
 
 public class MathFunctions {
     
-    /**
-     *
-     * Keeps angle within -180 to 180 degrees while preserving angle measure
-     *
-     */
     
+     //Keeps angle within -180 to 180 degrees while preserving angle measure
     public static double angleWrap(double angle) {
         while (angle < -PI)
             angle += 2*PI;

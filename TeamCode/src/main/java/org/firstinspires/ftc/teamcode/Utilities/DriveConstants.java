@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Utilities;
 
 
 public class DriveConstants {
@@ -36,5 +36,21 @@ public class DriveConstants {
     public double WEBCAM_OFFSET = -3;
     
     
-    
+    public static double ENCODER_TICKS_PER_REV = 360;
+
+
+    public static double inchesToTicks(double inches) {
+        double ticks = (inches / WHEEL_CIRCUMFERENCE) * ENCODER_TICKS_PER_REV;
+        return ticks;
+
+    }
+
+    public static double ticksToInches(double ticks) {
+        double inches = (ticks * WHEEL_CIRCUMFERENCE) / ENCODER_TICKS_PER_REV;
+        return inches;
+
+    }
+
+
+
 }

@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.ppProject.treamcode;
 
-import static com.company.Robot.worldXPosition;
+import static org.firstinspires.ftc.teamcode.ppProject.company.Robot.worldXPosition;
 
 public class MyOpMode extends OpMode {
 
