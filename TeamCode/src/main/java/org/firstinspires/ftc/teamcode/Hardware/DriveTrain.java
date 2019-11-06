@@ -2,26 +2,19 @@ package org.firstinspires.ftc.teamcode.Hardware;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.Range;
-
-import static java.lang.Math.toRadians;
-import static org.firstinspires.ftc.teamcode.Utilities.DriveConstants.inchesToTicks;
 
 public class DriveTrain {
-
-
+    
+    
     // Motors and servos
     public DcMotor leftFront;
     public DcMotor rightFront;
     public DcMotor leftRear;
     public DcMotor rightRear;
-
-
-
-
+    
+    
     public void initHardware(HardwareMap aHwMap) {
-
+        
         leftFront = aHwMap.get(DcMotor.class, "leftFront");
         rightFront = aHwMap.get(DcMotor.class, "rightFront");
         leftRear = aHwMap.get(DcMotor.class, "leftRear");
@@ -38,7 +31,9 @@ public class DriveTrain {
         rightFront.setPower(0);
         leftRear.setPower(0);
         rightRear.setPower(0);
+        
     }
+    
 
 
     // Moves all motors at same power
@@ -47,20 +42,20 @@ public class DriveTrain {
         rightFront.setPower(speed);
         leftRear.setPower(speed);
         rightRear.setPower(speed);
-
+        
     }
-
-
+    
+    
     // Moves the left and right side motors separate speeds
     public void steer(double leftSpeed, double rightSpeed) {
         leftFront.setPower(leftSpeed);
         rightFront.setPower(rightSpeed);
         leftRear.setPower(leftSpeed);
         rightRear.setPower(rightSpeed);
-
+        
     }
-
-
+    
+    
     // Moves the robot sideways without turning
     public void strafe(double speed){
         // Positive speed strafes right, negative speed strafes left.
@@ -68,11 +63,10 @@ public class DriveTrain {
         rightFront.setPower(-speed);
         leftRear.setPower(-speed);
         rightRear.setPower(speed);
-
+        
     }
-
-
-
+    
+    
     public void applyMovement(double x, double y, double turn) {
         //translates robot position on field by x and y, rotates by turn
         //movement_x multiplied by 1.5 because mechanum drive strafes sideways slower than forwards/backwards
@@ -80,16 +74,16 @@ public class DriveTrain {
         double rf_power_raw = -y - turn + (x*1.5);
         double lr_power_raw = y - turn - (x*1.5);
         double rr_power_raw = -y - turn + (x*1.5);
-
+        
         // Find greatest power
         double maxRawPower = Math.max(Math.max(lf_power_raw, rf_power_raw), Math.max(lr_power_raw, rr_power_raw));
-
+        
         double scaleDownFactor = 1.0;
         if (maxRawPower > 1.0) {
             // Reciprocal of maxRawPower so that when multiplied by factor, maxPower == 1 (full speed)
             scaleDownFactor = 1.0/maxRawPower;
         }
-
+        
         // All motor speeds scaled down (if maxRawPower > 1) but vector is preserved.
         lr_power_raw *= scaleDownFactor;
         rf_power_raw *= scaleDownFactor;
@@ -107,6 +101,6 @@ public class DriveTrain {
             rightRear.setPower(rr_power_raw);
 
     }
-
-
+    
+    
 }

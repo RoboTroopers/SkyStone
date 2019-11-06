@@ -20,7 +20,7 @@ public class TestDrive extends LinearOpMode {
 
         waitForStart();
         t1.start();
-        robot.advancedMovement.goToPosition(0, 24, 0.5, 0, 0.25);
+        robot.advancedMovement.myGoToPosition(0, 24, 0.5, 0, 0.25);
         telemetry.addData("programX", robot.odometry.worldXPosition);
         telemetry.addData("programY", robot.odometry.worldYPosition);
         telemetry.addData("programY", robot.odometry.worldYPosition);
