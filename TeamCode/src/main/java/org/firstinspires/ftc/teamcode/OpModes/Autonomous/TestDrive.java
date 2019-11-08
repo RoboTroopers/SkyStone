@@ -4,19 +4,19 @@ package org.firstinspires.ftc.teamcode.OpModes.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.Odometry.OdometryThread;
+import org.firstinspires.ftc.teamcode.OdometrySystem.OdometryThread;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 
 @Autonomous(name = "TestDrive", group = "Autonomous")
 public class TestDrive extends LinearOpMode {
 
-    Robot robot = new Robot(0,0,0);
+    private Robot robot = new Robot();
 
     @Override
     public void runOpMode() {
-
-        Thread t1 = new Thread(new OdometryThread(robot));
+        robot.setPosition(0, 0, 0);
         robot.initHardware(hardwareMap);
+        Thread t1 = new Thread(new OdometryThread(robot));
 
         waitForStart();
         t1.start();
@@ -24,8 +24,8 @@ public class TestDrive extends LinearOpMode {
         telemetry.addData("programX", robot.odometry.worldXPosition);
         telemetry.addData("programY", robot.odometry.worldYPosition);
         telemetry.addData("programY", robot.odometry.worldYPosition);
-        telemetry.addData("currXLeft", robot.sensors.horizontalEncoder.getCurrentPosition());
-        telemetry.addData("currXRight", robot.sensors.horizontalEncoder.getCurrentPosition());
+        telemetry.addData("currXLeft", robot.sensing.horizontalEncoder.getCurrentPosition());
+        telemetry.addData("currXRight", robot.sensing.horizontalEncoder.getCurrentPosition());
         
     }
 }

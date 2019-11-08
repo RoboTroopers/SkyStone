@@ -40,7 +40,7 @@ public class AdvancedMovement {
             distanceToTarget = Math.hypot(x -robot.odometry.worldXPosition, y - robot.odometry.worldYPosition);
 
             double absoluteAngleToTarget = Math.atan2(y - robot.odometry.worldYPosition, x - robot.odometry.worldXPosition);
-            double relativeAngleToPoint = MathFunctions.angleWrap(absoluteAngleToTarget - (robot.odometry.worldAngle_rad - toRadians(90)));
+            double relativeAngleToPoint = MathFunctions.angleWrap(absoluteAngleToTarget - (robot.sensing.worldAngle_rad - toRadians(90)));
 
             double relativeXToPoint = Math.cos(relativeAngleToPoint) * distanceToTarget;
             double relativeYToPoint = Math.sin(relativeAngleToPoint) * distanceToTarget;
@@ -78,7 +78,7 @@ public class AdvancedMovement {
     public void brakePID() {
         double desiredXInches = ticksToInches(robot.odometry.worldXPosition);
         double desiredYInches = ticksToInches(robot.odometry.worldXPosition);
-        double desiredAngle_rad = robot.odometry.worldAngle_rad;
+        double desiredAngle_rad = robot.sensing.worldAngle_rad;
         robot.driveTrain.brake();
         myGoToPosition(desiredXInches, desiredYInches, 0.1, desiredAngle_rad, 0.1);
 

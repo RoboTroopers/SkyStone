@@ -38,8 +38,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.teamcode.Odometry.OdometryThread;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
+import org.firstinspires.ftc.teamcode.OdometrySystem.OdometryThread;
 import org.firstinspires.ftc.teamcode.Utilities.DriveConstants;
 import org.firstinspires.ftc.teamcode.Utilities.FieldPosition;
 
@@ -66,9 +66,10 @@ public class SeekSkyStone extends LinearOpMode {
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
     
-    FieldPosition position = new FieldPosition(2, 0, DriveConstants.TRACK_WIDTH/2, DriveConstants.WHEEL_BASE/2);
-    public Robot robot = new Robot(0,0,0);
-    OdometryThread odometryThread = new OdometryThread(robot);
+    FieldPosition startPos = new FieldPosition(2, 0, DriveConstants.TRACK_WIDTH/2, DriveConstants.WHEEL_BASE/2);
+    public Robot robot = new Robot();
+    Thread odometryThread = new Thread(new OdometryThread(robot));
+            
     
     // Distance from the center of the screen that the skystone can be to pick it up (degrees)
     private final double skystoneAngleTolerance = 15;
@@ -83,7 +84,6 @@ public class SeekSkyStone extends LinearOpMode {
     public int skystonesTransported = 0;
     public boolean lockedOn = false;
     public boolean transporting = false;
-
     
     public enum ProgramState {
         SEARCHING,
@@ -92,8 +92,7 @@ public class SeekSkyStone extends LinearOpMode {
         FINALIZING
         
     }
-
-
+    
     public double objectAngle;
     public double objectHeight;
     public double imageHeight;
@@ -163,7 +162,7 @@ public class SeekSkyStone extends LinearOpMode {
         
         
         if (opModeIsActive()) {
-            
+            robot.setPosition(startPos.fieldXInches, startPos.fieldYInches, robot.sensing.worldAngle_rad);
             robot.initHardware(hardwareMap);
             waitForStart();
             

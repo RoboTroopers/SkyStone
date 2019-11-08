@@ -15,7 +15,7 @@ public class BasicTeleopDrive extends OpMode {
     private DcMotor leftRear;
     private DcMotor rightRear;
     */
-    Robot robot = new Robot(0,0,0);
+    Robot robot = new Robot();
     
     
     
