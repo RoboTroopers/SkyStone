@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.OdometrySystem.OdometryThread;
 
+import static org.firstinspires.ftc.teamcode.Utilities.JoystickFunctions.getJoystickAngleRad;
 import static org.firstinspires.ftc.teamcode.ppProject.RobotUtilities.MovementVars.movement_turn;
 import static org.firstinspires.ftc.teamcode.ppProject.RobotUtilities.MovementVars.movement_x;
 import static org.firstinspires.ftc.teamcode.ppProject.RobotUtilities.MovementVars.movement_y;
@@ -35,11 +36,13 @@ public class MechanumStrafingTeleOp extends OpMode {
         if (Math.abs(gamepad1.left_stick_x) > threshold) {
             movement_x = gamepad1.left_stick_x;
         }
+        
         if (Math.abs(gamepad1.left_stick_y) > threshold) {
             movement_y = gamepad1.left_stick_y;
         }
-        if (Math.abs(gamepad1.right_stick_x) > threshold) {
-            movement_turn = gamepad1.right_stick_x;
+        
+        if ((gamepad1.right_stick_x) > threshold || Math.abs(gamepad1.right_stick_y) > threshold) {
+            movement_turn = getJoystickAngleRad(gamepad1.right_stick_x, gamepad1.left_stick_y);
         }
         
         robot.driveTrain.applyMovement(movement_x, movement_y, movement_turn);
