@@ -34,8 +34,7 @@ public class DriveTrain {
         
     }
     
-
-
+    
     // Moves all motors at same power
     public void straight(double speed) {
         leftFront.setPower(speed);
@@ -99,7 +98,7 @@ public class DriveTrain {
             leftRear.setPower(lr_power_raw);
         if (rightRear.getPower() != rr_power_raw)
             rightRear.setPower(rr_power_raw);
-
+        
     }
     
     

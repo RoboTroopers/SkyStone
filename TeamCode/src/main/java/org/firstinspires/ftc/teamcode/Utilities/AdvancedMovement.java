@@ -11,7 +11,7 @@ import static org.firstinspires.ftc.teamcode.Utilities.DriveConstants.ticksToInc
 
 public class AdvancedMovement {
     
-
+    
     Robot robot;
     
     
@@ -20,7 +20,7 @@ public class AdvancedMovement {
         
     }
     
-
+    
     public double movement_x;
     public double movement_y;
     public double movement_turn;
@@ -44,13 +44,13 @@ public class AdvancedMovement {
 
             double relativeXToPoint = Math.cos(relativeAngleToPoint) * distanceToTarget;
             double relativeYToPoint = Math.sin(relativeAngleToPoint) * distanceToTarget;
-
+            
             double movementXPower = relativeXToPoint / (Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint));
             double movementYPower = relativeYToPoint / (Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint));
-
+            
             movement_x = movementXPower * movementSpeed;
             movement_y = movementYPower * movementSpeed;
-
+            
             double relativeTurnAngle = relativeAngleToPoint - toRadians(180) + preferredAngle_rad;
             movement_turn = Range.clip(relativeTurnAngle / toRadians(30), -1, 1) * turnSpeed;
 
@@ -60,20 +60,20 @@ public class AdvancedMovement {
             if (translationComplete) {
                 movement_x = 0;
                 movement_y = 0;
-
+                
             }
-
+            
             if (rotationComplete) {
                 movement_turn = 0;
-
+                
             }
-
+            
             robot.driveTrain.applyMovement(movement_x, movement_y, movement_turn);
         }
         robot.driveTrain.brake();
     }
-
-
+    
+    
     // Stations the robot in current position
     public void brakePID() {
         double desiredXInches = ticksToInches(robot.odometry.worldXPosition);
