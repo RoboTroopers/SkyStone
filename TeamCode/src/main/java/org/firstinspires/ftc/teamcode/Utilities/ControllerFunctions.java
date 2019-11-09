@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.Utilities;
 
-public class JoystickFunctions {
+public class ControllerFunctions {
     
     public static double getJoystickAngleRad(double xInput, double yInput) {
         

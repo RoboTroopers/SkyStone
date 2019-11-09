@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.OdometrySystem.OdometryThread;
 
-import static org.firstinspires.ftc.teamcode.Utilities.JoystickFunctions.getJoystickAngleRad;
+import static org.firstinspires.ftc.teamcode.Utilities.ControllerFunctions.getJoystickAngleRad;
 import static org.firstinspires.ftc.teamcode.ppProject.RobotUtilities.MovementVars.movement_turn;
 import static org.firstinspires.ftc.teamcode.ppProject.RobotUtilities.MovementVars.movement_x;
 import static org.firstinspires.ftc.teamcode.ppProject.RobotUtilities.MovementVars.movement_y;

@@ -14,13 +14,14 @@ public class DriveConstants {
     public static final double WHEEL_RADIUS = 2;
     public static final double WHEEL_CIRCUMFERENCE = WHEEL_RADIUS*2*Math.PI;
     
-    // length between front & back wheels
-    public static final double WHEEL_BASE = 10;
-    
-    // width between left and right wheels
+    // distance between left and right wheels (width)
     public static final double TRACK_WIDTH = 16;
-    
-    
+
+    // distance between front & back wheels (length)
+    public static final double WHEEL_BASE = 10;
+
+
+
     /*
      * CIRCUMCIRCLE: Circle circumscribed about points of a polygon.
      *
