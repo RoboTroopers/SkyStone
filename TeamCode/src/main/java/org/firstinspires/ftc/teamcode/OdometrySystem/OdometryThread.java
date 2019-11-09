@@ -1,10 +1,10 @@
 package org.firstinspires.ftc.teamcode.OdometrySystem;
 
-import org.firstinspires.ftc.teamcode.Utilities.MiscUtil;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
+import org.firstinspires.ftc.teamcode.Utilities.MiscUtil;
 
 public class OdometryThread implements Runnable {
-
+    
     private Robot robot;
     private int sleepTime = 75;
     
@@ -15,8 +15,9 @@ public class OdometryThread implements Runnable {
     
     
     public void run() {
-        robot.odometry.updatePos();
+        robot.odometry.updatePosition();
         MiscUtil.pause(sleepTime);
+        
         
     }
     
