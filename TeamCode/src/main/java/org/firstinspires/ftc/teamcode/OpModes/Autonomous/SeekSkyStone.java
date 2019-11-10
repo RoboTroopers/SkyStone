@@ -40,12 +40,12 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.OdometrySystem.OdometryThread;
-import org.firstinspires.ftc.teamcode.Utilities.DriveConstants;
+import org.firstinspires.ftc.teamcode.Globals.DriveConstants;
 import org.firstinspires.ftc.teamcode.Utilities.FieldPosition;
 
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.Utilities.DriveConstants.WHEEL_BASE;
+import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.WHEEL_BASE;
 
 
 /**
@@ -76,7 +76,7 @@ public class SeekSkyStone extends LinearOpMode {
     // Distance from the center of the screen that the skystone can be to pick it up (degrees)
     private final double skystoneAngleTolerance = 15;
     
-    // How much of the screen the skystone needs to take up for the robot to deploy the pinger
+    // How much of the screen the skystone needs to take up for the robot to deploy the accessories
     private final double desiredHeightRatio = 0.8;
     
     //How far to the side the skystone should be (degrees)
@@ -100,9 +100,6 @@ public class SeekSkyStone extends LinearOpMode {
     
     public double objectHeightRatio; // How much of the screen the skystone takes up vertically.
 
-    private double speedMultiplier;
-    private double forwardSpeed;
-    private double turnSpeed;
     
     
     
@@ -223,6 +220,10 @@ public class SeekSkyStone extends LinearOpMode {
                             
                             
                             if (currentState == ProgramStates.APPROACHING) {
+
+                                double speedMultiplier;
+                                double forwardSpeed;
+                                double turnSpeed;
                                 telemetry.addData("Program State", "Approaching ");
                                 
                                 forwardSpeed = 0.5;
@@ -233,7 +234,7 @@ public class SeekSkyStone extends LinearOpMode {
                                 
                                 /*
                                  * Move towards the skystone until the object takes up enough of the screen.
-                                 * This is when the robot is at the optimal distance to use the pinger.
+                                 * This is when the robot is at the optimal distance to use the accessories.
                                  * Also turn simulateously towards skystone while moving forward.
                                  */
                                 
@@ -245,10 +246,10 @@ public class SeekSkyStone extends LinearOpMode {
                                 
                             } else if (currentState == ProgramStates.TRANSPORTING) {
                                 
-                                // Extend pinger outward to turn the skystone 90 degrees to prepare the skystone for The Succ.
-                                robot.pinger.extend();
+                                // Extend accessories outward to turn the skystone 90 degrees to prepare the skystone for The Succ.
+                                robot.accessories.extend();
                                 sleep(1000);
-                                robot.pinger.retract();
+                                robot.accessories.retract();
                                 robot.driveTrain.steer(0.5, 0.5);
                                 sleep(2000);
                                 robot.driveTrain.brake();

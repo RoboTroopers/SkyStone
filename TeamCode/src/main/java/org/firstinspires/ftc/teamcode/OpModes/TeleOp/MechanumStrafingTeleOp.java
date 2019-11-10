@@ -66,9 +66,9 @@ public class MechanumStrafingTeleOp extends OpMode {
         
         
         if (gamepad1.right_bumper) {
-            robot.pinger.extend();
+            robot.accessories.extend();
         } else if (gamepad1.left_bumper) {
-            robot.pinger.retract();
+            robot.accessories.retract();
         }
         
         
@@ -79,7 +79,9 @@ public class MechanumStrafingTeleOp extends OpMode {
         telemetry.addData("back right power", robot.driveTrain.rightRear.getPower());
         telemetry.addData("left intake power", robot.intake.leftIntake.getPower());
         telemetry.addData("right intake power", robot.intake.rightIntake.getPower());
+        telemetry.addData("pinger position", robot.accessories.pinger.getPosition());
         telemetry.update();
+        
     }
 }
 

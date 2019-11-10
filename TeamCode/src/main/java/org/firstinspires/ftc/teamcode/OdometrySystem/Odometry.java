@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.OdometrySystem;
 
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 
-import static org.firstinspires.ftc.teamcode.Utilities.DriveConstants.ticksToInches;
+import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.ticksToInches;
 
 
 public class Odometry {

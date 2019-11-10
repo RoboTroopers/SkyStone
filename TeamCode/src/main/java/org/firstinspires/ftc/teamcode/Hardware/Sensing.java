@@ -15,8 +15,12 @@ public class Sensing {
     
     // Sensing
     public BNO055IMU imu;
+    
     public DcMotor horizontalEncoder;
     public DcMotor verticalEncoder;
+    //public DcMotor leftVerticalEncoder;
+    //public DcMotor rightVerticalEncoder;
+    
     
     public double worldAngle_rad = 0;
     
@@ -26,6 +30,8 @@ public class Sensing {
         imu = aHwMap.get(BNO055IMU.class, "imu");
         horizontalEncoder = aHwMap.get(DcMotor.class, "horizontalEncoder");
         verticalEncoder = aHwMap.get(DcMotor.class, "verticalEncoder");
+        //leftVerticalEncoder = aHwMap.get(DcMotor.class, "leftVerticalEncoder");
+        //rightVerticalEncoder = aHwMap.get(DcMotor.class, "rightVerticalEncoder");
         resetEncoders();
         
     }
@@ -46,8 +52,9 @@ public class Sensing {
     public void resetEncoders() {
         horizontalEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         verticalEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        
         horizontalEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        horizontalEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        verticalEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
     
     

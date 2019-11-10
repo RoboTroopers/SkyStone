@@ -119,7 +119,7 @@ public class DriveTrain {
         rf_power_raw *= scaleDownFactor;
         lr_power_raw *= scaleDownFactor;
         rr_power_raw *= scaleDownFactor;
-
+        
         // Changes motor powers only if they have changed
         if (leftFront.getPower() != lf_power_raw)
             leftFront.setPower(lf_power_raw);

@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.Utilities;
 
-import static org.firstinspires.ftc.teamcode.Utilities.FieldConstants.TILE_LENGTH;
+import static org.firstinspires.ftc.teamcode.Globals.FieldConstants.TILE_LENGTH;
 
 public class FieldPosition {
     

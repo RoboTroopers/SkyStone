@@ -12,7 +12,7 @@ public class Intake {
     
     public enum DirectionStates {
         REST,
-        SUCC,
+        SUCK,
         BLOW,
         
     }
@@ -36,7 +36,7 @@ public class Intake {
         rightIntake.setPower(speed);
         
         if (speed > 0) {
-            currentState = DirectionStates.SUCC;
+            currentState = DirectionStates.SUCK;
         } else if (speed < 0) {
             currentState = DirectionStates.BLOW;
         } else {

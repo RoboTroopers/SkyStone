@@ -6,8 +6,8 @@ import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.ppProject.treamcode.MathFunctions;
 
 import static java.lang.Math.toRadians;
-import static org.firstinspires.ftc.teamcode.Utilities.DriveConstants.inchesToTicks;
-import static org.firstinspires.ftc.teamcode.Utilities.DriveConstants.ticksToInches;
+import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.inchesToTicks;
+import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.ticksToInches;
 
 public class AdvancedMovement {
     

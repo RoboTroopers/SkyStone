@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.Hardware;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class Pinger {
+public class Accessories {
     
 
     public Servo pinger;
@@ -15,19 +15,19 @@ public class Pinger {
     public enum PositionStates {
         RETRACTED,
         EXTENDED
-            
+        
     }
-
+    
     PositionStates currentState = PositionStates.RETRACTED;
     
     
     public void initHardware(HardwareMap aHwMap) {
-        pinger = aHwMap.get(Servo.class, "pinger");
+        pinger = aHwMap.get(Servo.class, "accessories");
         
     }
     
     
-    // Extends pinger to its maximum length
+    // Extends accessories to its maximum length
     public void extend() {
         pinger.setPosition(PINGER_MAX_POS);
         currentState = PositionStates.EXTENDED;
@@ -35,7 +35,7 @@ public class Pinger {
     }
 
 
-    // Retracts pinger into the robot
+    // Retracts accessories into the robot
     public void retract() {
         pinger.setPosition(PINGER_MIN_POS);
         currentState = PositionStates.RETRACTED;
