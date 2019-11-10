@@ -3,10 +3,14 @@ package org.firstinspires.ftc.teamcode.Hardware;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Utilities.AdvancedMovement;
+import org.openftc.revextensions2.ExpansionHubEx;
 
 
 public class Robot {
-    
+
+
+    private ExpansionHubEx revMaster;
+    private ExpansionHubEx revSlave;
     
     public DriveTrain driveTrain = new DriveTrain();
     public Intake intake = new Intake();
@@ -19,13 +23,14 @@ public class Robot {
     public AdvancedMovement advancedMovement = new AdvancedMovement(this);
     
     
-    public void setPosition(double xInches, double yInches, double degrees) {
-        //odometry.setPosition(this, inchesToTicks(xInches), inchesToTicks(yInches), toRadians(degrees));
-        
-    }
-    
     
     public void initHardware (HardwareMap aHwMap) {
+
+
+        //get the two expansion hubs themselves
+        revMaster = aHwMap.get(ExpansionHubEx.class,"Expansion Hub 4");
+        revSlave = aHwMap.get(ExpansionHubEx.class,"Expansion Hub 2");
+        
         
         driveTrain.initHardware(aHwMap);
         intake.initHardware(aHwMap);

@@ -162,7 +162,7 @@ public class SeekSkyStone extends LinearOpMode {
         if (opModeIsActive()) {
             
             //Initialize everything the robot needs to start
-            robot.setPosition(startPos.fieldXInches, startPos.fieldYInches, robot.sensing.worldAngle_rad);
+            //robot.odometry.setPositionInches(startPos.fieldXInches, startPos.fieldYInches, 0);
             robot.initHardware(hardwareMap);
             
             waitForStart();
