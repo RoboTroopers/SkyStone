@@ -3,10 +3,9 @@ package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.Hardware.Intake;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
-import org.firstinspires.ftc.teamcode.OdometrySystem.OdometryThread;
 
-import static org.firstinspires.ftc.teamcode.Utilities.ControllerFunctions.getJoystickAngleRad;
 import static org.firstinspires.ftc.teamcode.ppProject.RobotUtilities.MovementVars.movement_turn;
 import static org.firstinspires.ftc.teamcode.ppProject.RobotUtilities.MovementVars.movement_x;
 import static org.firstinspires.ftc.teamcode.ppProject.RobotUtilities.MovementVars.movement_y;
@@ -17,59 +16,72 @@ public class MechanumStrafingTeleOp extends OpMode {
     
     private Robot robot = new Robot();
     
-    private double threshold = 0.01;
+    private double threshold = 0.0;
     
     
     @Override
     public void init() {
         robot.initHardware(hardwareMap);
-        Thread odometryThread = new Thread(new OdometryThread(robot));
-        odometryThread.start();
+        //Thread odometryThread = new Thread(new OdometryThread(robot));
+        //odometryThread.start();
         
     }
     
     
-    // run until the end of the match (driver presses STOP)
+    // Run until the end of the match (driver presses STOP)
     @Override
     public void loop() {
         
+        
         // Control over horizontal and vertical movement amounts with one joystick, and turn amount using the other.
         if (Math.abs(gamepad1.left_stick_x) > threshold) {
+            
             movement_x = gamepad1.left_stick_x;
+            
+        } else {
+            movement_x = 0;
         }
         
         if (Math.abs(gamepad1.left_stick_y) > threshold) {
             movement_y = gamepad1.left_stick_y;
+            
+        } else {
+            movement_y = 0;
         }
         
-        if ((gamepad1.right_stick_x) > threshold || Math.abs(gamepad1.right_stick_y) > threshold) {
-            movement_turn = getJoystickAngleRad(gamepad1.right_stick_x, gamepad1.left_stick_y);
+        if (Math.abs(gamepad1.right_stick_x) > threshold) {// || Math.abs(gamepad1.right_stick_y) > threshold) {
+            
+            movement_turn = gamepad1.right_stick_x;
+            
+        } else {
+            movement_turn = 0;
         }
+        
         
         robot.driveTrain.applyMovement(movement_x, movement_y, movement_turn);
         
         
-        if (gamepad1.right_trigger >= 0.5) {
-            
-            robot.intake.leftIntake.setPower(1);
-            robot.intake.rightIntake.setPower(1);
-            
-        } else if (gamepad1.left_trigger >= 0.5) {
-            
-            robot.intake.leftIntake.setPower(-1);
-            robot.intake.rightIntake.setPower(-1);
-            
-        } else {
-            robot.intake.leftIntake.setPower(0);
-            robot.intake.rightIntake.setPower(0);
-        }
-        
-        
+        // Intake toggling controls
         if (gamepad1.right_bumper) {
-            robot.accessories.extend();
-        } else if (gamepad1.left_bumper) {
-            robot.accessories.retract();
+            
+            if (robot.intake.currentState != Intake.DirectionStates.SUCK) {
+                
+                robot.intake.setSpeed(1.0);
+            } else {
+                robot.intake.setSpeed(0);
+            }
         }
+        
+        if (gamepad1.left_bumper) {
+
+            if (robot.intake.currentState != Intake.DirectionStates.BLOW) {
+                
+                robot.intake.setSpeed(-1.0);
+            } else {
+                robot.intake.setSpeed(0);
+            }
+        }
+        
         
         
         telemetry.addData("Status", "Running");
@@ -79,7 +91,6 @@ public class MechanumStrafingTeleOp extends OpMode {
         telemetry.addData("back right power", robot.driveTrain.rightRear.getPower());
         telemetry.addData("left intake power", robot.intake.leftIntake.getPower());
         telemetry.addData("right intake power", robot.intake.rightIntake.getPower());
-        telemetry.addData("pinger position", robot.accessories.pinger.getPosition());
         telemetry.update();
         
     }

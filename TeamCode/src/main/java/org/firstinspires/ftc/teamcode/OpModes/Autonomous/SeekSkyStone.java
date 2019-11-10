@@ -38,9 +38,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.teamcode.Hardware.Robot;
-import org.firstinspires.ftc.teamcode.OdometrySystem.OdometryThread;
 import org.firstinspires.ftc.teamcode.Globals.DriveConstants;
+import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.Utilities.FieldPosition;
 
 import java.util.List;
@@ -70,7 +69,7 @@ public class SeekSkyStone extends LinearOpMode {
     
     FieldPosition startPos = new FieldPosition(2, 0, DriveConstants.TRACK_WIDTH/2, WHEEL_BASE/2);
     public Robot robot = new Robot();
-    Thread odometryThread = new Thread(new OdometryThread(robot));
+    //Thread odometryThread = new Thread(new OdometryThread(robot));
             
     
     // Distance from the center of the screen that the skystone can be to pick it up (degrees)
@@ -82,9 +81,12 @@ public class SeekSkyStone extends LinearOpMode {
     //How far to the side the skystone should be (degrees)
     public final double desiredHorizontalAngle = 0;
     
+    
+    
     private int skystonesTransported = 0;
     
     private enum ProgramStates {
+        
         SCANNING,
         APPROACHING,
         TRANSPORTING,
@@ -158,11 +160,18 @@ public class SeekSkyStone extends LinearOpMode {
         
         
         if (opModeIsActive()) {
+            
+            //Initialize everything the robot needs to start
             robot.setPosition(startPos.fieldXInches, startPos.fieldYInches, robot.sensing.worldAngle_rad);
             robot.initHardware(hardwareMap);
+            
             waitForStart();
             
-            new Thread(odometryThread).start();
+            robot.driveTrain.straight(1);
+            sleep(100);
+            robot.driveTrain.brake();
+            
+            //new Thread(odometryThread).start();
             
             while (opModeIsActive()) {
                 
@@ -175,7 +184,7 @@ public class SeekSkyStone extends LinearOpMode {
                 } else if (currentState == ProgramStates.PARKING) {
                     
                     telemetry.addData("Program State", "Parking");
-                    //robot.advancedMovement.myGoToPosition(BRIDGE_X, WHEEL_BASE, 0.6, 0, 0.5);
+                    //robot.advancedMovement.myGoToPosition(BRIDGE_X, TILE_LENGTH, 0.6, 0, 0.5);
                     
                 }
                 
@@ -213,43 +222,41 @@ public class SeekSkyStone extends LinearOpMode {
                             objectAngle = nearestSkystone.estimateAngleToObject(AngleUnit.DEGREES);
                             objectHeight = nearestSkystone.getHeight();
                             imageHeight = nearestSkystone.getImageHeight();
-                            objectHeightRatio = objectHeight/imageHeight;
+                            objectHeightRatio = objectHeight/imageHeight; // Represents distance from skystone
                             
                             telemetry.addData(String.format("  object height ratio (%d)", i), "%.03f",
                                     objectHeightRatio);
                             
-                            
-                            if (currentState == ProgramStates.APPROACHING) {
-
-                                double speedMultiplier;
-                                double forwardSpeed;
-                                double turnSpeed;
-                                telemetry.addData("Program State", "Approaching ");
+                            if (currentState == ProgramStates.SCANNING) {
+                                // If skystone angle is within threshold, brake and prepare to make fine adjustments
+                                if (Math.abs(objectAngle) < skystoneAngleTolerance) {
+                                    
+                                    robot.driveTrain.brake();
+                                    currentState = ProgramStates.APPROACHING;
+                                }
                                 
-                                forwardSpeed = 0.5;
-                                turnSpeed = (objectAngle/45)*0.5;
+                            } else if (currentState == ProgramStates.APPROACHING) {
                                 
                                 // The "1 - ([ratio])" is used to make robot slower when closer to skystone for precision.
-                                speedMultiplier = (0.25*(1-(objectHeightRatio/desiredHeightRatio)))+0.25;
+                                double forwardSpeed = (1-(objectHeightRatio/desiredHeightRatio));
                                 
+                                telemetry.addData("Program State", "Approaching ");
+                             
                                 /*
                                  * Move towards the skystone until the object takes up enough of the screen.
                                  * This is when the robot is at the optimal distance to use the accessories.
-                                 * Also turn simulateously towards skystone while moving forward.
+                                 * Also turn simultaneously towards skystone while moving forward.
                                  */
                                 
-                                robot.driveTrain.steer((forwardSpeed+turnSpeed)*speedMultiplier, (forwardSpeed-turnSpeed)*speedMultiplier); 
+                                //robot.driveTrain.steer((forwardSpeed+turnSpeed)*speedMultiplier, (forwardSpeed-turnSpeed)*speedMultiplier); 
+                                robot.driveTrain.applyMovement(forwardSpeed, forwardSpeed, 1-(objectAngle/45));
                                 
                                 if (objectHeightRatio > desiredHeightRatio) {
                                     currentState = ProgramStates.TRANSPORTING;
                                 }
                                 
-                            } else if (currentState == ProgramStates.TRANSPORTING) {
+                            }/* else if (currentState == ProgramStates.TRANSPORTING) {
                                 
-                                // Extend accessories outward to turn the skystone 90 degrees to prepare the skystone for The Succ.
-                                robot.accessories.extend();
-                                sleep(1000);
-                                robot.accessories.retract();
                                 robot.driveTrain.steer(0.5, 0.5);
                                 sleep(2000);
                                 robot.driveTrain.brake();
@@ -272,13 +279,7 @@ public class SeekSkyStone extends LinearOpMode {
                                 
                                 break;
                                 
-                            } else if (Math.abs(objectAngle) < skystoneAngleTolerance) {
-                                
-                                // If skystone angle is within threshold, brake and prepare to make fine adjustments
-                                robot.driveTrain.brake();
-                                currentState = ProgramStates.APPROACHING;
-                                
-                            }
+                            }*/
                             
                             telemetry.update();
                             

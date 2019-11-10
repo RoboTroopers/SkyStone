@@ -7,6 +7,7 @@ import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.ticksToInche
 
 public class Odometry {
     
+    
     private Robot robot;
     
     
@@ -23,11 +24,11 @@ public class Odometry {
     }
     
     
-    public double getXInches() {
+    public double getXPosInches() {
         return ticksToInches(worldXPosition);
     }
     
-    public double getYInches() {
+    public double getYPosInches() {
         return ticksToInches(worldYPosition);
     }
     

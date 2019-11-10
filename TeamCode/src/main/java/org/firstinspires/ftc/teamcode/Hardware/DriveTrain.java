@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.Hardware;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.Utilities.MiscUtil;
+
 public class DriveTrain {
     
     
@@ -35,7 +37,7 @@ public class DriveTrain {
         leftRear = aHwMap.get(DcMotor.class, "leftRear");
         rightRear = aHwMap.get(DcMotor.class, "rightRear");
         rightRear.setDirection(DcMotor.Direction.REVERSE);
-        leftFront.setDirection(DcMotor.Direction.REVERSE);
+        rightFront.setDirection(DcMotor.Direction.REVERSE);
         
     }
     
@@ -98,13 +100,17 @@ public class DriveTrain {
     
     
     public void applyMovement(double horizontal, double vertical, double turn) {
-        //Moves robot on field horizontally and vertically, rotates by turn
-        //movement_x multiplied by 1.5 because mechanum drive strafes sideways slower than forwards/backwards
-        double lf_power_raw = vertical - turn + (horizontal*1.5);
-        double rf_power_raw = -vertical - turn + (horizontal*1.5);
-        double lr_power_raw = vertical - turn - (horizontal*1.5);
-        double rr_power_raw = -vertical - turn + (horizontal*1.5);
         
+        //Moves robot on field horizontally and vertically, rotates by turn
+        MiscUtil.pause(15);
+        
+        //movement_x multiplied by 1.5 because mechanum drive strafes sideways slower than forwards/backwards
+        double lf_power_raw = vertical + turn - (horizontal*1.5);
+        double lr_power_raw = vertical + turn + (horizontal*1.5);
+        double rf_power_raw = vertical - turn + (horizontal*1.5);
+        double rr_power_raw = vertical - turn - (horizontal*1.5);
+
+
         // Find greatest power
         double maxRawPower = Math.max(Math.max(lf_power_raw, rf_power_raw), Math.max(lr_power_raw, rr_power_raw));
         

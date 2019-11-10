@@ -1,13 +1,6 @@
 package org.firstinspires.ftc.teamcode.Utilities;
 
-import com.qualcomm.robotcore.util.Range;
-
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
-import org.firstinspires.ftc.teamcode.ppProject.treamcode.MathFunctions;
-
-import static java.lang.Math.toRadians;
-import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.inchesToTicks;
-import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.ticksToInches;
 
 public class AdvancedMovement {
     
@@ -25,7 +18,7 @@ public class AdvancedMovement {
     public double movement_y;
     public double movement_turn;
     
-    
+    /*
     public void myGoToPosition(double xInches, double yInches, double movementSpeed, double preferredAngle_rad, double turnSpeed) {
         double accuracyRange = inchesToTicks(0.5);
         double rotAccuracyRange = toRadians(2);
@@ -76,8 +69,8 @@ public class AdvancedMovement {
     
     // Stations the robot in current position
     public void brakePID() {
-        double desiredXInches = ticksToInches(robot.odometry.worldXPosition);
-        double desiredYInches = ticksToInches(robot.odometry.worldXPosition);
+        double desiredXInches = robot.odometry.getXPosInches();
+        double desiredYInches = robot.odometry.getYPosInches();
         double desiredAngle_rad = robot.sensing.worldAngle_rad;
         robot.driveTrain.brake();
         myGoToPosition(desiredXInches, desiredYInches, 0.1, desiredAngle_rad, 0.1);
@@ -86,11 +79,11 @@ public class AdvancedMovement {
 
 
     public void turnPID(double desiredRadians, double turnSpeed) {
-        double desiredXInches = ticksToInches(robot.odometry.worldXPosition);
-        double desiredYInches = ticksToInches(robot.odometry.worldXPosition);
+        double desiredXInches = robot.odometry.getXPosInches();
+        double desiredYInches = robot.odometry.getYPosInches();
         myGoToPosition(desiredXInches, desiredYInches, 0.1, desiredRadians, turnSpeed);
         
     }
-    
+    */
     
 }

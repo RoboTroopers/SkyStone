@@ -32,13 +32,16 @@ public class Intake {
     
     // Set intake speed to suck in skystone
     public void setSpeed(double speed) {
+        
         leftIntake.setPower(speed);
         rightIntake.setPower(speed);
         
         if (speed > 0) {
             currentState = DirectionStates.SUCK;
+            
         } else if (speed < 0) {
             currentState = DirectionStates.BLOW;
+            
         } else {
             currentState = DirectionStates.REST;
         }
@@ -47,6 +50,7 @@ public class Intake {
     
     
     public void stop() {
+        
         leftIntake.setPower(0);
         rightIntake.setPower(0);
         
