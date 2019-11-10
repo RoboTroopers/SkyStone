@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.Hardware;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 
 
 public class Intake {
@@ -11,15 +10,18 @@ public class Intake {
     public DcMotor leftIntake;
     public DcMotor rightIntake;
     
-    public Servo pinger;
+    public enum DirectionStates {
+        REST,
+        SUCC,
+        BLOW,
+        
+    }
     
-    public final double PINGER_MIN_POS = 0;
-    public final double PINGER_MAX_POS = 50;
+    public DirectionStates currentState = DirectionStates.REST;
     
     
     
     public void initHardware(HardwareMap aHwMap) {
-        pinger = aHwMap.get(Servo.class, "pinger");
         
         leftIntake = aHwMap.get(DcMotor.class, "leftIntake");
         rightIntake = aHwMap.get(DcMotor.class, "rightIntake");
@@ -28,31 +30,30 @@ public class Intake {
     }
     
     
-    // Extends pinger to its maximum length
-    public void pingerOut() {
-        pinger.setPosition(PINGER_MAX_POS);
-        
-    }
-    
-    
-    // Retracts pinger into the robot
-    public void pingerIn() {
-        pinger.setPosition(PINGER_MIN_POS);
-        
-    }
-
-
-    // Retracts pinger into the robot
-    public void startSucc(double speed) {
+    // Set intake speed to suck in skystone
+    public void setSpeed(double speed) {
         leftIntake.setPower(speed);
-
+        rightIntake.setPower(speed);
+        
+        if (speed > 0) {
+            currentState = DirectionStates.SUCC;
+        } else if (speed < 0) {
+            currentState = DirectionStates.BLOW;
+        } else {
+            currentState = DirectionStates.REST;
+        }
+        
     }
-
-
-    // Retracts pinger into the robot
-    public void stopSucc() {
+    
+    
+    public void stop() {
         leftIntake.setPower(0);
+        rightIntake.setPower(0);
+        
+        currentState = DirectionStates.REST;
 
     }
-
+    
+    
+    
 }

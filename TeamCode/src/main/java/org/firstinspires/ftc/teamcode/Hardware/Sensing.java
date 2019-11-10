@@ -34,9 +34,12 @@ public class Sensing {
     public double getHorizontalEncoder() {
         return horizontalEncoder.getCurrentPosition();
     }
-
+    
     public double getVerticalEncoder() {
         return verticalEncoder.getCurrentPosition();
+        //double leftValue = leftVerticalEncoder.getCurrentPosition();
+        //double rightValue = rightVerticalEncoder.getCurrentPosition();
+        //return (leftValue + rightValue)/2;
         
     }
     

@@ -34,7 +34,7 @@ public class DriveConstants {
     public static final double CIRCUMCIRCLE_CIRCUMFERENCE = CIRCUMDIAMETER*Math.PI;
     
     
-    public static double ENCODER_TICKS_PER_REV = 360;
+    public static final double ENCODER_TICKS_PER_REV = 360;
 
 
     public static double inchesToTicks(double inches) {

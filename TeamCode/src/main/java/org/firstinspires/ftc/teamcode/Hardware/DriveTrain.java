@@ -11,6 +11,21 @@ public class DriveTrain {
     public DcMotor rightFront;
     public DcMotor leftRear;
     public DcMotor rightRear;
+
+    public enum MoveStates {
+
+        STATIONARY,
+        STRAIGHT,
+        STEERING,
+        PIVOTING,
+        STRAFING,
+        APPLYING_MOVEMENT
+        
+    }
+    
+    
+    
+    MoveStates moveState = MoveStates.STATIONARY;
     
     
     public void initHardware(HardwareMap aHwMap) {
@@ -32,6 +47,8 @@ public class DriveTrain {
         leftRear.setPower(0);
         rightRear.setPower(0);
         
+        moveState = MoveStates.STATIONARY;
+        
     }
     
     
@@ -42,6 +59,8 @@ public class DriveTrain {
         leftRear.setPower(speed);
         rightRear.setPower(speed);
         
+        moveState = MoveStates.STRAIGHT;
+        
     }
     
     
@@ -51,6 +70,16 @@ public class DriveTrain {
         rightFront.setPower(rightSpeed);
         leftRear.setPower(leftSpeed);
         rightRear.setPower(rightSpeed);
+        
+        if (leftSpeed == rightSpeed) {
+            moveState = MoveStates.STRAIGHT;
+        
+        } else if (leftSpeed == -rightSpeed) {
+            moveState = MoveStates.PIVOTING;
+        
+        } else {
+            moveState = MoveStates.STEERING;
+        }
         
     }
     
@@ -63,16 +92,18 @@ public class DriveTrain {
         leftRear.setPower(-speed);
         rightRear.setPower(speed);
         
+        moveState = MoveStates.STRAFING;
+        
     }
     
     
-    public void applyMovement(double x, double y, double turn) {
-        //translates robot position on field by x and y, rotates by turn
+    public void applyMovement(double horizontal, double vertical, double turn) {
+        //Moves robot on field horizontally and vertically, rotates by turn
         //movement_x multiplied by 1.5 because mechanum drive strafes sideways slower than forwards/backwards
-        double lf_power_raw = y - turn + (x*1.5);
-        double rf_power_raw = -y - turn + (x*1.5);
-        double lr_power_raw = y - turn - (x*1.5);
-        double rr_power_raw = -y - turn + (x*1.5);
+        double lf_power_raw = vertical - turn + (horizontal*1.5);
+        double rf_power_raw = -vertical - turn + (horizontal*1.5);
+        double lr_power_raw = vertical - turn - (horizontal*1.5);
+        double rr_power_raw = -vertical - turn + (horizontal*1.5);
         
         // Find greatest power
         double maxRawPower = Math.max(Math.max(lf_power_raw, rf_power_raw), Math.max(lr_power_raw, rr_power_raw));
@@ -98,6 +129,8 @@ public class DriveTrain {
             leftRear.setPower(lr_power_raw);
         if (rightRear.getPower() != rr_power_raw)
             rightRear.setPower(rr_power_raw);
+
+        moveState = MoveStates.APPLYING_MOVEMENT;
         
     }
     

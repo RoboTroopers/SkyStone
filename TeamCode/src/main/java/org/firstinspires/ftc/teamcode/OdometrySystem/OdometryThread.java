@@ -15,7 +15,10 @@ public class OdometryThread implements Runnable {
     
     
     public void run() {
+        
+        robot.sensing.updateAngle();
         robot.odometry.updatePosition();
+        
         MiscUtil.pause(sleepTime);
         
         

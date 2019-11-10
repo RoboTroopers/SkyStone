@@ -37,10 +37,10 @@ public class Odometry {
     
     
     
-    public void setPosition(Robot theRobot, double startXInches, double startYInches, double startWorldAngle_rad) {
+    public void setPosition(Robot theRobot, double startX, double startY, double startWorldAngle_rad) {
         robot = theRobot;
-        worldXPosition = startXInches;
-        worldYPosition = startYInches;
+        worldXPosition = startX;
+        worldYPosition = startY;
         robot.sensing.worldAngle_rad = startWorldAngle_rad;
         
     }
@@ -48,23 +48,23 @@ public class Odometry {
     
     public void updatePosition() {
         
-        robot.sensing.updateAngle();
-        double xEncoderChange = robot.sensing.getHorizontalEncoder() - horizontalEncoderLast;
-        double yEncoderChange = robot.sensing.getVerticalEncoder() - verticalEncoderLast;
+        double horizontalEncoderChange = robot.sensing.getHorizontalEncoder() - horizontalEncoderLast;
+        double verticalEncoderChange = robot.sensing.getVerticalEncoder() - verticalEncoderLast;
         
         // Position where the robot would be if the robot had not strafed
-        double forwardShiftX = yEncoderChange * Math.cos(robot.sensing.worldAngle_rad);
-        double forwardShiftY = yEncoderChange * Math.sin(robot.sensing.worldAngle_rad);
+        double forwardShiftX = verticalEncoderChange * Math.cos(robot.sensing.worldAngle_rad);
+        double forwardShiftY = verticalEncoderChange * Math.sin(robot.sensing.worldAngle_rad);
         
         // How far the robot's position has shifted as a result of strafing
-        double strafeShiftX = xEncoderChange*Math.cos(robot.sensing.worldAngle_rad);
-        double strafeShiftY = yEncoderChange*Math.sin(robot.sensing.worldAngle_rad);
+        double strafeShiftX = horizontalEncoderChange*Math.cos(robot.sensing.worldAngle_rad);
+        double strafeShiftY = horizontalEncoderChange*Math.sin(robot.sensing.worldAngle_rad);
         
         worldXPosition += forwardShiftX + strafeShiftX;
         worldYPosition += forwardShiftY + strafeShiftY;
         
         horizontalEncoderLast = robot.sensing.getHorizontalEncoder();
         verticalEncoderLast = robot.sensing.getVerticalEncoder();
+        
         
         
     }

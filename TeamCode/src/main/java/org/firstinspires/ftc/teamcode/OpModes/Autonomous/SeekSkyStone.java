@@ -86,7 +86,7 @@ public class SeekSkyStone extends LinearOpMode {
     
     private enum ProgramStates {
         SCANNING,
-        LOCKED_ON,
+        APPROACHING,
         TRANSPORTING,
         PARKING
         
@@ -169,14 +169,20 @@ public class SeekSkyStone extends LinearOpMode {
             
             while (opModeIsActive()) {
                 
-                // Strafe right until Skystone found within threshold
-                if (skystonesTransported < 2)
+                if (currentState == ProgramStates.SCANNING) {
+                    
+                    telemetry.addData("Program State", "Scanning");
+                    // Strafe right until Skystone found within specific angle from center of camera
                     robot.driveTrain.strafe(-0.5);
-                else if (currentState == ProgramStates.PARKING){
+                    
+                } else if (currentState == ProgramStates.PARKING) {
+                    
+                    telemetry.addData("Program State", "Parking");
                     //robot.advancedMovement.myGoToPosition(BRIDGE_X, WHEEL_BASE, 0.6, 0, 0.5);
+                    
                 }
                 
-                while (skystonesTransported < 2) {
+                while (currentState != ProgramStates.PARKING) {
                     if (tfod != null) {
                         // getUpdatedRecognitions() will return null if no new information is available since
                         // the last time that call was made.
@@ -216,7 +222,8 @@ public class SeekSkyStone extends LinearOpMode {
                                     objectHeightRatio);
                             
                             
-                            if (currentState == ProgramStates.LOCKED_ON) {
+                            if (currentState == ProgramStates.APPROACHING) {
+                                telemetry.addData("Program State", "Approaching ");
                                 
                                 forwardSpeed = 0.5;
                                 turnSpeed = (objectAngle/45)*0.5;
@@ -239,25 +246,36 @@ public class SeekSkyStone extends LinearOpMode {
                             } else if (currentState == ProgramStates.TRANSPORTING) {
                                 
                                 // Extend pinger outward to turn the skystone 90 degrees to prepare the skystone for The Succ.
-                                robot.intake.pingerOut();
+                                robot.pinger.extend();
                                 sleep(1000);
-                                robot.intake.pingerIn();
+                                robot.pinger.retract();
                                 robot.driveTrain.steer(0.5, 0.5);
                                 sleep(2000);
                                 robot.driveTrain.brake();
                                 telemetry.addData("Ladies and gentlemen!", "We gottem.");
                                 //robot.goToPosition(30, 20, 0.2, Math.toRadians(90), 0.4);
+                                
+                                // Release skystone onto ground
+                                robot.intake.setSpeed(-100);
+                                sleep(1000);
+                                skystonesTransported += 1;
+                                robot.intake.stop();
+                                
                                 //robot.goToPosition(0, 0, 0.3, 0, 0.4);
                                 
-                                skystonesTransported += 1;
-                                currentState = ProgramStates.PARKING;
-                                continue;
+                                if (skystonesTransported < 2) {
+                                    currentState = ProgramStates.SCANNING;
+                                } else {
+                                    currentState = ProgramStates.PARKING;
+                                }
+                                
+                                break;
                                 
                             } else if (Math.abs(objectAngle) < skystoneAngleTolerance) {
                                 
                                 // If skystone angle is within threshold, brake and prepare to make fine adjustments
                                 robot.driveTrain.brake();
-                                currentState = ProgramStates.LOCKED_ON;
+                                currentState = ProgramStates.APPROACHING;
                                 
                             }
                             

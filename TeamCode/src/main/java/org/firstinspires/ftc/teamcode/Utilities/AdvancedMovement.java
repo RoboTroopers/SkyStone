@@ -81,7 +81,7 @@ public class AdvancedMovement {
         double desiredAngle_rad = robot.sensing.worldAngle_rad;
         robot.driveTrain.brake();
         myGoToPosition(desiredXInches, desiredYInches, 0.1, desiredAngle_rad, 0.1);
-
+        
     }
 
 
@@ -89,7 +89,7 @@ public class AdvancedMovement {
         double desiredXInches = ticksToInches(robot.odometry.worldXPosition);
         double desiredYInches = ticksToInches(robot.odometry.worldXPosition);
         myGoToPosition(desiredXInches, desiredYInches, 0.1, desiredRadians, turnSpeed);
-
+        
     }
     
     

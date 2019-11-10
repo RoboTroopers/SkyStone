@@ -13,11 +13,11 @@ public class FieldPosition {
     public double fieldXInches;
     public double fieldYInches;
     
-    public double getFieldXInches(){
+    public double getFieldXInches() {
         return fieldXInches;
     }
     
-    public double getFieldYInches(){
+    public double getFieldYInches() {
         return fieldYInches;
     }
     
@@ -30,8 +30,9 @@ public class FieldPosition {
         this.addXInches = addXInches;
         this.addXInches = addXInches;
 
-        this.fieldXInches = (xTile*TILE_LENGTH)+(addXInches);
-        this.fieldYInches = (yTile*TILE_LENGTH)+(addYInches);
+        this.fieldXInches = (xTile*TILE_LENGTH) + (addXInches);
+        this.fieldYInches = (yTile*TILE_LENGTH) + (addYInches);
+        
         
     }
     

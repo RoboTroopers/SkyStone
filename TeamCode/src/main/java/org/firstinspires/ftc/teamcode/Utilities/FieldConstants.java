@@ -4,12 +4,16 @@ public class FieldConstants {
     
     //All linear measurements use inches
     
-    public static double TILE_LENGTH = 24;
-    public static double TILES_PER_SIDE;
+    public static final double TILE_LENGTH = 24;
+    public static final double TILES_PER_SIDE = 6;
     
-    public static double FIELD_LENGTH = TILE_LENGTH*TILES_PER_SIDE;
+    public static final double FIELD_LENGTH = TILE_LENGTH*TILES_PER_SIDE;
     
-    public static double BRIDGE_X = FIELD_LENGTH/2;
+    // Specific key field positions
+    public static final double BRIDGE_X = FIELD_LENGTH/2;
+    public static final double BLUE_SKYSTONE_Y = TILE_LENGTH*2;
+    public static final double RED_SKYSTONE_Y = FIELD_LENGTH-(TILE_LENGTH*2);
+    
             
     
 }

@@ -33,6 +33,7 @@ public class MechanumStrafingTeleOp extends OpMode {
     @Override
     public void loop() {
         
+        // Control over horizontal and vertical movement amounts with one joystick, and turn amount using the other.
         if (Math.abs(gamepad1.left_stick_x) > threshold) {
             movement_x = gamepad1.left_stick_x;
         }
@@ -65,9 +66,9 @@ public class MechanumStrafingTeleOp extends OpMode {
         
         
         if (gamepad1.right_bumper) {
-            robot.intake.pingerOut();
+            robot.pinger.extend();
         } else if (gamepad1.left_bumper) {
-            robot.intake.pingerIn();
+            robot.pinger.retract();
         }
         
         
