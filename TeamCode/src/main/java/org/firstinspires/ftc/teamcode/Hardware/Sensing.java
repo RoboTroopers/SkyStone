@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.teamcode.ppProject.treamcode.MathFunctions;
 
 import static java.lang.Math.toDegrees;
 
@@ -21,6 +22,9 @@ public class Sensing {
     //public DcMotor leftVerticalEncoder;
     //public DcMotor rightVerticalEncoder;
     
+    //public ColorSensor colorSensor;
+    
+    
     
     public double worldAngle_rad = 0;
     
@@ -28,8 +32,8 @@ public class Sensing {
     public void initHardware(HardwareMap aHwMap) {
 
         imu = aHwMap.get(BNO055IMU.class, "imu");
-        horizontalEncoder = aHwMap.get(DcMotor.class, "horizontalEncoder");
-        verticalEncoder = aHwMap.get(DcMotor.class, "verticalEncoder");
+        //horizontalEncoder = aHwMap.get(DcMotor.class, "horizontalEncoder");
+        //verticalEncoder = aHwMap.get(DcMotor.class, "verticalEncoder");
         //leftVerticalEncoder = aHwMap.get(DcMotor.class, "leftVerticalEncoder");
         //rightVerticalEncoder = aHwMap.get(DcMotor.class, "rightVerticalEncoder");
         resetEncoders();
@@ -68,7 +72,7 @@ public class Sensing {
     
     
     public void updateAngle() {
-        worldAngle_rad = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).firstAngle;
+        worldAngle_rad = MathFunctions.angleWrap(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).firstAngle);
     }
 
 

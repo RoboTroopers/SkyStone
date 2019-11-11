@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.Utilities;
 
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
+import org.firstinspires.ftc.teamcode.ppProject.company.Range;
+
+import static java.lang.Math.toRadians;
 
 public class AdvancedMovement {
     
@@ -13,10 +16,52 @@ public class AdvancedMovement {
         
     }
     
-    
+    /*
     public double movement_x;
     public double movement_y;
     public double movement_turn;
+    */
+    
+    
+    public void myTurnToRad(double absoluteRad, double maxSpeed, double deaccelRate) {
+        
+        /**
+         * Turns drivetrain to a specific absolute angle in radians.
+         * Positive angles are clockwise, negative angles are counterclockwise.
+         */
+
+        double relativeTurnRadians = robot.sensing.worldAngle_rad - absoluteRad;
+        double error;
+
+        double rotationAccuracyRange = toRadians(2);
+        double minSpeed = 0.01;
+        
+        do {
+            error = robot.sensing.worldAngle_rad - absoluteRad;
+    
+            double movement_turn = (error/relativeTurnRadians) * deaccelRate; // Speed is greater when error is greater
+            movement_turn = Range.clip(movement_turn, minSpeed, maxSpeed); // Deaccel rate only becomes apparent when it isn't being cut off by clip (while deacceling)
+            robot.driveTrain.applyMovement(0, 0, movement_turn);
+            
+        } while (Math.abs(error) > rotationAccuracyRange);
+        
+        robot.driveTrain.brake();
+        
+    }
+    
+    
+    
+    public void myTurnToDeg(double absoluteDeg, double maxSpeed, double deaccelRate) {
+        /**
+         * Turns drivetrain to a specific absolute angle in degrees.
+         * Positive angles are clockwise, negative angles are counterclockwise.
+         */
+        
+        myTurnToRad(toRadians(absoluteDeg), maxSpeed, deaccelRate);
+        
+    }
+    
+    
     
     /*
     public void myGoToPosition(double xInches, double yInches, double movementSpeed, double preferredAngle_rad, double turnSpeed) {

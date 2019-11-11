@@ -49,7 +49,7 @@ import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.WHEEL_BASE;
 
 /**
  * This 2019-2020 OpMode illustrates the basics of using the TensorFlow Object Detection API to
- * determine the position of the Skystone game elements.
+ * determine the position of the Stone game elements.
  *
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list.
@@ -60,12 +60,12 @@ import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.WHEEL_BASE;
 
 
 
-@Autonomous(name = "Tensorflow Skystone Detection Autonomous", group="Autonomous")
+@Autonomous(name = "Tensorflow Stone Detection Autonomous", group="Autonomous")
 //@Disabled
 public class SeekSkyStone extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
-    private static final String LABEL_SECOND_ELEMENT = "Skystone";
+    private static final String LABEL_SECOND_ELEMENT = "Stone";
     
     FieldPosition startPos = new FieldPosition(2, 0, DriveConstants.TRACK_WIDTH/2, WHEEL_BASE/2);
     public Robot robot = new Robot();
@@ -178,7 +178,7 @@ public class SeekSkyStone extends LinearOpMode {
                 if (currentState == ProgramStates.SCANNING) {
                     
                     telemetry.addData("Program State", "Scanning");
-                    // Strafe right until Skystone found within specific angle from center of camera
+                    // Strafe right until Stone found within specific angle from center of camera
                     robot.driveTrain.strafe(-0.5);
                     
                 } else if (currentState == ProgramStates.PARKING) {
@@ -243,12 +243,12 @@ public class SeekSkyStone extends LinearOpMode {
                                 telemetry.addData("Program State", "Approaching ");
                              
                                 /*
-                                 * Move towards the skystone until the object takes up enough of the screen.
-                                 * This is when the robot is at the optimal distance to use the accessories.
-                                 * Also turn simultaneously towards skystone while moving forward.
+                                 * Move towards the skystone until it takes up enough of the screen, meaning it is close enough to pick up.
+                                 * 
                                  */
                                 
                                 //robot.driveTrain.steer((forwardSpeed+turnSpeed)*speedMultiplier, (forwardSpeed-turnSpeed)*speedMultiplier); 
+                                // Makes
                                 robot.driveTrain.applyMovement(forwardSpeed, forwardSpeed, 1-(objectAngle/45));
                                 
                                 if (objectHeightRatio > desiredHeightRatio) {

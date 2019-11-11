@@ -15,7 +15,6 @@ public class Robot {
     public DriveTrain driveTrain = new DriveTrain();
     public Intake intake = new Intake();
     //public Outtake outtake = new Outtake();
-    //public Accessories accessories = new Accessories();
     
     public Sensing sensing = new Sensing();
     //public Odometry odometry = new Odometry(this);
@@ -31,7 +30,6 @@ public class Robot {
         
         driveTrain.initHardware(aHwMap);
         intake.initHardware(aHwMap);
-        //accessories.initHardware(aHwMap);
         sensing.initHardware(aHwMap);
         //outtake.initHardware(aHwMap);
         

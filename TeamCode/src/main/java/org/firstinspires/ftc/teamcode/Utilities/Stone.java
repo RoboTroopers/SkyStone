@@ -2,14 +2,14 @@ package org.firstinspires.ftc.teamcode.Utilities;
 
 import static org.firstinspires.ftc.teamcode.Globals.FieldConstants.*;
 
-public class Skystone {
+public class Stone {
     
     public double ordinalPosition;
     public AllianceSides allianceSide; 
     public FieldPosition fieldPosition;
     
     
-    public Skystone(AllianceSides allianceSide, double ordinalPosition) {
+    public Stone(AllianceSides allianceSide, double ordinalPosition) {
         
         double yInches;
         
@@ -20,8 +20,8 @@ public class Skystone {
         }
         
         this.ordinalPosition = ordinalPosition;
-        
         FieldPosition fieldPosition = new FieldPosition(ordinalPosition*STONE_WIDTH, yInches);
+        
         
     }
     

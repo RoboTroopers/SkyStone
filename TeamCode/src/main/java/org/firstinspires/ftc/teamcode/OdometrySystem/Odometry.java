@@ -47,10 +47,11 @@ public class Odometry {
     }
     
     
-    public void setPosition(FieldPosition fieldPos) {
+    public void setPosition(FieldPosition fieldPos, double startWorldAngle_deg) {
         
         worldXPosition = fieldPos.fieldXTicks;
         worldYPosition = fieldPos.fieldYTicks;
+        robot.sensing.worldAngle_rad = toRadians(startWorldAngle_deg);
         
     }
     
