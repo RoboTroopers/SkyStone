@@ -26,6 +26,18 @@ public class Outtake {
     
     
     
+    public enum PulleyState {
+        
+        LIFT,
+        FALL,
+        REST,
+        
+    }
+    
+    PulleyState pulleyState = PulleyState.REST;
+    
+    
+    
     public void initHardware(HardwareMap aHwMap) {
         
         leftPulley = aHwMap.get(DcMotor.class, "leftPulley");
@@ -34,6 +46,24 @@ public class Outtake {
         arm = aHwMap.get(Servo.class, "arm");
         
     }
+    
+    
+    public void setPulleySpeed(double speed) {
+        leftPulley.setPower(speed);
+        rightPulley.setPower(speed);
+
+        if (speed > 0) {
+            pulleyState = Outtake.PulleyState.LIFT;
+
+        } else if (speed < 0) {
+            pulleyState = Outtake.PulleyState.FALL;
+
+        } else {
+            pulleyState = Outtake.PulleyState.REST;
+        }
+        
+    }
+    
     
     
     public void setArm(double deg) {

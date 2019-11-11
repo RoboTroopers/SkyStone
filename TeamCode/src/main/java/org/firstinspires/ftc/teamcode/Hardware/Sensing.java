@@ -36,7 +36,7 @@ public class Sensing {
         //verticalEncoder = aHwMap.get(DcMotor.class, "verticalEncoder");
         //leftVerticalEncoder = aHwMap.get(DcMotor.class, "leftVerticalEncoder");
         //rightVerticalEncoder = aHwMap.get(DcMotor.class, "rightVerticalEncoder");
-        resetEncoders();
+        //resetEncoders();
         
     }
     

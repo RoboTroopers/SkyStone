@@ -14,7 +14,7 @@ public class Robot {
     
     public DriveTrain driveTrain = new DriveTrain();
     public Intake intake = new Intake();
-    //public Outtake outtake = new Outtake();
+    public Outtake outtake = new Outtake();
     
     public Sensing sensing = new Sensing();
     //public Odometry odometry = new Odometry(this);
@@ -25,13 +25,14 @@ public class Robot {
     public void initHardware (HardwareMap aHwMap) {
         
         //get the two expansion hubs themselves
-        revMaster = aHwMap.get(ExpansionHubEx.class,"hub");
-        revSlave = aHwMap.get(ExpansionHubEx.class,"slave");
+        //revMaster = aHwMap.get(ExpansionHubEx.class,"hub");
+        //revSlave = aHwMap.get(ExpansionHubEx.class,"Slave");
+        
         
         driveTrain.initHardware(aHwMap);
         intake.initHardware(aHwMap);
         sensing.initHardware(aHwMap);
-        //outtake.initHardware(aHwMap);
+        outtake.initHardware(aHwMap);
         
     }
     

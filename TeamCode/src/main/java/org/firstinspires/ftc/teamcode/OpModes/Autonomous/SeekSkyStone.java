@@ -65,7 +65,7 @@ import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.WHEEL_BASE;
 public class SeekSkyStone extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
-    private static final String LABEL_SECOND_ELEMENT = "Stone";
+    private static final String LABEL_SECOND_ELEMENT = "Skystone";
     
     FieldPosition startPos = new FieldPosition(2, 0, DriveConstants.TRACK_WIDTH/2, WHEEL_BASE/2);
     public Robot robot = new Robot();
@@ -73,7 +73,7 @@ public class SeekSkyStone extends LinearOpMode {
             
     
     // Distance from the center of the screen that the skystone can be to pick it up (degrees)
-    private final double skystoneAngleTolerance = 15;
+    //private final double skystoneAngleTolerance = 45;
     
     // How much of the screen the skystone needs to take up for the robot to deploy the accessories
     private final double desiredHeightRatio = 0.8;
@@ -102,7 +102,6 @@ public class SeekSkyStone extends LinearOpMode {
     
     public double objectHeightRatio; // How much of the screen the skystone takes up vertically.
 
-    
     
     
     /*
@@ -164,8 +163,7 @@ public class SeekSkyStone extends LinearOpMode {
             //Initialize everything the robot needs to start
             //robot.odometry.setPositionInches(startPos.fieldXInches, startPos.fieldYInches, 0);
             robot.initHardware(hardwareMap);
-            
-            waitForStart();
+            //waitForStart();
             
             robot.driveTrain.straight(1);
             sleep(100);
@@ -173,92 +171,94 @@ public class SeekSkyStone extends LinearOpMode {
             
             //new Thread(odometryThread).start();
             
-            while (opModeIsActive()) {
-                
-                if (currentState == ProgramStates.SCANNING) {
-                    
-                    telemetry.addData("Program State", "Scanning");
-                    // Strafe right until Stone found within specific angle from center of camera
-                    robot.driveTrain.strafe(-0.5);
-                    
-                } else if (currentState == ProgramStates.PARKING) {
-                    
-                    telemetry.addData("Program State", "Parking");
-                    //robot.advancedMovement.myGoToPosition(BRIDGE_X, TILE_LENGTH, 0.6, 0, 0.5);
-                    
-                }
-                
-                while (currentState != ProgramStates.PARKING) {
-                    if (tfod != null) {
-                        // getUpdatedRecognitions() will return null if no new information is available since
-                        // the last time that call was made.
-                        List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-                        if (updatedRecognitions != null) {
-                            telemetry.addData("# Object Detected", updatedRecognitions.size());
-                            // step through the list of recognitions and display boundary info.
+            while (opModeIsActive() && currentState != ProgramStates.PARKING) {
+                if (tfod != null) {
+                    // getUpdatedRecognitions() will return null if no new information is available since
+                    // the last time that call was made.
+                    List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                    if (updatedRecognitions != null) {
+                        telemetry.addData("# Object Detected", updatedRecognitions.size());
+                        // step through the list of recognitions and display boundary info.
+                        
+                        int i = 0;
+                        Recognition nearestSkystone = null;
+                        for (Recognition recognition : updatedRecognitions) {
+                            telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+                            telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+                                    recognition.getLeft(), recognition.getTop());
+                            telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
+                                    recognition.getRight(), recognition.getBottom());
+    
+                            telemetry.addData(String.format("  estimated angle (%d)", i), "%.03f",
+                                    recognition.estimateAngleToObject(AngleUnit.DEGREES));
+    
+                            // Gets the nearest skystone (largest height on the screen) to the robot.
+                            if (nearestSkystone != null) {
+                                // If the previous nearest skystone has been declared and is farther than current recognition, set nearest skystone to current recognition.
+                                if (recognition.getHeight() > nearestSkystone.getHeight())
+                                    nearestSkystone = recognition;
+                                //If current recognition is the first skystone recognized, then use it as the nearest skystone.
+                            } else nearestSkystone = recognition;
+                        }
+                        if (currentState == ProgramStates.SCANNING) {
                             
-                            int i = 0;
-                            Recognition nearestSkystone = null;
-                            for (Recognition recognition : updatedRecognitions) {
-                                telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
-                                telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
-                                        recognition.getLeft(), recognition.getTop());
-                                telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
-                                        recognition.getRight(), recognition.getBottom());
-                                
-                                telemetry.addData(String.format("  estimated angle (%d)", i), "%.03f",
-                                        recognition.estimateAngleToObject(AngleUnit.DEGREES));
-                                
-                                // Gets the nearest skystone (largest height on the screen) to the robot.
-                                if (nearestSkystone != null) {
-                                    // If the previous nearest skystone has been declared and is farther than current recognition, set nearest skystone to current recognition.
-                                    if (recognition.getHeight() > nearestSkystone.getHeight())
-                                        nearestSkystone = recognition;
-                                    //If current recognition is the first skystone recognized, then use it as the nearest skystone.
-                                } else nearestSkystone = recognition;
+                            if (nearestSkystone != null) {
+                                // If skystone has been found
+                                currentState = ProgramStates.APPROACHING;
+                            } else {
+                                // If skystone has not been  found
+                                telemetry.addData("Program State", "Scanning");
+
+                                // Strafe left until Stone found within specific angle from center of camera
+                                robot.driveTrain.strafe(-0.5);
                             }
                             
-                            // Set angle based on how far from the center and which side of the camera the stone is.
-                            objectAngle = nearestSkystone.estimateAngleToObject(AngleUnit.DEGREES);
-                            objectHeight = nearestSkystone.getHeight();
-                            imageHeight = nearestSkystone.getImageHeight();
-                            objectHeightRatio = objectHeight/imageHeight; // Represents distance from skystone
+                        } else if (currentState == ProgramStates.APPROACHING) {
+                            robot.driveTrain.brake();
                             
-                            telemetry.addData(String.format("  object height ratio (%d)", i), "%.03f",
-                                    objectHeightRatio);
                             
-                            if (currentState == ProgramStates.SCANNING) {
-                                // If skystone angle is within threshold, brake and prepare to make fine adjustments
-                                if (Math.abs(objectAngle) < skystoneAngleTolerance) {
-                                    
-                                    robot.driveTrain.brake();
-                                    currentState = ProgramStates.APPROACHING;
-                                }
+                            if (nearestSkystone != null) {
+                                objectAngle = nearestSkystone.estimateAngleToObject(AngleUnit.DEGREES);
+                                objectHeight = nearestSkystone.getHeight();
+                                imageHeight = nearestSkystone.getImageHeight();
+                                objectHeightRatio = objectHeight / imageHeight; // Represents distance from skystone
+
+                                telemetry.addData(String.format("  object height ratio (%d)", i), "%.03f",
+                                        objectHeightRatio);
                                 
-                            } else if (currentState == ProgramStates.APPROACHING) {
+                                telemetry.addData("Object height ratio", objectHeightRatio);
+                                telemetry.addData("Object angle", objectAngle);
+
+                                robot.driveTrain.brake();
+                                
                                 
                                 // The "1 - ([ratio])" is used to make robot slower when closer to skystone for precision.
-                                double forwardSpeed = (1-(objectHeightRatio/desiredHeightRatio));
-                                
+                                double forwardSpeed = (1 - (objectHeightRatio / desiredHeightRatio));
+    
                                 telemetry.addData("Program State", "Approaching ");
-                             
-                                /*
-                                 * Move towards the skystone until it takes up enough of the screen, meaning it is close enough to pick up.
-                                 * 
-                                 */
+                                // Move towards the skystone until it takes up enough of the screen, meaning it is close enough to pick up.
+    
+                                //robot.driveTrain.steer((forwardSpeed+turnSpeed)*speedMultiplier, (forwardSpeed-turnSpeed)*speedMultiplier);
+                                //robot.driveTrain.applyMovement(forwardSpeed, forwardSpeed, objectAngle/45*0.3);
                                 
-                                //robot.driveTrain.steer((forwardSpeed+turnSpeed)*speedMultiplier, (forwardSpeed-turnSpeed)*speedMultiplier); 
-                                // Makes
-                                robot.driveTrain.applyMovement(forwardSpeed, forwardSpeed, 1-(objectAngle/45));
+                                robot.driveTrain.straight(forwardSpeed);
                                 
                                 if (objectHeightRatio > desiredHeightRatio) {
                                     currentState = ProgramStates.TRANSPORTING;
+                                    robot.driveTrain.brake();
                                 }
                                 
-                            }/* else if (currentState == ProgramStates.TRANSPORTING) {
-                                
+                            } else {
+                                currentState = ProgramStates.SCANNING;
+                            }
+                            
+                        } else if (currentState == ProgramStates.TRANSPORTING) {
+    
+                                robot.driveTrain.brake();
+    
+    
                                 robot.driveTrain.steer(0.5, 0.5);
-                                sleep(2000);
+                                sleep(200);
                                 robot.driveTrain.brake();
                                 telemetry.addData("Ladies and gentlemen!", "We gottem.");
                                 //robot.goToPosition(30, 20, 0.2, Math.toRadians(90), 0.4);
@@ -268,26 +268,34 @@ public class SeekSkyStone extends LinearOpMode {
                                 sleep(1000);
                                 skystonesTransported += 1;
                                 robot.intake.stop();
+                                robot.driveTrain.brake();
                                 
                                 //robot.goToPosition(0, 0, 0.3, 0, 0.4);
-                                
-                                if (skystonesTransported < 2) {
-                                    currentState = ProgramStates.SCANNING;
-                                } else {
+    
+                                //if (skystonesTransported < 2) {
+                                    
+                                  //  currentState = ProgramStates.SCANNING;
+                                    
+                                //} else {
+                                    
                                     currentState = ProgramStates.PARKING;
-                                }
+                                //}
                                 
                                 break;
                                 
-                            }*/
-                            
-                            telemetry.update();
-                            
+                            }
                         }
                     }
+                
+                    telemetry.update();
                 }
             }
-        }
+        
+            if (currentState == ProgramStates.PARKING) {
+                telemetry.addData("Program State", "Parking");
+                //robot.advancedMovement.myGoToPosition(BRIDGE_X, TILE_LENGTH, 0.6, 0, 0.5);
+            }
+            
         
         if (tfod != null) {
             tfod.shutdown();

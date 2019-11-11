@@ -35,12 +35,12 @@ public class DriveTrain {
         rightFront = aHwMap.get(DcMotor.class, "rightFront");
         leftRear = aHwMap.get(DcMotor.class, "leftRear");
         rightRear = aHwMap.get(DcMotor.class, "rightRear");
-        rightRear.setDirection(DcMotor.Direction.REVERSE);
-        rightFront.setDirection(DcMotor.Direction.REVERSE);
+        leftRear.setDirection(DcMotor.Direction.REVERSE);
+        leftFront.setDirection(DcMotor.Direction.REVERSE);
         
     }
     
-
+    
     // Stations the robot in current position
     public void brake() {
         leftFront.setPower(0);
@@ -88,10 +88,10 @@ public class DriveTrain {
     // Moves the robot sideways without turning
     public void strafe(double speed){
         // Positive speed strafes right, negative speed strafes left.
-        leftFront.setPower(speed);
-        rightFront.setPower(-speed);
-        leftRear.setPower(-speed);
-        rightRear.setPower(speed);
+        leftFront.setPower(-speed);
+        rightFront.setPower(speed);
+        leftRear.setPower(speed);
+        rightRear.setPower(-speed);
         
         moveState = MoveStates.STRAFING;
         
