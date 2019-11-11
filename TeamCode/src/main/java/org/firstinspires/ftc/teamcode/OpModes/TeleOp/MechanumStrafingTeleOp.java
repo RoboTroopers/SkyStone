@@ -64,7 +64,7 @@ public class MechanumStrafingTeleOp extends OpMode {
         // Intake toggling controls
         if (gamepad1.right_bumper) {
             
-            if (robot.intake.currentState != Intake.DirectionStates.SUCK) {
+            if (robot.intake.directionState != Intake.DirectionStates.SUCK) {
                 
                 robot.intake.setSpeed(1.0);
             } else {
@@ -74,7 +74,7 @@ public class MechanumStrafingTeleOp extends OpMode {
         
         if (gamepad1.left_bumper) {
 
-            if (robot.intake.currentState != Intake.DirectionStates.BLOW) {
+            if (robot.intake.directionState != Intake.DirectionStates.BLOW) {
                 
                 robot.intake.setSpeed(-1.0);
             } else {

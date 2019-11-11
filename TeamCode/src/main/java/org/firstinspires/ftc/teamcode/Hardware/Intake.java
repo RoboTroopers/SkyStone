@@ -11,13 +11,14 @@ public class Intake {
     public DcMotor rightIntake;
     
     public enum DirectionStates {
+        
         REST,
         SUCK,
         BLOW,
         
     }
     
-    public DirectionStates currentState = DirectionStates.REST;
+    public DirectionStates directionState = DirectionStates.REST;
     
     
     
@@ -37,13 +38,13 @@ public class Intake {
         rightIntake.setPower(speed);
         
         if (speed > 0) {
-            currentState = DirectionStates.SUCK;
+            directionState = DirectionStates.SUCK;
             
         } else if (speed < 0) {
-            currentState = DirectionStates.BLOW;
+            directionState = DirectionStates.BLOW;
             
         } else {
-            currentState = DirectionStates.REST;
+            directionState = DirectionStates.REST;
         }
         
     }
@@ -53,8 +54,8 @@ public class Intake {
         
         leftIntake.setPower(0);
         rightIntake.setPower(0);
-        
-        currentState = DirectionStates.REST;
+
+        directionState = DirectionStates.REST;
 
     }
     

@@ -18,11 +18,13 @@ dependencies {
     //NOTE: this is the correct version, the below screenshot is outdated
     implementation 'org.openftc:rev-extensions-2:1.2'
     implementation 'com.acmerobotics.roadrunner:core:0.4.5'
+    
     implementation 'com.fasterxml.jackson.core:jackson-core:2.9.8'
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.9.8'
     implementation 'com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.9.8'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.8'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.8'
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8'
+    
     
 }

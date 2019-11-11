@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.OdometrySystem;
 
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
+import org.firstinspires.ftc.teamcode.Utilities.FieldPosition;
 
 import static java.lang.Math.toRadians;
 import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.ticksToInches;
@@ -38,10 +39,24 @@ public class Odometry {
     public double verticalEncoderLast;
     
     
-    
-    public void setPosition(Robot theRobot, double startX, double startY, double startWorldAngle_rad) {
+    public Odometry(Robot theRobot) {
         
         robot = theRobot;
+        
+        
+    }
+    
+    
+    public void setPosition(FieldPosition fieldPos) {
+        
+        worldXPosition = fieldPos.fieldXTicks;
+        worldYPosition = fieldPos.fieldYTicks;
+        
+    }
+    
+    
+    public void setPositionTicksRad(double startX, double startY, double startWorldAngle_rad) {
+        
         worldXPosition = startX;
         worldYPosition = startY;
         robot.sensing.worldAngle_rad = startWorldAngle_rad;
@@ -49,9 +64,8 @@ public class Odometry {
     }
 
 
-    public void setPositionInches(Robot theRobot, double startXInches, double startYInches, double startWorldAngle_deg) {
+    public void setPositionInchesDeg(double startXInches, double startYInches, double startWorldAngle_deg) {
         
-        robot = theRobot;
         worldXPosition = ticksToInches(startXInches);
         worldYPosition = ticksToInches(startYInches);
         robot.sensing.worldAngle_rad = toRadians(startWorldAngle_deg);
