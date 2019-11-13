@@ -60,7 +60,7 @@ import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.WHEEL_BASE;
 
 
 
-@Autonomous(name = "Tensorflow Stone Detection Autonomous", group="Autonomous")
+@Autonomous(name = "Sucky sucky skystones", group="Autonomous")
 //@Disabled
 public class SeekSkyStone extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
@@ -70,17 +70,6 @@ public class SeekSkyStone extends LinearOpMode {
     FieldPosition startPos = new FieldPosition(2, 0, DriveConstants.TRACK_WIDTH/2, WHEEL_BASE/2);
     public Robot robot = new Robot();
     //Thread odometryThread = new Thread(new OdometryThread(robot));
-            
-    
-    // Distance from the center of the screen that the skystone can be to pick it up (degrees)
-    //private final double skystoneAngleTolerance = 45;
-    
-    // How much of the screen the skystone needs to take up for the robot to deploy the accessories
-    private final double desiredHeightRatio = 0.8;
-    
-    //How far to the side the skystone should be (degrees)
-    public final double desiredHorizontalAngle = 0;
-    
     
     
     private int skystonesTransported = 0;
@@ -205,6 +194,7 @@ public class SeekSkyStone extends LinearOpMode {
                             if (nearestSkystone != null) {
                                 // If skystone has been found
                                 currentState = ProgramStates.APPROACHING;
+                                robot.driveTrain.brake();
                             } else {
                                 // If skystone has not been  found
                                 telemetry.addData("Program State", "Scanning");
@@ -214,7 +204,6 @@ public class SeekSkyStone extends LinearOpMode {
                             }
                             
                         } else if (currentState == ProgramStates.APPROACHING) {
-                            robot.driveTrain.brake();
                             
                             
                             if (nearestSkystone != null) {
@@ -222,46 +211,36 @@ public class SeekSkyStone extends LinearOpMode {
                                 objectHeight = nearestSkystone.getHeight();
                                 imageHeight = nearestSkystone.getImageHeight();
                                 objectHeightRatio = objectHeight / imageHeight; // Represents distance from skystone
-
+                                
                                 telemetry.addData(String.format("  object height ratio (%d)", i), "%.03f",
                                         objectHeightRatio);
                                 
                                 telemetry.addData("Object height ratio", objectHeightRatio);
                                 telemetry.addData("Object angle", objectAngle);
-
-                                robot.driveTrain.brake();
                                 
                                 
                                 // The "1 - ([ratio])" is used to make robot slower when closer to skystone for precision.
-                                double forwardSpeed = (1 - (objectHeightRatio / desiredHeightRatio));
-    
+                                double forwardSpeed = (1 - (objectHeightRatio / 1));
+                                double strafeSpeed = -objectAngle/2;
+                                
                                 telemetry.addData("Program State", "Approaching ");
                                 // Move towards the skystone until it takes up enough of the screen, meaning it is close enough to pick up.
-    
-                                //robot.driveTrain.steer((forwardSpeed+turnSpeed)*speedMultiplier, (forwardSpeed-turnSpeed)*speedMultiplier);
-                                //robot.driveTrain.applyMovement(forwardSpeed, forwardSpeed, objectAngle/45*0.3);
                                 
-                                robot.driveTrain.straight(forwardSpeed);
+                                robot.driveTrain.applyMovement(strafeSpeed, forwardSpeed, 0);
                                 
-                                if (objectHeightRatio > desiredHeightRatio) {
-                                    currentState = ProgramStates.TRANSPORTING;
-                                    robot.driveTrain.brake();
-                                }
                                 
                             } else {
-                                currentState = ProgramStates.SCANNING;
+                                //Robot cannot recognize skystone any longer because it 
+                                robot.driveTrain.brake();
+                                currentState = ProgramStates.TRANSPORTING;
                             }
                             
                         } else if (currentState == ProgramStates.TRANSPORTING) {
-    
-                                robot.driveTrain.brake();
-    
-    
+                                
                                 robot.driveTrain.steer(0.5, 0.5);
-                                sleep(200);
+                                sleep(100);
                                 robot.driveTrain.brake();
                                 telemetry.addData("Ladies and gentlemen!", "We gottem.");
-                                //robot.goToPosition(30, 20, 0.2, Math.toRadians(90), 0.4);
                                 
                                 // Release skystone onto ground
                                 robot.intake.setSpeed(-100);
@@ -270,8 +249,6 @@ public class SeekSkyStone extends LinearOpMode {
                                 robot.intake.stop();
                                 robot.driveTrain.brake();
                                 
-                                //robot.goToPosition(0, 0, 0.3, 0, 0.4);
-    
                                 //if (skystonesTransported < 2) {
                                     
                                   //  currentState = ProgramStates.SCANNING;
