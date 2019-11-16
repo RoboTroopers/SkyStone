@@ -200,7 +200,7 @@ public class SeekSkyStone extends LinearOpMode {
                                 telemetry.addData("Program State", "Scanning");
 
                                 // Strafe left until Stone found within specific angle from center of camera
-                                robot.driveTrain.strafe(-0.5);
+                                robot.driveTrain.strafe(-0.3);
                             }
                             
                         } else if (currentState == ProgramStates.APPROACHING) {
@@ -221,7 +221,7 @@ public class SeekSkyStone extends LinearOpMode {
                                 
                                 // The "1 - ([ratio])" is used to make robot slower when closer to skystone for precision.
                                 double forwardSpeed = (1 - (objectHeightRatio / 1));
-                                double strafeSpeed = -objectAngle/2;
+                                double strafeSpeed = 0;//objectAngle/2;
                                 
                                 telemetry.addData("Program State", "Approaching ");
                                 // Move towards the skystone until it takes up enough of the screen, meaning it is close enough to pick up.
@@ -232,7 +232,7 @@ public class SeekSkyStone extends LinearOpMode {
                             } else {
                                 //Robot cannot recognize skystone any longer because it 
                                 robot.driveTrain.brake();
-                                currentState = ProgramStates.TRANSPORTING;
+                                //currentState = ProgramStates.TRANSPORTING;
                             }
                             
                         } else if (currentState == ProgramStates.TRANSPORTING) {
