@@ -5,6 +5,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Utilities.MiscUtil;
 
+import static java.lang.Math.abs;
+import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.inchesToTicks;
+
 public class DriveTrain {
     
     
@@ -14,21 +17,8 @@ public class DriveTrain {
     public DcMotor leftRear;
     public DcMotor rightRear;
 
-    public enum MoveStates {
 
-        STATIONARY,
-        STRAIGHT,
-        STEERING,
-        PIVOTING,
-        STRAFING,
-        APPLYING_MOVEMENT
-        
-    }
-    
-    
-    MoveStates moveState = MoveStates.STATIONARY;
-    
-    
+
     public void initHardware(HardwareMap aHwMap) {
         
         leftFront = aHwMap.get(DcMotor.class, "leftFront");
@@ -41,14 +31,14 @@ public class DriveTrain {
     }
     
     
+
     // Stations the robot in current position
     public void brake() {
         leftFront.setPower(0);
         rightFront.setPower(0);
         leftRear.setPower(0);
         rightRear.setPower(0);
-        
-        moveState = MoveStates.STATIONARY;
+
         
     }
     
@@ -59,28 +49,18 @@ public class DriveTrain {
         rightFront.setPower(speed);
         leftRear.setPower(speed);
         rightRear.setPower(speed);
-        
-        moveState = MoveStates.STRAIGHT;
+
         
     }
     
     
     // Moves the left and right side motors separate speeds
-    public void steer(double leftSpeed, double rightSpeed) {
+    public void turn(double leftSpeed, double rightSpeed) {
         leftFront.setPower(leftSpeed);
         rightFront.setPower(rightSpeed);
         leftRear.setPower(leftSpeed);
         rightRear.setPower(rightSpeed);
-        
-        if (leftSpeed == rightSpeed) {
-            moveState = MoveStates.STRAIGHT;
-        
-        } else if (leftSpeed == -rightSpeed) {
-            moveState = MoveStates.PIVOTING;
-        
-        } else {
-            moveState = MoveStates.STEERING;
-        }
+
         
     }
     
@@ -92,10 +72,86 @@ public class DriveTrain {
         rightFront.setPower(speed);
         leftRear.setPower(speed);
         rightRear.setPower(-speed);
-        
-        moveState = MoveStates.STRAFING;
+
         
     }
+    
+    
+
+    public void setTargetPositions(int leftFrontPos, int rightFrontPos, int leftRearPos, int rightRearPos) {
+
+        leftFront.setTargetPosition(leftFrontPos);
+        rightFront.setTargetPosition(rightFrontPos);
+        leftRear.setTargetPosition(leftRearPos);
+        rightFront.setTargetPosition(rightRearPos);
+
+    }
+
+    
+    public boolean anyMotorsBusy() { return (leftFront.isBusy() || rightFront.isBusy() || leftRear.isBusy() || rightRear.isBusy()); }
+
+    
+
+
+    public void straightInches (double relativeInches, double speed) {
+
+        int relativePosition = (int)inchesToTicks(relativeInches);
+
+        int leftFrontPos = leftFront.getCurrentPosition() + relativePosition;
+        int rightFrontPos = rightFront.getCurrentPosition() + relativePosition;
+        int leftRearPos = leftRear.getCurrentPosition() + relativePosition;
+        int rightRearPos = rightRear.getCurrentPosition() + relativePosition;
+                
+        setTargetPositions(leftFrontPos, rightFrontPos, leftRearPos, rightRearPos);
+        straight(speed);
+        while (anyMotorsBusy()) {}
+        
+        brake();
+
+    }
+
+/*
+    public void turnInches(int relativePosition, double leftSpeed, double rightSpeed) {
+
+        int leftSign = (int)(leftSpeed / abs(leftSpeed));
+        int rightSign = (int)(rightSpeed / abs(rightSpeed));
+
+        int leftFrontPos = (leftFront.getCurrentPosition() + relativePosition)*leftSign;
+        int rightFrontPos = (rightFront.getCurrentPosition() + relativePosition)*rightSign;
+        int leftRearPos = (leftRear.getCurrentPosition() + relativePosition)*leftSign;
+        int rightRearPos = (rightRear.getCurrentPosition() + relativePosition)*rightSign;
+
+        setTargetPositions(leftFrontPos, rightFrontPos, leftRearPos, rightRearPos);
+        turn(leftSpeed, rightSpeed);
+        while (anyMotorsBusy()) {}
+
+        brake();
+
+    }*/
+
+
+    public void strafeSpeed (double relativeInches, double rightSpeed) {
+
+        int relativePosition = (int)inchesToTicks(relativeInches);
+
+        int rightSign = (int)(rightSpeed / abs(rightSpeed));
+        int leftSign = -rightSign;
+
+        int leftFrontPos = (leftFront.getCurrentPosition() + relativePosition)*leftSign;
+        int rightFrontPos = (rightFront.getCurrentPosition() + relativePosition)*rightSign;
+        int leftRearPos = (leftRear.getCurrentPosition() + relativePosition)*leftSign;
+        int rightRearPos = (rightRear.getCurrentPosition() + relativePosition)*rightSign;
+
+        setTargetPositions(leftFrontPos, rightFrontPos, leftRearPos, rightRearPos);
+        strafe(rightSpeed);
+        while (anyMotorsBusy()) {}
+
+        brake();
+
+    }
+
+
+
     
     
     public void applyMovement(double horizontal, double vertical, double turn) {
@@ -134,8 +190,6 @@ public class DriveTrain {
             leftRear.setPower(lr_power_raw);
         if (rightRear.getPower() != rr_power_raw)
             rightRear.setPower(rr_power_raw);
-
-        moveState = MoveStates.APPLYING_MOVEMENT;
         
     }
     

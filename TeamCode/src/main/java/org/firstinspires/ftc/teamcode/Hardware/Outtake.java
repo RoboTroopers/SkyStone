@@ -14,29 +14,8 @@ public class Outtake {
     
     public final double ARM_DOWN = 0;
     public final double ARM_UP = 180;
-    
-    public enum ArmState {
-        
-        UP,
-        DOWN
-        
-    }
-    
-    ArmState armState = ArmState.DOWN;
-    
-    
-    
-    public enum PulleyState {
-        
-        LIFT,
-        FALL,
-        REST,
-        
-    }
-    
-    PulleyState pulleyState = PulleyState.REST;
-    
-    
+
+
     
     public void initHardware(HardwareMap aHwMap) {
         
@@ -51,31 +30,27 @@ public class Outtake {
     public void setPulleySpeed(double speed) {
         leftPulley.setPower(speed);
         rightPulley.setPower(speed);
-
-        if (speed > 0) {
-            pulleyState = Outtake.PulleyState.LIFT;
-
-        } else if (speed < 0) {
-            pulleyState = Outtake.PulleyState.FALL;
-
-        } else {
-            pulleyState = Outtake.PulleyState.REST;
-        }
         
     }
-    
+
+
+    public double getPulleySpeed() {
+
+        return leftPulley.getPower() + rightPulley.getPower();
+    }
+
+
     
     
     public void setArm(double deg) {
         
         arm.setPosition(deg);
-        
-        if (deg > (ARM_UP-ARM_DOWN)/2) {
-            armState = ArmState.UP;
-        } else {
-            armState = ArmState.DOWN;
-        }
+    }
 
+
+    public double getArmPos() {
+
+        return arm.getPosition();
     }
     
     

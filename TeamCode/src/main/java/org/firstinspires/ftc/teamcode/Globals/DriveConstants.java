@@ -11,8 +11,8 @@ public class DriveConstants {
      */
     
     
-    public static final double WHEEL_RADIUS = 2;
-    public static final double WHEEL_CIRCUMFERENCE = WHEEL_RADIUS*2*Math.PI;
+    public static final double WHEEL_DIAMETER = 4;
+    public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER*Math.PI;
     
     // distance between left and right wheels (width)
     public static final double TRACK_WIDTH = 16;
@@ -34,7 +34,7 @@ public class DriveConstants {
     public static final double CIRCUMCIRCLE_CIRCUMFERENCE = CIRCUMDIAMETER*Math.PI;
     
     
-    public static final double ENCODER_TICKS_PER_REV = 360;
+    public static final double ENCODER_TICKS_PER_REV = 103;
 
 
     public static double inchesToTicks(double inches) {

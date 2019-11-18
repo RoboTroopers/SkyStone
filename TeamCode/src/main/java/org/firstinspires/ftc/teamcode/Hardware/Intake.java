@@ -5,60 +5,66 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 
 public class Intake {
-    
-    
+
+
     public DcMotor leftIntake;
     public DcMotor rightIntake;
-    
-    public enum DirectionStates {
-        
+
+    public enum Directions {
+
         REST,
         SUCK,
         BLOW,
-        
+
     }
-    
-    public DirectionStates directionState = DirectionStates.REST;
-    
-    
-    
+
+
+
+
     public void initHardware(HardwareMap aHwMap) {
-        
+
         leftIntake = aHwMap.get(DcMotor.class, "leftIntake");
         rightIntake = aHwMap.get(DcMotor.class, "rightIntake");
         rightIntake.setDirection(DcMotor.Direction.REVERSE);
-        
+
     }
-    
-    
+
+
     // Set intake speed to suck in skystone
     public void setSpeed(double speed) {
-        
+
         leftIntake.setPower(speed);
         rightIntake.setPower(speed);
-        
-        if (speed > 0) {
-            directionState = DirectionStates.SUCK;
-            
-        } else if (speed < 0) {
-            directionState = DirectionStates.BLOW;
-            
-        } else {
-            directionState = DirectionStates.REST;
-        }
-        
+
     }
-    
-    
+
+
     public void stop() {
-        
+
         leftIntake.setPower(0);
         rightIntake.setPower(0);
 
-        directionState = DirectionStates.REST;
-
     }
-    
-    
-    
+
+
+    public Directions getDirection() {
+
+        Directions directionState;
+        double intakeAvg = rightIntake.getPower()+leftIntake.getPower();
+
+        if (intakeAvg > 0) {
+            directionState = Directions.SUCK;
+
+        } else if (intakeAvg < 0) {
+            directionState = Directions.BLOW;
+
+        } else {
+            directionState = Directions.REST;
+        }
+
+        return directionState;
+    }
+
+
+
 }

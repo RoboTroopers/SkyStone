@@ -45,6 +45,7 @@ import org.firstinspires.ftc.teamcode.Utilities.FieldPosition;
 import java.util.List;
 
 import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.WHEEL_BASE;
+import static org.firstinspires.ftc.teamcode.Globals.FieldConstants.TILE_LENGTH;
 
 
 /**
@@ -60,7 +61,7 @@ import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.WHEEL_BASE;
 
 
 
-@Autonomous(name = "Sucky sucky skystones", group="Autonomous")
+@Autonomous(name = "Suck skystones", group="Autonomous")
 //@Disabled
 public class SeekSkyStone extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
@@ -123,6 +124,9 @@ public class SeekSkyStone extends LinearOpMode {
     
     @Override
     public void runOpMode() {
+        
+        robot.initHardware(hardwareMap);
+        
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
         initVuforia();
@@ -144,6 +148,7 @@ public class SeekSkyStone extends LinearOpMode {
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start op mode");
         telemetry.update();
+        
         waitForStart();
         
         
@@ -151,12 +156,9 @@ public class SeekSkyStone extends LinearOpMode {
             
             //Initialize everything the robot needs to start
             //robot.odometry.setPositionInches(startPos.fieldXInches, startPos.fieldYInches, 0);
-            robot.initHardware(hardwareMap);
             //waitForStart();
-            
-            robot.driveTrain.straight(1);
-            sleep(100);
-            robot.driveTrain.brake();
+
+            robot.driveTrain.straightInches(TILE_LENGTH-WHEEL_BASE, 0.7);
             
             //new Thread(odometryThread).start();
             
@@ -220,58 +222,63 @@ public class SeekSkyStone extends LinearOpMode {
                                 
                                 
                                 // The "1 - ([ratio])" is used to make robot slower when closer to skystone for precision.
-                                double forwardSpeed = (1 - (objectHeightRatio / 1));
-                                double strafeSpeed = 0;//objectAngle/2;
+                                double forwardSpeed = 0.3*(1 - (objectHeightRatio));
+                                double strafeSpeed = objectAngle*0.1;
                                 
                                 telemetry.addData("Program State", "Approaching ");
                                 // Move towards the skystone until it takes up enough of the screen, meaning it is close enough to pick up.
                                 
                                 robot.driveTrain.applyMovement(strafeSpeed, forwardSpeed, 0);
-                                
+
                                 
                             } else {
-                                //Robot cannot recognize skystone any longer because it 
+                                //Robot cannot recognize skystone any longer when it is close because camera is looking over it.
                                 robot.driveTrain.brake();
-                                //currentState = ProgramStates.TRANSPORTING;
+                                currentState = ProgramStates.TRANSPORTING;
                             }
                             
                         } else if (currentState == ProgramStates.TRANSPORTING) {
-                                
-                                robot.driveTrain.steer(0.5, 0.5);
-                                sleep(100);
-                                robot.driveTrain.brake();
-                                telemetry.addData("Ladies and gentlemen!", "We gottem.");
-                                
-                                // Release skystone onto ground
-                                robot.intake.setSpeed(-100);
-                                sleep(1000);
-                                skystonesTransported += 1;
-                                robot.intake.stop();
-                                robot.driveTrain.brake();
-                                
-                                //if (skystonesTransported < 2) {
-                                    
-                                  //  currentState = ProgramStates.SCANNING;
-                                    
-                                //} else {
-                                    
-                                    currentState = ProgramStates.PARKING;
-                                //}
-                                
-                                break;
-                                
-                            }
+
+                        // Goes forward until skystone is picked up
+
+
+                            //while (!robot.sensing.possessingStone()) {
+                                robot.driveTrain.straightInches(10, 0.7);
+                            //}
+
+                            telemetry.addData("Ladies and gentlemen!", "We gottem.");
+
+                            // Release skystone onto ground
+                            robot.intake.setSpeed(-100);
+                            sleep(1500);
+                            skystonesTransported += 1;
+                            robot.intake.stop();
+                            robot.driveTrain.brake();
+
+                            //if (skystonesTransported < 2) {
+
+                              //  currentState = ProgramStates.SCANNING;
+
+                            //} else {
+
+                                currentState = ProgramStates.PARKING;
+                            //}
+
+                            break;
+
                         }
                     }
-                
-                    telemetry.update();
                 }
+
+                telemetry.update();
             }
-        
-            if (currentState == ProgramStates.PARKING) {
-                telemetry.addData("Program State", "Parking");
-                //robot.advancedMovement.myGoToPosition(BRIDGE_X, TILE_LENGTH, 0.6, 0, 0.5);
-            }
+        }
+
+        if (currentState == ProgramStates.PARKING) {
+            telemetry.addData("Program State", "Parking");
+            robot.driveTrain.brake();
+            //robot.advancedMovement.myGoToPosition(BRIDGE_X, TILE_LENGTH, 0.6, 0, 0.5);
+        }
             
         
         if (tfod != null) {
