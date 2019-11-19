@@ -10,20 +10,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.teamcode.ppProject.treamcode.MathFunctions;
 
-import static java.lang.Math.toDegrees;
-
-public class Sensing {
+public class Sensors {
 
 
-    // Sensing
+    // Sensors
     public BNO055IMU imu;
 
     public DcMotor horizontalEncoder;
     public DcMotor verticalEncoder;
     //public DcMotor leftVerticalEncoder;
     //public DcMotor rightVerticalEncoder;
-
-    public double worldAngle_rad = 0;
 
 
     public ColorSensor colorSensor;
@@ -37,6 +33,7 @@ public class Sensing {
     public void initHardware(HardwareMap aHwMap) {
 
         imu = aHwMap.get(BNO055IMU.class, "imu");
+        
         //horizontalEncoder = aHwMap.get(DcMotor.class, "horizontalEncoder");
         //verticalEncoder = aHwMap.get(DcMotor.class, "verticalEncoder");
         //leftVerticalEncoder = aHwMap.get(DcMotor.class, "leftVerticalEncoder");
@@ -75,22 +72,12 @@ public class Sensing {
         verticalEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-
+    
 
     public double getWorldAngleRad() {
-        return worldAngle_rad;
+        return MathFunctions.angleWrap(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).firstAngle);
     }
-
-    public double getWorldAngleDeg() {
-        return toDegrees(worldAngle_rad);
-    }
-
-
-    public void updateAngle() {
-        worldAngle_rad = MathFunctions.angleWrap(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).firstAngle);
-
-    }
-
+    
 
 
     public boolean possessingStone() {

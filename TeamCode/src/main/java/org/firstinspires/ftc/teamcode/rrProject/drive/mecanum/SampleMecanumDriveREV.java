@@ -9,6 +9,9 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.teamcode.rrProject.util.AxesSigns;
+import org.firstinspires.ftc.teamcode.rrProject.util.BNO055IMUUtil;
 import org.firstinspires.ftc.teamcode.rrProject.util.LynxModuleUtil;
 
 import java.util.ArrayList;
@@ -39,7 +42,7 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
 
         // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
         // upward (normal to the floor) using a command like the following:
-        // BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
+        BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
 
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");

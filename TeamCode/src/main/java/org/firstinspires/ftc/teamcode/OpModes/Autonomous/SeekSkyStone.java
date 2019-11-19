@@ -44,6 +44,7 @@ import org.firstinspires.ftc.teamcode.Utilities.FieldPosition;
 
 import java.util.List;
 
+import static java.lang.Math.toRadians;
 import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.WHEEL_BASE;
 import static org.firstinspires.ftc.teamcode.Globals.FieldConstants.TILE_LENGTH;
 
@@ -72,6 +73,7 @@ public class SeekSkyStone extends LinearOpMode {
     public Robot robot = new Robot();
     //Thread odometryThread = new Thread(new OdometryThread(robot));
     
+    private final double skystoneAngleOffset = 5; // How many degrees to add to skystone angle for robot to center on
     
     private int skystonesTransported = 0;
     
@@ -155,7 +157,7 @@ public class SeekSkyStone extends LinearOpMode {
         if (opModeIsActive()) {
             
             //Initialize everything the robot needs to start
-            //robot.odometry.setPositionInches(startPos.fieldXInches, startPos.fieldYInches, 0);
+            //robot.odometry.setPositionInches(startPos.fieldXInches, startPos.fieldYInches);
             //waitForStart();
 
             robot.driveTrain.straightInches(TILE_LENGTH-WHEEL_BASE, 0.7);
@@ -209,7 +211,7 @@ public class SeekSkyStone extends LinearOpMode {
                             
                             
                             if (nearestSkystone != null) {
-                                objectAngle = nearestSkystone.estimateAngleToObject(AngleUnit.DEGREES);
+                                objectAngle = nearestSkystone.estimateAngleToObject(AngleUnit.RADIANS);
                                 objectHeight = nearestSkystone.getHeight();
                                 imageHeight = nearestSkystone.getImageHeight();
                                 objectHeightRatio = objectHeight / imageHeight; // Represents distance from skystone
@@ -223,7 +225,7 @@ public class SeekSkyStone extends LinearOpMode {
                                 
                                 // The "1 - ([ratio])" is used to make robot slower when closer to skystone for precision.
                                 double forwardSpeed = 0.3*(1 - (objectHeightRatio));
-                                double strafeSpeed = objectAngle*0.1;
+                                double strafeSpeed = (objectAngle+skystoneAngleOffset)*0.15;
                                 
                                 telemetry.addData("Program State", "Approaching ");
                                 // Move towards the skystone until it takes up enough of the screen, meaning it is close enough to pick up.
@@ -242,7 +244,7 @@ public class SeekSkyStone extends LinearOpMode {
                         // Goes forward until skystone is picked up
 
 
-                            //while (!robot.sensing.possessingStone()) {
+                            //while (!robot.sensors.possessingStone()) {
                                 robot.driveTrain.straightInches(10, 0.7);
                             //}
 
@@ -254,9 +256,12 @@ public class SeekSkyStone extends LinearOpMode {
                             skystonesTransported += 1;
                             robot.intake.stop();
                             robot.driveTrain.brake();
-
+                            
+                            robot.driveTrain.turnToRad(toRadians(90), 0.6, 6);
+                            robot.driveTrain.straightInches(TILE_LENGTH*3, 5);
+                            
                             //if (skystonesTransported < 2) {
-
+                            
                               //  currentState = ProgramStates.SCANNING;
 
                             //} else {

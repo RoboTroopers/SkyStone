@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.Hardware;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.Utilities.AdvancedMovement;
 import org.openftc.revextensions2.ExpansionHubEx;
 
 
@@ -16,10 +15,8 @@ public class Robot {
     public Intake intake = new Intake();
     public Outtake outtake = new Outtake();
     
-    public Sensing sensing = new Sensing();
+    public Sensors sensors = new Sensors();
     //public Odometry odometry = new Odometry(this);
-    
-    public AdvancedMovement advancedMovement = new AdvancedMovement(this);
     
     
     public void initHardware (HardwareMap aHwMap) {
@@ -29,9 +26,9 @@ public class Robot {
         //revSlave = aHwMap.get(ExpansionHubEx.class,"Slave");
         
         
-        driveTrain.initHardware(aHwMap);
+        driveTrain.initHardware(aHwMap, this);
         intake.initHardware(aHwMap);
-        sensing.initHardware(aHwMap);
+        sensors.initHardware(aHwMap);
         outtake.initHardware(aHwMap);
         
     }
