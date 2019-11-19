@@ -6,16 +6,16 @@ import static org.firstinspires.ftc.teamcode.Globals.FieldConstants.TILE_LENGTH;
 public class FieldPosition {
     
 
-    public final double fieldXInches;
-    public final double fieldYInches;
+    public final double xInches;
+    public final double yInches;
     
     
     public double getXInches() {
-        return fieldXInches;
+        return xInches;
     }
 
     public double getYInches() {
-        return fieldYInches;
+        return yInches;
     }
     
     
@@ -34,23 +34,34 @@ public class FieldPosition {
     
     public FieldPosition(double xTile, double yTile, double addXInches, double addYInches) {
         
-        fieldXInches = (xTile*TILE_LENGTH) + addXInches;
-        fieldYInches = (yTile*TILE_LENGTH) + addYInches;
+        this.xInches = (xTile*TILE_LENGTH) + addXInches;
+        this.yInches = (yTile*TILE_LENGTH) + addYInches;
         
-        fieldXTicks = inchesToTicks(fieldXInches);
-        fieldYTicks = inchesToTicks(fieldYInches);  
+        fieldXTicks = inchesToTicks(this.xInches);
+        fieldYTicks = inchesToTicks(this.yInches);  
         
     }
     
     
     public FieldPosition(double xInches, double yInches) {
-        
-        fieldXInches = xInches;
-        fieldYInches = yInches;
 
-        fieldXTicks = inchesToTicks(fieldXInches);
-        fieldYTicks = inchesToTicks(fieldYInches);
+        this.xInches = xInches;
+        this.yInches = yInches;
+
+        fieldXTicks = inchesToTicks(this.xInches);
+        fieldYTicks = inchesToTicks(this.yInches);
         
+    }
+
+
+    public FieldPosition (FieldPosition fieldPos) {
+
+        this.xInches = fieldPos.xInches;
+        this.yInches = fieldPos.yInches;
+
+        fieldXTicks = inchesToTicks(xInches);
+        fieldYTicks = inchesToTicks(yInches);
+
     }
     
     

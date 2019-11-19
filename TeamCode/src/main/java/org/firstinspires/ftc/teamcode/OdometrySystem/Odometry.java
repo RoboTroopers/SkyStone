@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.OdometrySystem;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.Utilities.FieldPosition;
 
-import static java.lang.Math.toRadians;
 import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.ticksToInches;
 
 
@@ -43,55 +42,51 @@ public class Odometry {
         
         robot = theRobot;
         
-        
     }
     
     
-    public void setPosition(FieldPosition fieldPos, double startWorldAngle_deg) {
+    public void setPosition(FieldPosition fieldPos) {
         
         worldXPosition = fieldPos.fieldXTicks;
         worldYPosition = fieldPos.fieldYTicks;
-        robot.sensing.worldAngle_rad = toRadians(startWorldAngle_deg);
         
     }
     
     
-    public void setPositionTicksRad(double startX, double startY, double startWorldAngle_rad) {
+    public void setPositionTicks(double startX, double startY) {
         
         worldXPosition = startX;
         worldYPosition = startY;
-        robot.sensing.worldAngle_rad = startWorldAngle_rad;
         
     }
 
 
-    public void setPositionInchesDeg(double startXInches, double startYInches, double startWorldAngle_deg) {
+    public void setPositionInches(double startXInches, double startYInches) {
         
         worldXPosition = ticksToInches(startXInches);
         worldYPosition = ticksToInches(startYInches);
-        robot.sensing.worldAngle_rad = toRadians(startWorldAngle_deg);
         
     }
     
     
     public void updatePosition() {
         
-        double horizontalEncoderChange = robot.sensing.getHorizontalEncoder() - horizontalEncoderLast;
-        double verticalEncoderChange = robot.sensing.getVerticalEncoder() - verticalEncoderLast;
+        double horizontalEncoderChange = robot.sensors.getHorizontalEncoder() - horizontalEncoderLast;
+        double verticalEncoderChange = robot.sensors.getVerticalEncoder() - verticalEncoderLast;
         
         // Position where the robot would be if the robot had not strafed
-        double forwardShiftX = verticalEncoderChange * Math.cos(robot.sensing.worldAngle_rad);
-        double forwardShiftY = verticalEncoderChange * Math.sin(robot.sensing.worldAngle_rad);
+        double forwardShiftX = verticalEncoderChange * Math.cos(robot.sensors.getWorldAngleRad());
+        double forwardShiftY = verticalEncoderChange * Math.sin(robot.sensors.getWorldAngleRad());
         
         // How far the robot's position has shifted as a result of strafing
-        double strafeShiftX = horizontalEncoderChange*Math.cos(robot.sensing.worldAngle_rad);
-        double strafeShiftY = horizontalEncoderChange*Math.sin(robot.sensing.worldAngle_rad);
+        double strafeShiftX = horizontalEncoderChange*Math.cos(robot.sensors.getWorldAngleRad());
+        double strafeShiftY = horizontalEncoderChange*Math.sin(robot.sensors.getWorldAngleRad());
         
         worldXPosition += forwardShiftX + strafeShiftX;
         worldYPosition += forwardShiftY + strafeShiftY;
         
-        horizontalEncoderLast = robot.sensing.getHorizontalEncoder();
-        verticalEncoderLast = robot.sensing.getVerticalEncoder();
+        horizontalEncoderLast = robot.sensors.getHorizontalEncoder();
+        verticalEncoderLast = robot.sensors.getVerticalEncoder();
         
         
         

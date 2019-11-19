@@ -12,14 +12,6 @@ public class ControllerFunctions {
     }
     
     
-    public static double getJoystickAngleDeg(double xInput, double yInput) {
-        
-        double degrees = Math.toDegrees(Math.tan(yInput/xInput));
-        return degrees;
-        
-    }
-    
-    
     public static double getJoystickDistanceFromCenter(double xInput, double yInput) {
         
         double distance = Math.hypot(xInput, yInput);

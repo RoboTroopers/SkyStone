@@ -10,16 +10,18 @@ public class MathFunctions {
     
     
      //Keeps angle within -180 to 180 degrees while preserving angle measure
-    public static double angleWrap(double angle) {
-        while (angle < -PI)
-            angle += 2*PI;
+    public static double angleWrap(double rad) {
+        while (rad < -PI)
+            rad += 2*PI;
         
-        while (angle > PI)
-            angle -= 2*PI;
+        while (rad > PI)
+            rad -= 2*PI;
         
-        return angle;
+        return rad;
         
     }
+    
+    
     
     public static ArrayList<Point> lineCircleIntersection(Point circleCenter, double radius,
                                                           Point linePoint1, Point linePoint2) {

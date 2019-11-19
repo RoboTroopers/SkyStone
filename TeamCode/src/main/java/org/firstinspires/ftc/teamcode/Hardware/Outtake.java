@@ -12,9 +12,8 @@ public class Outtake {
     
     public Servo arm;
     
-    public final double ARM_DOWN = 0;
-    public final double ARM_UP = 180;
-
+    public final double ARM_MIN_POS = 0;
+    public final double ARM_MAX_POS = 180;
 
     
     public void initHardware(HardwareMap aHwMap) {
@@ -38,8 +37,7 @@ public class Outtake {
 
         return leftPulley.getPower() + rightPulley.getPower();
     }
-
-
+    
     
     
     public void setArm(double deg) {
@@ -48,6 +46,18 @@ public class Outtake {
     }
 
 
+    public void setArmMin() {
+
+        arm.setPosition(ARM_MIN_POS);
+    }
+
+
+    public void setArmMax() {
+
+        arm.setPosition(ARM_MAX_POS);
+    }
+
+    
     public double getArmPos() {
 
         return arm.getPosition();
