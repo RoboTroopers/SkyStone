@@ -158,6 +158,7 @@ public class DriveTrain {
     }
     
     
+    
     public void strafeInches(double relativeInches, double rightSpeed) {
 
         int relativePosition = (int)inchesToTicks(relativeInches);
@@ -176,7 +177,7 @@ public class DriveTrain {
         
         setTargetPositions(leftFrontPos, rightFrontPos, leftRearPos, rightRearPos);
         strafe(rightSpeed);
-        while (!anyMotorsBusy()) {pause(10);}
+        while (anyMotorsBusy()) {pause(10);}
 
         setMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         brake();
@@ -217,6 +218,7 @@ public class DriveTrain {
     
     
     public void turnToRad(double absoluteRad, double maxSpeed) { turnToRad(absoluteRad, maxSpeed, 3); }
+    
     
     
     /*

@@ -50,7 +50,7 @@ public class Intake {
     public Directions getDirection() {
 
         Directions directionState;
-        double intakeAvg = rightIntake.getPower()+leftIntake.getPower();
+        double intakeAvg = (rightIntake.getPower()+leftIntake.getPower())/2;
 
         if (intakeAvg < 0) {
             directionState = Directions.SUCK;

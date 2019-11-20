@@ -98,27 +98,6 @@ public class Sensors {
         return possessingStone;
 
     }
-
-
-    public boolean justIntookStone () {
-        // Color sensor detects if yellow stone is above stone holding cell and wasn't before
-
-        double rgDiff = Math.abs(colorSensor.red() - colorSensor.green());
-        double rbDiff = colorSensor.red() - colorSensor.blue();
-        double gbDiff = colorSensor.green() - colorSensor.blue();
-
-        boolean possessingStone = false;
-
-        if (rgDiff < rbDiff && rgDiff < gbDiff && possessingStoneLast != possessingStone) {
-            // If difference between red and green is less than diff between red and blue and between green and blue
-
-            possessingStone = true;
-        }
-
-        possessingStoneLast = possessingStone;
-        return possessingStone;
-
-    }
     
 
 

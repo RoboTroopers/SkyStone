@@ -250,7 +250,6 @@ public class SeekSkyStone extends LinearOpMode {
 
                             telemetry.addData("Ladies and gentlemen!", "We gottem.");
                             
-                            // Release skystone onto ground
                             sleep(1500);
                             skystonesTransported += 1;
                             robot.intake.stop();
@@ -259,20 +258,18 @@ public class SeekSkyStone extends LinearOpMode {
                             
                             robot.driveTrain.turnToRad(toRadians(-90), 0.6, 6);
                             robot.driveTrain.straightInches(TILE_LENGTH*3, 5);
-                            robot.intake.setSpeed(-100);
+                            
+                            robot.intake.setSpeed(-100); // Release skystone onto ground
                             sleep(1500);
                             robot.intake.stop();
 
                             robot.driveTrain.straightInches(-TILE_LENGTH*3, 5);
-
                             robot.driveTrain.turnToRad(0, 0.6, 6);
                             
                             if (skystonesTransported < 2) {
-                            
                                 currentState = ProgramStates.SCANNING;
 
                             } else {
-
                                 currentState = ProgramStates.PARKING;
                             }
 
