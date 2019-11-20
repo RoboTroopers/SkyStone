@@ -40,7 +40,7 @@ public class Outtake {
     
     
     
-    public void setArm(double deg) {
+    public void setArmPos(double deg) {
         
         arm.setPosition(deg);
     }

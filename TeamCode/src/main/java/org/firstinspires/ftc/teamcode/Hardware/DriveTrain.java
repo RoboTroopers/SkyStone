@@ -45,7 +45,6 @@ public class DriveTrain {
     public void applyMovement(double horizontal, double vertical, double turn) {
 
         //Moves robot on field horizontally and vertically, rotates by turn
-        pause(15);
 
         //movement_x multiplied by 1.5 because mechanum drive strafes sideways slower than forwards/backwards
         double lf_power_raw = vertical + turn - (horizontal*1.5);
@@ -78,7 +77,9 @@ public class DriveTrain {
             leftRear.setPower(lr_power_raw);
         if (rightRear.getPower() != rr_power_raw)
             rightRear.setPower(rr_power_raw);
-
+        
+        pause(10);
+        
     }
     
     
@@ -111,17 +112,16 @@ public class DriveTrain {
     
     public void setMotorModes(DcMotor.RunMode runMode) {
         
-        leftFront.setMode(runMode);
-        rightFront.setMode(runMode);
-        leftRear.setMode(runMode);
-        rightFront.setMode(runMode);
+        for (DcMotor motor : baseMotors) {
+            motor.setMode(runMode);
+        }
         
     }
     
     
     
     public void setTargetPositions(int leftFrontPos, int rightFrontPos, int leftRearPos, int rightRearPos) {
-
+        
         leftFront.setTargetPosition(leftFrontPos);
         rightFront.setTargetPosition(rightFrontPos);
         leftRear.setTargetPosition(leftRearPos);
@@ -135,7 +135,7 @@ public class DriveTrain {
     
     
     
-    public void straightInches (double relativeInches, double speed) {
+    public void straightInches(double relativeInches, double speed) {
 
         int relativePosition = (int)inchesToTicks(relativeInches);
 
@@ -143,8 +143,8 @@ public class DriveTrain {
 
         int leftFrontPos = relativePosition;
         int rightFrontPos = relativePosition;
-        int leftRearPos = leftRear.getCurrentPosition() + relativePosition;
-        int rightRearPos = rightRear.getCurrentPosition() + relativePosition;
+        int leftRearPos = relativePosition;
+        int rightRearPos = relativePosition;
         
         setMotorModes(DcMotor.RunMode.RUN_TO_POSITION);
         
@@ -162,15 +162,15 @@ public class DriveTrain {
 
         int relativePosition = (int)inchesToTicks(relativeInches);
 
-        int rightSign = (int)(rightSpeed / abs(rightSpeed));
-        int leftSign = -rightSign;
+        int RF_LRSign = (int)(rightSpeed / abs(rightSpeed));
+        int LF_RRSign = -RF_LRSign;
 
         setMotorModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        int leftFrontPos = (leftFront.getCurrentPosition() + relativePosition)*leftSign;
-        int rightFrontPos = (rightFront.getCurrentPosition() + relativePosition)*rightSign;
-        int leftRearPos = (leftRear.getCurrentPosition() + relativePosition)*leftSign;
-        int rightRearPos = (rightRear.getCurrentPosition() + relativePosition)*rightSign;
+        
+        int leftFrontPos = relativePosition*LF_RRSign;
+        int rightFrontPos = relativePosition*RF_LRSign;
+        int leftRearPos = relativePosition*RF_LRSign;
+        int rightRearPos =  relativePosition*LF_RRSign;
 
         setMotorModes(DcMotor.RunMode.RUN_TO_POSITION);
         
@@ -205,9 +205,9 @@ public class DriveTrain {
             
             double movement_turn = (errorRad/initialRelativeRadToAngle) * deaccelRate; // Speed is greater when error is greater
             movement_turn = Range.clip(movement_turn, minSpeed, maxSpeed); // Deaccel rate only becomes apparent when it isn't being cut off by clip (while deacceling)
-
+            
             applyMovement(0, 0, -movement_turn);
-
+            
         } while (Math.abs(errorRad) > rotationAccuracyRange);
 
         robot.driveTrain.brake();
@@ -219,7 +219,6 @@ public class DriveTrain {
     public void turnToRad(double absoluteRad, double maxSpeed) { turnToRad(absoluteRad, maxSpeed, 3); }
     
     
-
     /*
     public void myGoToPosition(double xInches, double yInches, double movementSpeed, double preferredAngle_rad, double turnSpeed) {
         double accuracyRange = inchesToTicks(0.5);

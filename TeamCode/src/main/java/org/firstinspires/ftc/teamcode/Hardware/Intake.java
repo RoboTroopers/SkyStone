@@ -52,10 +52,10 @@ public class Intake {
         Directions directionState;
         double intakeAvg = rightIntake.getPower()+leftIntake.getPower();
 
-        if (intakeAvg > 0) {
+        if (intakeAvg < 0) {
             directionState = Directions.SUCK;
 
-        } else if (intakeAvg < 0) {
+        } else if (intakeAvg > 0) {
             directionState = Directions.BLOW;
 
         } else {

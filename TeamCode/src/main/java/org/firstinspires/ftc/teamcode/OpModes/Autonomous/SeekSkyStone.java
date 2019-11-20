@@ -243,31 +243,38 @@ public class SeekSkyStone extends LinearOpMode {
 
                         // Goes forward until skystone is picked up
 
-
+                            robot.intake.setSpeed(-100);
                             //while (!robot.sensors.possessingStone()) {
-                                robot.driveTrain.straightInches(10, 0.7);
+                            robot.driveTrain.straightInches(10, 0.7);
                             //}
 
                             telemetry.addData("Ladies and gentlemen!", "We gottem.");
-
+                            
                             // Release skystone onto ground
-                            robot.intake.setSpeed(-100);
                             sleep(1500);
                             skystonesTransported += 1;
                             robot.intake.stop();
                             robot.driveTrain.brake();
+                            robot.driveTrain.straightInches(-10, 0.7);
                             
-                            robot.driveTrain.turnToRad(toRadians(90), 0.6, 6);
+                            robot.driveTrain.turnToRad(toRadians(-90), 0.6, 6);
                             robot.driveTrain.straightInches(TILE_LENGTH*3, 5);
-                            
-                            //if (skystonesTransported < 2) {
-                            
-                              //  currentState = ProgramStates.SCANNING;
+                            robot.intake.setSpeed(-100);
+                            sleep(1500);
+                            robot.intake.stop();
 
-                            //} else {
+                            robot.driveTrain.straightInches(-TILE_LENGTH*3, 5);
+
+                            robot.driveTrain.turnToRad(0, 0.6, 6);
+                            
+                            if (skystonesTransported < 2) {
+                            
+                                currentState = ProgramStates.SCANNING;
+
+                            } else {
 
                                 currentState = ProgramStates.PARKING;
-                            //}
+                            }
 
                             break;
 
