@@ -51,7 +51,7 @@ public class MechanumStrafingTeleOp extends OpMode {
 
         if (Math.abs(gamepad1.right_stick_x) >= threshold) {// || Math.abs(gamepad1.right_stick_y) > threshold) {
 
-            movement_turn = gamepad1.right_stick_x;
+            movement_turn = -gamepad1.right_stick_x;
 
         } else {
             movement_turn = 0;
