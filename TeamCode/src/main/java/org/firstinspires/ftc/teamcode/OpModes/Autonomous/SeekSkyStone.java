@@ -39,6 +39,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.Globals.DriveConstants;
+import org.firstinspires.ftc.teamcode.Globals.FieldConstants;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.Utilities.FieldPosition;
 
@@ -244,9 +245,9 @@ public class SeekSkyStone extends LinearOpMode {
                         // Goes forward until skystone is picked up
 
                             robot.intake.setSpeed(-100);
-                            //while (!robot.sensors.possessingStone()) {
-                            robot.driveTrain.straightInches(10, 0.7);
-                            //}
+                            while (!robot.sensors.possessingStone()) {
+                                robot.driveTrain.straightInches(10, 0.7);
+                            }
 
                             telemetry.addData("Ladies and gentlemen!", "We gottem.");
                             
@@ -284,7 +285,14 @@ public class SeekSkyStone extends LinearOpMode {
         }
 
         if (currentState == ProgramStates.PARKING) {
+
             telemetry.addData("Program State", "Parking");
+            robot.driveTrain.strafe(0.5);
+
+            while (!robot.sensors.overLine(FieldConstants.AllianceSides.BLUE)) {
+                telemetry.addData("Parking...", true);
+            }
+
             robot.driveTrain.brake();
             //robot.advancedMovement.myGoToPosition(BRIDGE_X, TILE_LENGTH, 0.6, 0, 0.5);
         }

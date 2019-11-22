@@ -1,13 +1,17 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
+import android.graphics.Color;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.teamcode.Globals.FieldConstants;
 import org.firstinspires.ftc.teamcode.ppProject.treamcode.MathFunctions;
 
 public class Sensors {
@@ -22,11 +26,10 @@ public class Sensors {
     //public DcMotor rightVerticalEncoder;
 
 
-    public ColorSensor colorSensor;
-    //public DistanceSensor distanceSensor;
+    public ColorSensor stoneSensor;
+    public ColorSensor lineSensor;
 
-
-    private boolean possessingStoneLast = false;
+    public DistanceSensor pulleySensor;
 
 
 
@@ -39,18 +42,14 @@ public class Sensors {
         //leftVerticalEncoder = aHwMap.get(DcMotor.class, "leftVerticalEncoder");
         //rightVerticalEncoder = aHwMap.get(DcMotor.class, "rightVerticalEncoder");
         //resetEncoders();
-        colorSensor = aHwMap.get(ColorSensor.class, "colorSensor");
-        //distanceSensor = aHwMap.get(DistanceSensor.class, "distancesSensor");
-
+        stoneSensor = aHwMap.get(ColorSensor.class, "colorSensor");
+        lineSensor = aHwMap.get(ColorSensor.class, "lineSensor");
 
     }
 
 
 
-    public double getHorizontalEncoder() {
-
-        return horizontalEncoder.getCurrentPosition();
-    }
+    public double getHorizontalEncoder() { return horizontalEncoder.getCurrentPosition(); }
 
 
     public double getVerticalEncoder() {
@@ -74,31 +73,60 @@ public class Sensors {
 
     
 
-    public double getWorldAngleRad() {
-        return MathFunctions.angleWrap(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).firstAngle);
-    }
+    public double getWorldAngleRad() { return MathFunctions.angleWrap(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).firstAngle); }
     
+
+
+    public float[] getColorSensorHSV(ColorSensor thisColorSensor) {
+
+        float[] hsvValues = new float[3];
+        final float values[] = hsvValues;
+
+        // convert the RGB values to HSV values.
+        Color.RGBToHSV((int) (thisColorSensor.red() * 255),
+                (int) (thisColorSensor.green() * 255),
+                (int) (thisColorSensor.blue() * 255),
+                hsvValues);
+
+        return hsvValues;
+
+    }
+
 
 
     public boolean possessingStone() {
         // Color sensor detects if yellow stone is above stone holding cell
 
-        double rgDiff = Math.abs(colorSensor.red() - colorSensor.green());
-        double rbDiff = colorSensor.red() - colorSensor.blue();
-        double gbDiff = colorSensor.green() - colorSensor.blue();
+        float hue = getColorSensorHSV(stoneSensor)[0];
 
-        boolean possessingStone = false;
+        boolean isPossessing = false;
 
-        if (rgDiff < rbDiff && rgDiff < gbDiff) {
-            // If difference between red and green is less than diff between red and blue and between green and blue
-
-            possessingStone = true;
+        if (hue > 40 && hue < 70) {
+            isPossessing = true;
         }
-        possessingStoneLast = possessingStone;
-        return possessingStone;
+
+        return isPossessing;
 
     }
-    
+
+
+
+    public boolean overLine(FieldConstants.AllianceSides lineColor) {
+        // Color sensor detects if yellow stone is above stone holding cell
+
+        float hue = getColorSensorHSV(stoneSensor)[0];
+        float saturation = getColorSensorHSV(stoneSensor)[1];
+        boolean isOvertape = false;
+
+        if (((hue >= 0 && hue <= 25) && lineColor == FieldConstants.AllianceSides.RED) || ((hue >= 180 && hue <= 250) && lineColor == FieldConstants.AllianceSides.BLUE)) {
+            isOvertape = true;
+        }
+
+        return isOvertape;
+
+    }
+
+
 
 
 }
