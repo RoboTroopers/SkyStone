@@ -8,11 +8,12 @@ import org.firstinspires.ftc.teamcode.ppProject.company.Range;
 import static java.lang.Math.abs;
 import static java.lang.Math.toRadians;
 import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.inchesToTicks;
+import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.ticksToInches;
 import static org.firstinspires.ftc.teamcode.Utilities.MiscUtil.pause;
 
 public class DriveTrain {
-    
-    
+
+
     public Robot robot;
     
     
@@ -33,24 +34,24 @@ public class DriveTrain {
         rightFront = aHwMap.get(DcMotor.class, "rightFront");
         leftRear = aHwMap.get(DcMotor.class, "leftRear");
         rightRear = aHwMap.get(DcMotor.class, "rightRear");
+
         leftRear.setDirection(DcMotor.Direction.REVERSE);
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         
         baseMotors = new DcMotor[] {leftFront, rightFront, leftRear, rightRear};
         
     }
-
-
-
-    public void applyMovement(double horizontal, double vertical, double turn) {
+    
+    
+    public void applyMovement(double straight, double strafe, double turn) {
 
         //Moves robot on field horizontally and vertically, rotates by turn
 
         //movement_x multiplied by 1.5 because mechanum drive strafes sideways slower than forwards/backwards
-        double lf_power_raw = vertical + turn - (horizontal*1.5);
-        double lr_power_raw = vertical + turn + (horizontal*1.5);
-        double rf_power_raw = vertical - turn + (horizontal*1.5);
-        double rr_power_raw = vertical - turn - (horizontal*1.5);
+        double lf_power_raw = straight + turn - (strafe*1.5);
+        double lr_power_raw = straight + turn + (strafe*1.5);
+        double rf_power_raw = straight - turn + (strafe*1.5);
+        double rr_power_raw = straight - turn - (strafe*1.5);
 
 
         // Find greatest power
@@ -85,18 +86,25 @@ public class DriveTrain {
     
     
     // Stations the robot in current position
-    public void brake() { applyMovement(0, 0, 0); }
+    public void brake() {
+        applyMovement(0, 0, 0);
+    }
     
     
     // Moves all motors at same power
-    public void straight(double speed) { applyMovement(0, speed, 0); }
+    public void straight(double speed) { 
+        applyMovement(speed, 0, 0); 
+    }
 
     // Moves all motors at same power
-    public void turn(double speed) { applyMovement(0, 0, -speed); }
+    public void turn(double speed) {
+        applyMovement(0, 0, -speed);
+    }
     
     
     // Moves the left and right side motors separate speeds
-    public void turn(double leftSpeed, double rightSpeed) {
+    public void steer(double leftSpeed, double rightSpeed) {
+
         leftFront.setPower(leftSpeed);
         rightFront.setPower(rightSpeed);
         leftRear.setPower(leftSpeed);
@@ -106,21 +114,29 @@ public class DriveTrain {
     
     
     // Moves the robot sideways without turning, positive speed is right, negative speed is left.
-    public void strafe(double speed){ applyMovement(speed, 0, 0); }
-    
-    
-    
-    public void setMotorModes(DcMotor.RunMode runMode) {
-        
-        for (DcMotor motor : baseMotors) {
-            motor.setMode(runMode);
-        }
-        
+    public void strafe(double speed){
+        applyMovement(0, speed, 0); 
     }
     
     
     
-    public void setTargetPositions(int leftFrontPos, int rightFrontPos, int leftRearPos, int rightRearPos) {
+    public void setMotorModes(DcMotor.RunMode runMode) {
+        for (DcMotor motor : baseMotors) {
+            motor.setMode(runMode);
+        }
+    }
+    
+    public void useEncoders() {
+        setMotorModes(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void stopUsingEncoders() {
+        setMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+    
+    
+    
+    public void setTargetPos(int leftFrontPos, int rightFrontPos, int leftRearPos, int rightRearPos) {
         
         leftFront.setTargetPosition(leftFrontPos);
         rightFront.setTargetPosition(rightFrontPos);
@@ -128,10 +144,22 @@ public class DriveTrain {
         rightFront.setTargetPosition(rightRearPos);
 
     }
+
+
+
+    public double getEncoderAvg() {
+        return (leftFront.getCurrentPosition()+rightFront.getCurrentPosition()+leftRear.getCurrentPosition()+rightRear.getCurrentPosition())/4;
+    }
+
+
+    public double getEncoderAvgInches() {
+        return ticksToInches(getEncoderAvg());
+    }
     
     
-    
-    public boolean anyMotorsBusy() { return (leftFront.isBusy() || rightFront.isBusy() || leftRear.isBusy() || rightRear.isBusy()); }
+    public boolean anyMotorsBusy() {
+        return (leftFront.isBusy() || rightFront.isBusy() || leftRear.isBusy() || rightRear.isBusy());
+    }
     
     
     
@@ -148,7 +176,7 @@ public class DriveTrain {
         
         setMotorModes(DcMotor.RunMode.RUN_TO_POSITION);
         
-        setTargetPositions(leftFrontPos, rightFrontPos, leftRearPos, rightRearPos);
+        setTargetPos(leftFrontPos, rightFrontPos, leftRearPos, rightRearPos);
         straight(speed);
         while (anyMotorsBusy()) {pause(10);}
 
@@ -175,7 +203,7 @@ public class DriveTrain {
 
         setMotorModes(DcMotor.RunMode.RUN_TO_POSITION);
         
-        setTargetPositions(leftFrontPos, rightFrontPos, leftRearPos, rightRearPos);
+        setTargetPos(leftFrontPos, rightFrontPos, leftRearPos, rightRearPos);
         strafe(rightSpeed);
         while (anyMotorsBusy()) {pause(10);}
 
@@ -215,8 +243,7 @@ public class DriveTrain {
 
     }
 
-    
-    
+
     public void turnToRad(double absoluteRad, double maxSpeed) { turnToRad(absoluteRad, maxSpeed, 3); }
     
     

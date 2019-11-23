@@ -9,15 +9,10 @@ public class Intake {
 
     public DcMotor leftIntake;
     public DcMotor rightIntake;
+    
+    public final double SUCK_SPEED = 0.1;
 
-    public enum Directions {
-
-        REST,
-        SUCK,
-        BLOW,
-
-    }
-
+    public enum Directions { REST, SUCK, BLOW }
 
 
 
@@ -30,7 +25,6 @@ public class Intake {
     }
 
 
-    // Set intake speed to suck in skystone
     public void setSpeed(double speed) {
 
         leftIntake.setPower(speed);
@@ -39,7 +33,25 @@ public class Intake {
     }
 
 
-    public void stop() {
+    // Set intake speed to suck in skystone
+    public void suck() {
+
+        leftIntake.setPower(-SUCK_SPEED);
+        rightIntake.setPower(-SUCK_SPEED);
+
+    }
+
+
+    // Set intake speed to adjust in skystone
+    public void blow() {
+
+        leftIntake.setPower(SUCK_SPEED);
+        rightIntake.setPower(SUCK_SPEED);
+
+    }
+
+
+    public void rest() {
 
         leftIntake.setPower(0);
         rightIntake.setPower(0);
@@ -47,22 +59,23 @@ public class Intake {
     }
 
 
+
     public Directions getDirection() {
 
-        Directions directionState;
+        Directions currentDirection;
         double intakeAvg = (rightIntake.getPower()+leftIntake.getPower())/2;
 
         if (intakeAvg < 0) {
-            directionState = Directions.SUCK;
+            currentDirection = Directions.SUCK;
 
         } else if (intakeAvg > 0) {
-            directionState = Directions.BLOW;
+            currentDirection = Directions.BLOW;
 
         } else {
-            directionState = Directions.REST;
+            currentDirection = Directions.REST;
         }
 
-        return directionState;
+        return currentDirection;
     }
 
 

@@ -46,11 +46,17 @@ public class Outtake {
     }
 
 
-    public void setPulleySpeed(double speed) { pulley.setPower(speed); }
+    public void setPulleySpeed(double speed) {
+        pulley.setPower(speed);
+    }
 
-    public void stopPulley() { pulley.setPower(0); }
+    public void stopPulley() {
+        pulley.setPower(0);
+    }
 
-    public double getPulleySpeed() { return pulley.getPower(); }
+    public double getPulleySpeed() {
+        return pulley.getPower();
+    }
 
 
     /*
@@ -62,8 +68,10 @@ public class Outtake {
     }*/
 
 
+
     // Set the arm to certain positions and set the wrist position to compensate, keeping the claw parallel to the ground
     public void armMid() {
+
         leftArm.setPosition(ARM_MID_POS);
         rightArm.setPosition(ARM_MID_POS);
 
@@ -72,6 +80,7 @@ public class Outtake {
 
 
     public void armIn() {
+
         leftArm.setPosition(ARM_IN_POS);
         rightArm.setPosition(ARM_IN_POS);
 
@@ -80,6 +89,7 @@ public class Outtake {
 
 
     public void armOut() {
+
         wrist.setPosition(WRIST_TURNED_POS); // Rotates wrist slightly to get stone past support bar
 
         leftArm.setPosition(ARM_IN_POS);
@@ -87,33 +97,47 @@ public class Outtake {
     }
 
 
-
-    public void wristToArmPos() { wrist.setPosition(getArmPos()); }
-
-
-    public double getArmPos() { return (leftArm.getPosition()+rightArm.getPosition())/2; }
-
-    public double getWristPos() { return wrist.getPosition(); }
+    public double getArmPos() {
+        return (leftArm.getPosition()+rightArm.getPosition())/2;
+    }
 
 
+    public void wristToArmPos() {
+        wrist.setPosition(getArmPos());
+    }
 
-    public void closeClaw() { claw.setPosition(CLAW_CLOSED_POS); }
+    public double getWristPos() {
+        return wrist.getPosition();
+    }
 
-    public void openClaw() { claw.setPosition(CLAW_OPEN_POS); }
+
+    public void closeClaw() {
+        claw.setPosition(CLAW_CLOSED_POS);
+    }
+
+    public void openClaw() {
+        claw.setPosition(CLAW_OPEN_POS);
+    }
     
-    public double getClawPos() { return claw.getPosition(); }
-
-
+    public double getClawPos() {
+        return claw.getPosition();
+    }
+    
 
     public void depositStone() {
 
+        armMid();
+        pause(1500);
+
         armIn();
         closeClaw();
+        pause(1500);
         armOut();
+
         openClaw();
         pause(1000);
-
         armMid();
+
     }
 
     

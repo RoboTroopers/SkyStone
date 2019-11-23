@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.teamcode.Globals.FieldConstants;
 import org.firstinspires.ftc.teamcode.ppProject.treamcode.MathFunctions;
 
 public class Sensors {
@@ -111,14 +110,13 @@ public class Sensors {
 
 
 
-    public boolean overLine(FieldConstants.AllianceSides lineColor) {
-        // Color sensor detects if yellow stone is above stone holding cell
+    public boolean overLine() {
 
         float hue = getColorSensorHSV(stoneSensor)[0];
         float saturation = getColorSensorHSV(stoneSensor)[1];
         boolean isOvertape = false;
 
-        if (((hue >= 0 && hue <= 25) && lineColor == FieldConstants.AllianceSides.RED) || ((hue >= 180 && hue <= 250) && lineColor == FieldConstants.AllianceSides.BLUE)) {
+        if (((hue >= 0 && hue <= 25) || (hue >= 180 && hue <= 250)) && saturation > 0.5) {
             isOvertape = true;
         }
 

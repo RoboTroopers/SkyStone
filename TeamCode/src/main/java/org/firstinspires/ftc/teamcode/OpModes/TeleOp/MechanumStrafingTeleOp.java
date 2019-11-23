@@ -69,18 +69,18 @@ public class MechanumStrafingTeleOp extends OpMode {
         if (gamepad1.right_bumper) {
             if (robot.intake.getDirection() != Intake.Directions.SUCK) {
 
-                robot.intake.setSpeed(1.0);
+                robot.intake.suck();
             } else {
-                robot.intake.setSpeed(0);
+                robot.intake.rest();
             }
         }
 
         if (gamepad1.left_bumper) {
             if (robot.intake.getDirection() != Intake.Directions.BLOW) {
 
-                robot.intake.setSpeed(-1.0);
+                robot.intake.blow();
             } else {
-                robot.intake.setSpeed(0);
+                robot.intake.rest();
             }
         }
 

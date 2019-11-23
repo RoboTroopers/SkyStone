@@ -20,11 +20,7 @@ public class FieldConstants {
     public static final double STONE_DEPTH = 4;
     
     
-    public enum AllianceSides {
-        RED,
-        BLUE
-        
-    }
+    public enum AllianceColors { RED, BLUE }
     
     
     // Specific key field positions
