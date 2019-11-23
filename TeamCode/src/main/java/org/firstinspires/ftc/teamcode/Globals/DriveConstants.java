@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.Globals;
 
 
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
+
 public class DriveConstants {
     
     /**
@@ -21,7 +24,6 @@ public class DriveConstants {
     public static final double WHEEL_BASE = 10;
 
 
-
     /*
      * CIRCUMCIRCLE: Circle circumscribed about points of a polygon.
      *
@@ -34,7 +36,9 @@ public class DriveConstants {
     public static final double CIRCUMCIRCLE_CIRCUMFERENCE = CIRCUMDIAMETER*Math.PI;
     
     
-    public static final double ENCODER_TICKS_PER_REV = 103;
+    //public static final double ENCODER_TICKS_PER_REV = 103;
+    private static final MotorConfigurationType MOTOR_CONFIG = MotorConfigurationType.getMotorType(DcMotor.class);
+    private static final double ENCODER_TICKS_PER_REV = MOTOR_CONFIG.getTicksPerRev();
 
 
     public static double inchesToTicks(double inches) {

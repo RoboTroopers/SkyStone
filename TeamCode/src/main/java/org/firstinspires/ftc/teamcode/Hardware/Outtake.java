@@ -1,67 +1,102 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import static org.firstinspires.ftc.teamcode.Utilities.MiscUtil.pause;
 
 public class Outtake {
     
     
-    public DcMotor leftPulley;
-    public DcMotor rightPulley;
-    
-    public Servo arm;
-    
-    public final double ARM_MIN_POS = 0;
-    public final double ARM_MAX_POS = 180;
+    public DcMotor pulley;
 
 
-    public DistanceSensor pulleySensor;
+    public final double ARM_IN_POS = 0;
+    public final double ARM_OUT_POS = 0.5;
+
+    public Servo leftArm;
+    public Servo rightArm;
 
 
-    
+    public Servo wrist;
+
+    public Servo claw;
+
+    public final double CLAW_OPEN_POS = 0;
+    public final double CLAW_CLOSED_POS = 0.3;
+
+
+    //public DistanceSensor pulleySensor;
+
+
     public void initHardware(HardwareMap aHwMap) {
-        
-        leftPulley = aHwMap.get(DcMotor.class, "leftPulley");
-        rightPulley = aHwMap.get(DcMotor.class, "rightPulley");
-        pulleySensor = aHwMap.get(DistanceSensor.class, "pulleySensor");
-        
-        arm = aHwMap.get(Servo.class, "arm");
-        
-    }
-    
-    
-    public void setPulleySpeed(double speed) {
-        leftPulley.setPower(speed);
-        rightPulley.setPower(speed);
-        
+
+        pulley = aHwMap.get(DcMotor.class, "leftPulley");
+        //pulleySensor = aHwMap.get(DistanceSensor.class, "pulleySensor");
+
+        wrist = aHwMap.get(Servo.class, "wrist");
+        claw = aHwMap.get(Servo.class, "claw");
+
     }
 
 
-    public double getPulleySpeed() { return leftPulley.getPower() + rightPulley.getPower(); }
+    public void setPulleySpeed(double speed) { pulley.setPower(speed); }
+
+    public void stopPulley() { pulley.setPower(0); }
+
+    public double getPulleySpeed() { return pulley.getPower(); }
 
 
-
+    /*
     public double getPulleyHeight() {
 
         double height = pulleySensor.getDistance(DistanceUnit.INCH);
         return height;
 
+    }*/
+
+
+    public void armIn() {
+
+        leftArm.setPosition(ARM_IN_POS);
+        rightArm.setPosition(ARM_IN_POS);
+
+        wrist.setPosition(ARM_OUT_POS);
     }
 
-    
-    
-    public void setArmPos(double deg) { arm.setPosition(deg); }
 
-    public void setArmMin() { arm.setPosition(ARM_MIN_POS); }
+    public void armOut() {
 
-    public void setArmMax() { arm.setPosition(ARM_MAX_POS); }
+        leftArm.setPosition(ARM_IN_POS);
+        rightArm.setPosition(ARM_IN_POS);
 
+        wrist.setPosition(ARM_OUT_POS);
+    }
+
+
+    public double getArmPos() { return (leftArm.getPosition()+rightArm.getPosition())/2; }
+
+
+    public double getWristPos() { return wrist.getPosition(); }
+
+
+    public void closeClaw() { claw.setPosition(CLAW_CLOSED_POS); }
+
+    public void openClaw() { claw.setPosition(CLAW_OPEN_POS); }
     
-    public double getArmPos() { return arm.getPosition(); }
-    
+    public double getClawPos() { return claw.getPosition(); }
+
+
+    public void dropStone() {
+
+        closeClaw();
+        armOut();
+        openClaw();
+        pause(1000);
+
+        armIn();
+    }
+
     
 }
