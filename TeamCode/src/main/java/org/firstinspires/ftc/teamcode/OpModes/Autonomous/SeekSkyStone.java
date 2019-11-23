@@ -261,8 +261,7 @@ public class SeekSkyStone extends LinearOpMode {
                             robot.driveTrain.straightInches(TILE_LENGTH*3, 5);
                             
                             // Release skystone onto ground
-
-                            robot.outtake.dropStone();
+                            robot.outtake.depositStone();
 
                             robot.driveTrain.straightInches(-TILE_LENGTH*3, 5);
                             robot.driveTrain.turnToRad(0, 0.6, 6);
