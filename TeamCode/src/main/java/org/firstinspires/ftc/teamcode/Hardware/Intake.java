@@ -20,7 +20,6 @@ public class Intake {
         leftIntake = aHwMap.get(DcMotor.class, "leftIntake");
         rightIntake = aHwMap.get(DcMotor.class, "rightIntake");
         rightIntake.setDirection(DcMotor.Direction.REVERSE);
-
     }
 
 
@@ -28,7 +27,6 @@ public class Intake {
 
         leftIntake.setPower(speed);
         rightIntake.setPower(speed);
-
     }
 
 
@@ -37,7 +35,6 @@ public class Intake {
 
         leftIntake.setPower(-SUCK_SPEED);
         rightIntake.setPower(-SUCK_SPEED);
-
     }
 
 
@@ -46,7 +43,6 @@ public class Intake {
 
         leftIntake.setPower(SUCK_SPEED);
         rightIntake.setPower(SUCK_SPEED);
-
     }
 
 
@@ -54,7 +50,6 @@ public class Intake {
 
         leftIntake.setPower(0);
         rightIntake.setPower(0);
-
     }
 
 
@@ -76,7 +71,6 @@ public class Intake {
 
         return currentDirection;
     }
-
 
 
 }

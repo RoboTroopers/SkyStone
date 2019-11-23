@@ -67,18 +67,14 @@ public class BasicTeleopDrive extends OpMode {
         
         
         if (gamepad1.right_trigger > 0.5) {
-            
-            robot.intake.leftIntake.setPower(1);
-            robot.intake.rightIntake.setPower(1);
+            robot.intake.blow();
             
         } else if (gamepad1.left_trigger > 0.5) {
-            
-            robot.intake.leftIntake.setPower(-1);
-            robot.intake.rightIntake.setPower(-1);
+
+            robot.intake.suck();
             
         } else {
-            robot.intake.leftIntake.setPower(0);
-            robot.intake.rightIntake.setPower(0);
+            robot.intake.rest();
         }
 
         telemetry.addData("Status", "Running");
@@ -86,7 +82,7 @@ public class BasicTeleopDrive extends OpMode {
         telemetry.addData("front right power", robot.driveTrain.rightFront.getPower());
         telemetry.addData("back left power", robot.driveTrain.leftRear.getPower());
         telemetry.addData("back right power", robot.driveTrain.rightRear.getPower());
-        telemetry.addData("left intake power", robot.intake.leftIntake.getPower());
+        //telemetry.addData("left intake power", robot.intake.leftIntake.getPower());
         telemetry.addData("right intake power", robot.intake.rightIntake.getPower());
         telemetry.update();
     }

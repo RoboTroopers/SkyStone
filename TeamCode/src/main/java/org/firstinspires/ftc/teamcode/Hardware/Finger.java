@@ -17,7 +17,7 @@ public class Finger {
 
 
     public void initHardware(HardwareMap aHwMap) {
-        finger = aHwMap.get(Servo.class, "leftIntake");
+        finger = aHwMap.get(Servo.class, "finger");
         finger.setDirection(Servo.Direction.REVERSE);
 
     }

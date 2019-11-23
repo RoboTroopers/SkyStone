@@ -144,8 +144,8 @@ public class MechanumStrafingTeleOp extends OpMode {
         telemetry.addData("back left power", robot.driveTrain.leftRear.getPower());
         telemetry.addData("back right power", robot.driveTrain.rightRear.getPower());
 
-        telemetry.addData("left intake power", robot.intake.leftIntake.getPower());
-        telemetry.addData("right intake power", robot.intake.rightIntake.getPower());
+        //telemetry.addData("left intake power", robot.intake.leftIntake.getPower());
+        //telemetry.addData("right intake power", robot.intake.rightIntake.getPower());
 
         telemetry.addData("arm pos", robot.outtake.getArmPos());
         telemetry.addData("wrist pos", -robot.outtake.getWristPos());
