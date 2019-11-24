@@ -269,9 +269,9 @@ public class SeekSkyStone extends LinearOpMode {
                 telemetry.addData("Program State", "Parking");
                 robot.driveTrain.strafe(0.5);
 
-                while (!robot.sensors.overLine()) {
+                //while (!robot.sensors.overLine()) {
                     telemetry.addData("Parking...", true);
-                }
+                //}
 
                 robot.driveTrain.brake();
                 //robot.advancedMovement.myGoToPosition(BRIDGE_X, TILE_LENGTH, 0.6, 0, 0.5);

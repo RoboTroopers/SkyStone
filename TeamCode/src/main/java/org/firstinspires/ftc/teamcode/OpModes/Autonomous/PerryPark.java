@@ -16,7 +16,7 @@ import static org.firstinspires.ftc.teamcode.Utilities.MiscUtil.pause;
 
 @Autonomous(name = "PerryPark", group="Autonomous")
 //@Disabled
-public class PerryParkWall extends LinearOpMode {
+public class PerryPark extends LinearOpMode {
     
     public Robot perry = new Robot();
 
@@ -35,9 +35,12 @@ public class PerryParkWall extends LinearOpMode {
         
         
         if (opModeIsActive()) {
-
-            perry.driveTrain.setMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            while (!(perry.driveTrain.getEncoderAvgInches() > Math.hypot(TILE_LENGTH*2, TILE_LENGTH*2)));
+            
+            perry.driveTrain.setMotorModes(DcMotor.RunMode.RUN_TO_POSITION);
+            int distance = (int)Math.round(TILE_LENGTH);
+            perry.driveTrain.setTargetPos(distance);
+            
+            while (perry.driveTrain.getEncoderAvgInches() < distance);
             perry.driveTrain.straight(0.5);
         }
         perry.driveTrain.brake();

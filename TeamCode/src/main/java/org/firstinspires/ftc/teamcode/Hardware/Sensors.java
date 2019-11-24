@@ -28,9 +28,6 @@ public class Sensors {
     //public ColorSensor stoneSensor;
     public ColorSensor lineSensor;
 
-    public DistanceSensor pulleySensor;
-
-
 
     public void initHardware(HardwareMap aHwMap) {
 
@@ -42,7 +39,7 @@ public class Sensors {
         //rightVerticalEncoder = aHwMap.get(DcMotor.class, "rightVerticalEncoder");
         //resetEncoders();
         //stoneSensor = aHwMap.get(ColorSensor.class, "colorSensor");
-        lineSensor = aHwMap.get(ColorSensor.class, "lineSensor");
+        //lineSensor = aHwMap.get(ColorSensor.class, "lineSensor");
 
     }
 
@@ -69,13 +66,11 @@ public class Sensors {
         horizontalEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         verticalEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
-
     
-
+    
     public double getWorldAngleRad() { return MathFunctions.angleWrap(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).firstAngle); }
     
-
-
+    
     public float[] getColorSensorHSV(ColorSensor thisColorSensor) {
 
         float[] hsvValues = new float[3];
@@ -106,10 +101,10 @@ public class Sensors {
 
         return isPossessing;
     }
-    */
+    
 
 
-
+    
     public boolean overLine() {
 
         float hue = getColorSensorHSV(lineSensor)[0];
@@ -123,8 +118,8 @@ public class Sensors {
         return isOvertape;
 
     }
+    
+    */
 
-
-
-
+    
 }
