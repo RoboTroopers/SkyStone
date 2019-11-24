@@ -25,7 +25,7 @@ public class Sensors {
     //public DcMotor rightVerticalEncoder;
 
 
-    public ColorSensor stoneSensor;
+    //public ColorSensor stoneSensor;
     public ColorSensor lineSensor;
 
     public DistanceSensor pulleySensor;
@@ -41,7 +41,7 @@ public class Sensors {
         //leftVerticalEncoder = aHwMap.get(DcMotor.class, "leftVerticalEncoder");
         //rightVerticalEncoder = aHwMap.get(DcMotor.class, "rightVerticalEncoder");
         //resetEncoders();
-        stoneSensor = aHwMap.get(ColorSensor.class, "colorSensor");
+        //stoneSensor = aHwMap.get(ColorSensor.class, "colorSensor");
         lineSensor = aHwMap.get(ColorSensor.class, "lineSensor");
 
     }
@@ -92,7 +92,7 @@ public class Sensors {
     }
 
 
-
+    /*
     public boolean possessingStone() {
         // Color sensor detects if yellow stone is above stone holding cell
 
@@ -105,15 +105,15 @@ public class Sensors {
         }
 
         return isPossessing;
-
     }
+    */
 
 
 
     public boolean overLine() {
 
-        float hue = getColorSensorHSV(stoneSensor)[0];
-        float saturation = getColorSensorHSV(stoneSensor)[1];
+        float hue = getColorSensorHSV(lineSensor)[0];
+        float saturation = getColorSensorHSV(lineSensor)[1];
         boolean isOvertape = false;
 
         if (((hue >= 0 && hue <= 25) || (hue >= 180 && hue <= 250)) && saturation > 0.5) {

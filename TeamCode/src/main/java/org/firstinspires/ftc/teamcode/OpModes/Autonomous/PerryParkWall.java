@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.OpModes.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 
@@ -13,9 +14,9 @@ import static org.firstinspires.ftc.teamcode.Utilities.MiscUtil.pause;
 
 
 
-@Autonomous(name = "PerryDrag", group="Autonomous")
+@Autonomous(name = "PerryPark", group="Autonomous")
 //@Disabled
-public class PerryDrag extends LinearOpMode {
+public class PerryParkWall extends LinearOpMode {
     
     public Robot perry = new Robot();
 
@@ -35,22 +36,11 @@ public class PerryDrag extends LinearOpMode {
         
         if (opModeIsActive()) {
 
-            perry.driveTrain.straightInches(-12, 1);
-            perry.finger.down();
-            perry.driveTrain.applyMovement(1, -0.3, -0.1);
-
-            while (perry.driveTrain.getEncoderAvgInches() < inchesToTicks(TILE_LENGTH*2)) {
-                telemetry.addData("Inches moved", perry.driveTrain.getEncoderAvgInches());
-                pause(10);
-            }
-            
-            perry.driveTrain.strafe(-1);
-            while (perry.driveTrain.getEncoderAvgInches() < TILE_LENGTH*2) {}
-            
-            perry.driveTrain.brake();
-            
-
+            perry.driveTrain.setMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            while (!(perry.driveTrain.getEncoderAvgInches() > Math.hypot(TILE_LENGTH*2, TILE_LENGTH*2)));
+            perry.driveTrain.straight(0.5);
         }
+        perry.driveTrain.brake();
     }
 
 

@@ -225,9 +225,11 @@ public class SeekSkyStone extends LinearOpMode {
                         // Goes forward until skystone is picked up
                             robot.intake.suck();
 
-                            while (!robot.sensors.possessingStone()) {
+                            /*while (!robot.sensors.possessingStone()) {
                                 robot.driveTrain.straightInches(10, 0.7);
-                            }
+                            }*/
+
+                            robot.driveTrain.straightInches(6, 0.6);
 
                             telemetry.addData("Ladies and gentlemen!", "We gottem.");
                             

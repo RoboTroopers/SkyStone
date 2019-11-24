@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Hardware.Intake;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
+import org.firstinspires.ftc.teamcode.Utilities.GamepadAdvanced;
 
 import static org.firstinspires.ftc.teamcode.ppProject.RobotUtilities.MovementVars.movement_turn;
 import static org.firstinspires.ftc.teamcode.ppProject.RobotUtilities.MovementVars.movement_x;
@@ -19,17 +20,27 @@ public class MechanumStrafingTeleOp extends OpMode {
     private double threshold = 0.0;
 
     boolean armOut = false;
-    boolean clawOpen = false;
 
-    boolean returnArm = false;
-    int clawReleasedCooldown = 1000;
+    int depositStoneTimer = 1000; // arbitrary
+    int resetArmTimer = 1000;
+
+    GamepadAdvanced gamepadAdvanced1;
+    GamepadAdvanced gamepadAdvanced2;
 
 
     @Override
     public void init() {
         robot.initHardware(hardwareMap);
-        //Thread odometryThread = new Thread(new OdometryThread(robot));
-        //odometryThread.start();
+
+        gamepadAdvanced1 = new GamepadAdvanced(gamepad1);
+        gamepadAdvanced2 = new GamepadAdvanced(gamepad2);
+    }
+
+
+    @Override
+    public void start(){
+
+        robot.outtake.armMid();
 
     }
 
@@ -93,48 +104,63 @@ public class MechanumStrafingTeleOp extends OpMode {
         }
 
 
-        if (gamepad2.right_bumper) {
+        if (gamepadAdvanced2.rightBumperOnce()) {
 
-            if (!clawOpen) {
+            //if (robot.outtake.claw.getPosition() == robot.outtake.CLAW_CLOSED_POS) {
                 robot.outtake.openClaw();
-                clawOpen = true;
 
-             } else {
+             /*} else {
                 robot.outtake.closeClaw();
-                clawOpen = false;
-
-                if (armOut) { // Tell arm to return to normal position after stone is released
-                    returnArm = true;
-                    clawReleasedCooldown = 0;
-                }
-            }
+            }*/
         }
 
 
-        if (gamepad2.left_bumper) {
+        if (gamepadAdvanced2.leftBumperOnce()) {
 
-            if (!armOut) {
-                robot.outtake.armOut();
-                armOut = true;
+            if (robot.outtake.arm.getPosition() != robot.outtake.ARM_OUT_POS) {
+                depositStoneTimer = 0;
+                resetArmTimer = 1000;
 
             } else {
-                robot.outtake.armIn();
-                armOut = false;
+                resetArmTimer = 0;
+                depositStoneTimer = 1000;
+
             }
         }
 
 
-        if (returnArm && armOut && !clawOpen) {
-            clawReleasedCooldown += 1;
+        if (depositStoneTimer <= 110) {
 
-            if (clawReleasedCooldown > 2000) {
+            if (depositStoneTimer == 2) {
+                robot.outtake.armMid();
+                robot.outtake.openClaw();
+
+            } else if (depositStoneTimer == 45) {
                 robot.outtake.armIn();
-                armOut = false;
-                returnArm = false;
+
+            } else if (depositStoneTimer == 70) {
+                robot.outtake.closeClaw();
+
+            } else if (depositStoneTimer == 110) {
+                robot.outtake.armOut();
             }
-        } else {
-            returnArm = false;
+            depositStoneTimer += 1;
         }
+
+
+        if (resetArmTimer <= 40) {
+            if (resetArmTimer == 2) {
+                ///robot.outtake.openClaw();
+
+            } else if (resetArmTimer == 40) {
+                robot.outtake.armMid();
+            }
+            resetArmTimer += 1;
+        }
+
+
+        gamepadAdvanced1.update();
+        gamepadAdvanced2.update();
 
 
         telemetry.addData("Status", "Running");
@@ -150,6 +176,9 @@ public class MechanumStrafingTeleOp extends OpMode {
         telemetry.addData("arm pos", robot.outtake.getArmPos());
         telemetry.addData("wrist pos", -robot.outtake.getWristPos());
         telemetry.addData("claw pos", robot.outtake.getClawPos());
+
+        telemetry.addData("deposit stone timer", depositStoneTimer);
+        telemetry.addData("reset arm timer", resetArmTimer);
         telemetry.update();
 
     }

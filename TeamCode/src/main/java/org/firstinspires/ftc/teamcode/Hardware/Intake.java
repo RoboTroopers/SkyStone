@@ -10,7 +10,7 @@ public class Intake {
     public DcMotor leftIntake;
     public DcMotor rightIntake;
     
-    public final double SUCK_SPEED = 0.1;
+    public final double SUCK_SPEED = 0.45;
 
     public enum Directions { REST, SUCK, BLOW }
 

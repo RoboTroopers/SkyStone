@@ -13,17 +13,21 @@ public class Outtake {
 
     public Servo arm;
 
-    public final double ARM_IN_POS = 0.3;
-    public final double ARM_MID_POS = 0.5;
-    public final double ARM_OUT_POS = 0.7;
+    public final double ARM_IN_POS = 0.68;
+    public final double ARM_MID_POS = 0.4;
+    public final double ARM_OUT_POS = 0;
 
     public Servo wrist;
-    public final double WRIST_TURNED_POS = 0.35;
+
+    public final double WRIST_IN_POS = 0.9;
+    public final double WRIST_MID_POS = 0.7;
+    public final double WRIST_OUT_POS = 0;
+
 
     public Servo claw;
 
-    public final double CLAW_OPEN_POS = 0;
-    public final double CLAW_CLOSED_POS = 0.4;
+    public final double CLAW_OPEN_POS = 0.65;
+    public final double CLAW_CLOSED_POS = 0.95;
 
 
     //public DistanceSensor pulleySensor;
@@ -37,7 +41,7 @@ public class Outtake {
         arm = aHwMap.get(Servo.class, "arm");
 
         wrist = aHwMap.get(Servo.class, "wrist");
-        wrist.setDirection(Servo.Direction.REVERSE);
+        //wrist.setDirection(Servo.Direction.REVERSE);
 
         claw = aHwMap.get(Servo.class, "claw");
 
@@ -71,21 +75,21 @@ public class Outtake {
     public void armMid() {
 
         arm.setPosition(ARM_MID_POS);
-        wristToArmPos();
+        wrist.setPosition(WRIST_MID_POS);
     }
 
 
     public void armIn() {
 
         arm.setPosition(ARM_IN_POS);
-        wristToArmPos();
+        wrist.setPosition(WRIST_IN_POS);
     }
 
 
     public void armOut() {
 
-        wrist.setPosition(WRIST_TURNED_POS); // Rotates wrist slightly to get stone past support bar
-        arm.setPosition(ARM_IN_POS);
+        arm.setPosition(ARM_OUT_POS);
+        wrist.setPosition(WRIST_OUT_POS);
     }
 
 
@@ -93,10 +97,6 @@ public class Outtake {
         return arm.getPosition();
     }
 
-
-    public void wristToArmPos() {
-        wrist.setPosition(getArmPos());
-    }
 
     public double getWristPos() {
         return wrist.getPosition();
@@ -114,10 +114,11 @@ public class Outtake {
     public double getClawPos() {
         return claw.getPosition();
     }
-    
 
-    public void depositStone() {
 
+
+
+    public void liftStone() {
         armMid();
         pause(1500);
 
@@ -126,11 +127,18 @@ public class Outtake {
         pause(1500);
         armOut();
 
+    }
+
+
+    public void depositStone() {
+        liftStone();
+
         openClaw();
         pause(1000);
         armMid();
 
     }
+
 
     
 }

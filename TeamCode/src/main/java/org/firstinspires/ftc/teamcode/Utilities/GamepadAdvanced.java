@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 
 
-public class Controller {
+public class GamepadAdvanced {
 
     private Gamepad gamepad;
 
@@ -17,7 +17,7 @@ public class Controller {
     public double left_trigger, right_trigger;
 
 
-    public Controller(Gamepad g) {
+    public GamepadAdvanced(Gamepad g) {
         gamepad = g;
     }
 
@@ -52,6 +52,9 @@ public class Controller {
     public boolean B() { return 0 < b; }
     public boolean leftBumper() { return 0 < left_bumper; }
     public boolean rightBumper() { return 0 < right_bumper; }
+
+    public int leftBumperCooldown() { return left_bumper; }
+    public int rightBumperCooldown() {return right_bumper; }
 
     public boolean dpadUpOnce() { return 1 == dpad_up; }
     public boolean dpadDownOnce() { return 1 == dpad_down; }
