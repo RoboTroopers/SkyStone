@@ -2,7 +2,8 @@ package org.firstinspires.ftc.teamcode.Hardware;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.Sensors;
 
 public class Finger {
 
@@ -36,6 +37,7 @@ public class Finger {
 
         States fingerState;
 
+        if()
         if (finger.getPosition() == FINGER_DOWN_POS) {
             fingerState = States.DOWN;
         } else {

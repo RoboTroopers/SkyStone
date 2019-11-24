@@ -25,7 +25,8 @@ public class Sensors {
     //public DcMotor rightVerticalEncoder;
 
 
-    //public ColorSensor stoneSensor;
+    public ColorSensor stoneSensor;
+
     public ColorSensor lineSensor;
 
     public DistanceSensor pulleySensor;
@@ -92,7 +93,7 @@ public class Sensors {
     }
 
 
-    /*
+
     public boolean possessingStone() {
         // Color sensor detects if yellow stone is above stone holding cell
 
@@ -106,7 +107,7 @@ public class Sensors {
 
         return isPossessing;
     }
-    */
+
 
 
 

@@ -4,11 +4,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 
+
 public class Intake {
 
 
     public DcMotor leftIntake;
     public DcMotor rightIntake;
+
     
     public final double SUCK_SPEED = 0.45;
 
