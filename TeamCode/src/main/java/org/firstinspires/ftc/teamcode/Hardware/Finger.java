@@ -2,24 +2,21 @@ package org.firstinspires.ftc.teamcode.Hardware;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.Sensors;
+
 
 public class Finger {
 
 
     public Servo finger;
 
-    public final double FINGER_DOWN_POS = 0.5;
-    public final double FINGER_UP_POS = 0;
+    public final double FINGER_DOWN_POS = 0.1;
+    public final double FINGER_UP_POS = 0.55;
 
     public enum States { DOWN, UP }
 
 
-
-    public void initHardware(HardwareMap aHwMap) {
-        finger = aHwMap.get(Servo.class, "finger");
-        finger.setDirection(Servo.Direction.REVERSE);
+    public void initHardware(HardwareMap aHwMap, String name) {
+        finger = aHwMap.get(Servo.class, name);
 
     }
 
@@ -27,6 +24,7 @@ public class Finger {
     public void down() {
         finger.setPosition(FINGER_DOWN_POS);
     }
+
 
     public void up() {
         finger.setPosition(FINGER_UP_POS);
@@ -37,11 +35,11 @@ public class Finger {
 
         States fingerState;
 
-        if()
-        if (finger.getPosition() == FINGER_DOWN_POS) {
-            fingerState = States.DOWN;
-        } else {
+        if (finger.getPosition() == FINGER_UP_POS) {
             fingerState = States.UP;
+
+        } else {
+            fingerState = States.DOWN;
         }
         
         return fingerState;
