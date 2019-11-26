@@ -125,30 +125,32 @@ public class DriveTrain {
             motor.setMode(runMode);
         }
     }
-    
-    public void useEncoders() {
-        setMotorModes(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
 
-    public void stopUsingEncoders() {
-        setMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    }
-    
-    
-    
+
+
     public void setTargetPos(int leftFrontPos, int rightFrontPos, int leftRearPos, int rightRearPos) {
-        
+
         leftFront.setTargetPosition(leftFrontPos);
         rightFront.setTargetPosition(rightFrontPos);
         leftRear.setTargetPosition(leftRearPos);
         rightFront.setTargetPosition(rightRearPos);
 
     }
-
-
+    
+    
+    public void setTargetPos(int pos) {
+        setTargetPos(pos, pos, pos, pos);
+    
+    }
+    
+    
 
     public double getEncoderAvg() {
-        return (leftFront.getCurrentPosition()+rightFront.getCurrentPosition()+leftRear.getCurrentPosition()+rightRear.getCurrentPosition())/4;
+        return (leftFront.getCurrentPosition()+
+                rightFront.getCurrentPosition()+
+                leftRear.getCurrentPosition()+
+                rightRear.getCurrentPosition()
+                )/4;
     }
 
 
@@ -240,9 +242,8 @@ public class DriveTrain {
         } while (Math.abs(errorRad) > rotationAccuracyRange);
 
         robot.driveTrain.brake();
-
     }
-
+    
 
     public void turnToRad(double absoluteRad, double maxSpeed) { turnToRad(absoluteRad, maxSpeed, 3); }
     
