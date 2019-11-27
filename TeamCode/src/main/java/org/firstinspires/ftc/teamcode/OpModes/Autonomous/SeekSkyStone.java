@@ -212,7 +212,7 @@ public class SeekSkyStone extends LinearOpMode {
                                 // Move towards the skystone until it takes up enough of the screen, meaning it is close enough to pick up.
                                 
                                 robot.driveTrain.applyMovement(strafeSpeed, forwardSpeed, 0);
-
+                                robot.intake.suck();
                                 
                             } else {
                                 //Robot cannot recognize skystone any longer when it is close because camera is looking over it.
@@ -222,14 +222,11 @@ public class SeekSkyStone extends LinearOpMode {
                             
                         } else if (currentState == ProgramStates.TRANSPORTING) {
 
-                        // Goes forward until skystone is picked up
-                            robot.intake.suck();
-
                             /*while (!robot.sensors.possessingStone()) {
-                                robot.driveTrain.straightInches(10, 0.7);
+                                robot.driveTrain.straightInches(10, 0.5);
                             }*/
-
-                            robot.driveTrain.straightInches(6, 0.6);
+                            
+                            robot.driveTrain.straightInches(4, 0.6);
 
                             telemetry.addData("Ladies and gentlemen!", "We gottem.");
                             

@@ -66,31 +66,7 @@ public class GamepadAdvanced {
     public boolean BOnce() { return 1 == b; }
     public boolean leftBumperOnce() { return 1 == left_bumper; }
     public boolean rightBumperOnce() { return 1 == right_bumper; }
-
-
-
-    public static double getJoystickAngleRad(double xInput, double yInput) {
-        
-        double radians = Math.tan(yInput/xInput);
-        return radians;
-        
-    }
     
-    
-    public static double getJoystickDistanceFromCenter(double xInput, double yInput) {
-        
-        double distance = Math.hypot(xInput, yInput);
-        return distance;
-        
-    }
-    
-    
-    public static double convertExponentialSensitivity(double joystickValue) {
-        
-        double convertedValue = Math.pow(joystickValue, 3);
-        return convertedValue;
-        
-    }
     
     
 }

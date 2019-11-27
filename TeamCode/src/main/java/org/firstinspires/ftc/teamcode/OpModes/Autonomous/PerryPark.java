@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.Globals.DriveConstants;
+import org.firstinspires.ftc.teamcode.Globals.FieldConstants;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 
 import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.inchesToTicks;
@@ -47,8 +49,9 @@ public class PerryPark extends LinearOpMode {
              */
 
             //pause(28000);
-            perry.driveTrain.straight(7);
-            pause(1000);
+            //perry.driveTrain.straight(7);
+            //pause(1000);
+            perry.driveTrain.straightInches(FieldConstants.TILE_LENGTH,0.8);
             perry.driveTrain.brake();
         }
 

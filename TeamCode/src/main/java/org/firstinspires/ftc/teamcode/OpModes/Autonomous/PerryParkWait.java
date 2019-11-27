@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.OpModes.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.Globals.DriveConstants;
+import org.firstinspires.ftc.teamcode.Globals.FieldConstants;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 
 import static org.firstinspires.ftc.teamcode.Utilities.MiscUtil.pause;
@@ -41,9 +43,8 @@ public class PerryParkWait extends LinearOpMode {
 
              */
 
-            pause(28000);
-            perry.driveTrain.straight(7);
-            pause(1000);
+            pause(27000);
+            perry.driveTrain.straightInches(FieldConstants.TILE_LENGTH,0.8);
             perry.driveTrain.brake();
         }
 

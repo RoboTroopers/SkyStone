@@ -54,17 +54,17 @@ public class MechanumStrafingTeleOp extends OpMode {
 
         // Control over horizontal and vertical movement amounts with one joystick, and turn amount using the other.
         if (Math.abs(gamepad1.left_stick_y) >= threshold) {
-            movement_x = gamepad1.left_stick_y;
-
-        } else {
-            movement_x = 0;
-        }
-
-        if (Math.abs(gamepad1.left_stick_x) >= threshold) {
-            movement_y = -gamepad1.left_stick_x;
+            movement_y = -gamepad1.left_stick_y;
 
         } else {
             movement_y = 0;
+        }
+
+        if (Math.abs(gamepad1.left_stick_x) >= threshold) {
+            movement_x = -gamepad1.left_stick_x;
+
+        } else {
+            movement_x = 0;
         }
 
         if (Math.abs(gamepad1.right_stick_x) >= threshold) {// || Math.abs(gamepad1.right_stick_y) > threshold) {

@@ -29,7 +29,7 @@ public class Sensors {
 
     public ColorSensor lineSensor;
 
-    public DistanceSensor pulleySensor;
+    //public DistanceSensor pulleySensor;
 
 
 
@@ -72,7 +72,6 @@ public class Sensors {
     }
 
     
-
     public double getWorldAngleRad() { return MathFunctions.angleWrap(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).firstAngle); }
     
 
@@ -94,9 +93,8 @@ public class Sensors {
 
 
 
-    public boolean possessingStone() {
+    public boolean intookStone() {
         // Color sensor detects if yellow stone is above stone holding cell
-
         float hue = getColorSensorHSV(stoneSensor)[0];
 
         boolean isPossessing = false;
@@ -108,11 +106,10 @@ public class Sensors {
         return isPossessing;
     }
 
-
-
+    
 
     public boolean overLine() {
-
+        
         float hue = getColorSensorHSV(lineSensor)[0];
         float saturation = getColorSensorHSV(lineSensor)[1];
         boolean isOvertape = false;
@@ -126,6 +123,5 @@ public class Sensors {
     }
 
 
-
-
+    
 }

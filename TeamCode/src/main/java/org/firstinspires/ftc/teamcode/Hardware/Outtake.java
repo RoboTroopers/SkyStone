@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 import static org.firstinspires.ftc.teamcode.Utilities.MiscUtil.pause;
 
 public class Outtake {
@@ -59,17 +61,14 @@ public class Outtake {
     public double getPulleySpeed() {
         return pulley.getPower();
     }
-
-
+    
     /*
     public double getPulleyHeight() {
 
         double height = pulleySensor.getDistance(DistanceUnit.INCH);
         return height;
-
     }*/
-
-
+    
 
     // Set the arm to certain positions and set the wrist position to compensate, keeping the claw parallel to the ground
     public void armMid() {

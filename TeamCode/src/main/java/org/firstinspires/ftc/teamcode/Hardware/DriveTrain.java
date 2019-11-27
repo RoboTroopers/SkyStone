@@ -23,8 +23,6 @@ public class DriveTrain {
     public DcMotor leftRear;
     public DcMotor rightRear;
 
-    public DcMotor baseMotors[] = {};
-
 
     public void initHardware(HardwareMap aHwMap, Robot theRobot) {
         
@@ -37,8 +35,6 @@ public class DriveTrain {
 
         leftRear.setDirection(DcMotor.Direction.REVERSE);
         leftFront.setDirection(DcMotor.Direction.REVERSE);
-        
-        baseMotors = new DcMotor[] {leftFront, rightFront, leftRear, rightRear};
         
     }
     
@@ -121,9 +117,11 @@ public class DriveTrain {
     
     
     public void setMotorModes(DcMotor.RunMode runMode) {
-        for (DcMotor motor : baseMotors) {
-            motor.setMode(runMode);
-        }
+        
+        leftFront.setMode(runMode);
+        rightFront.setMode(runMode);
+        leftRear.setMode(runMode);
+        rightRear.setMode(runMode);
     }
 
 
@@ -136,16 +134,11 @@ public class DriveTrain {
         rightFront.setTargetPosition(rightRearPos);
 
     }
-    
-    
-    public void setTargetPos(int pos) {
-        setTargetPos(pos, pos, pos, pos);
-    
-    }
-    
+
     
 
     public double getEncoderAvg() {
+        
         return (leftFront.getCurrentPosition()+
                 rightFront.getCurrentPosition()+
                 leftRear.getCurrentPosition()+
@@ -170,7 +163,7 @@ public class DriveTrain {
         int relativePosition = (int)inchesToTicks(relativeInches);
 
         setMotorModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
+        
         int leftFrontPos = relativePosition;
         int rightFrontPos = relativePosition;
         int leftRearPos = relativePosition;
