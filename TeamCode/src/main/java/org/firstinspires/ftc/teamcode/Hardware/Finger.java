@@ -8,18 +8,24 @@ public class Finger {
 
 
     public Servo finger;
-
-    public final double FINGER_DOWN_POS = 0.5;
-    public final double FINGER_UP_POS = 0;
+    
+    private double FINGER_DOWN_POS = 0.1;
+    public double FINGER_UP_POS = 0.5;
 
     public enum States { DOWN, UP }
-
-
-
+    
+    
+    public void specifyPositions(double down, double up) {
+        FINGER_DOWN_POS = down;
+        FINGER_UP_POS = up;
+        
+    }
+    
+    
     public void initHardware(HardwareMap aHwMap) {
         finger = aHwMap.get(Servo.class, "finger");
         finger.setDirection(Servo.Direction.REVERSE);
-
+        
     }
 
 

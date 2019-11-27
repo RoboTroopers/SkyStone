@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.Hardware.Finger;
 import org.firstinspires.ftc.teamcode.Hardware.Intake;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.Utilities.GamepadAdvanced;
@@ -51,15 +52,15 @@ public class MechanumStrafingTeleOp extends OpMode {
 
 
         // Control over horizontal and vertical movement amounts with one joystick, and turn amount using the other.
-        if (Math.abs(gamepad1.left_stick_x) >= threshold) {
-            movement_x = gamepad1.left_stick_x;
+        if (Math.abs(gamepad1.left_stick_y) >= threshold) {
+            movement_x = gamepad1.left_stick_y;
 
         } else {
             movement_x = 0;
         }
 
-        if (Math.abs(gamepad1.left_stick_y) >= threshold) {
-            movement_y = -gamepad1.left_stick_y;
+        if (Math.abs(gamepad1.left_stick_x) >= threshold) {
+            movement_y = -gamepad1.left_stick_x;
 
         } else {
             movement_y = 0;
@@ -157,6 +158,17 @@ public class MechanumStrafingTeleOp extends OpMode {
             }
             resetArmTimer += 1;
         }
+        
+        
+        if (gamepadAdvanced1.AOnce()) {
+            if (robot.pepeSMASH.getState() == Finger.States.DOWN) {
+                robot.pepeSMASH.up();
+            } else {
+                robot.pepeSMASH.down();
+            }
+                
+        }
+        
 
 
         gamepadAdvanced1.update();
