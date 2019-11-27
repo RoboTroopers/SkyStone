@@ -12,7 +12,7 @@ public class Robot {
     public DriveTrain driveTrain = new DriveTrain();
     public Intake intake = new Intake();
     public Outtake outtake = new Outtake();
-    public Finger pepeSMASH = new Finger();
+    public Fingers fingers = new Fingers();
     
     public Sensors sensors = new Sensors();
     //public Odometry odometry = new Odometry(this);
@@ -27,8 +27,7 @@ public class Robot {
         intake.initHardware(aHwMap);
         outtake.initHardware(aHwMap);
         
-        pepeSMASH.initHardware(aHwMap);
-        pepeSMASH.specifyPositions(0.2, 0.4);
+        fingers.initHardware(aHwMap);
 
         sensors.initHardware(aHwMap);
         

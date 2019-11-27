@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Hardware.Finger;
+import org.firstinspires.ftc.teamcode.Hardware.Fingers;
 import org.firstinspires.ftc.teamcode.Hardware.Intake;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.Utilities.GamepadAdvanced;
@@ -22,19 +22,19 @@ public class MechanumStrafingTeleOp extends OpMode {
 
     boolean armOut = false;
 
-    int depositStoneTimer = 1000; // arbitrary
-    int resetArmTimer = 1000;
+    private int depositStoneTimer = 1000; // arbitrary
+    private int resetArmTimer = 1000;
 
-    GamepadAdvanced gamepadAdvanced1;
-    GamepadAdvanced gamepadAdvanced2;
+    private GamepadAdvanced gamepad1Advanced;
+    private GamepadAdvanced gamepad2Advanced;
 
 
     @Override
     public void init() {
         robot.initHardware(hardwareMap);
 
-        gamepadAdvanced1 = new GamepadAdvanced(gamepad1);
-        gamepadAdvanced2 = new GamepadAdvanced(gamepad2);
+        gamepad1Advanced = new GamepadAdvanced(gamepad1);
+        gamepad2Advanced = new GamepadAdvanced(gamepad2);
     }
 
 
@@ -42,6 +42,7 @@ public class MechanumStrafingTeleOp extends OpMode {
     public void start(){
 
         robot.outtake.armMid();
+        robot.fingers.pepeSMASHIn();
 
     }
 
@@ -67,18 +68,41 @@ public class MechanumStrafingTeleOp extends OpMode {
         }
 
         if (Math.abs(gamepad1.right_stick_x) >= threshold) {// || Math.abs(gamepad1.right_stick_y) > threshold) {
-            movement_turn = -gamepad1.right_stick_x;
+            movement_turn = -gamepad1.right_stick_x*0.5;
 
         } else {
             movement_turn = 0;
         }
 
-        robot.driveTrain.applyMovement(movement_x, movement_y, movement_turn);
+        /*
+        if (Math.abs(gamepad1.left_stick_y) >= threshold) {
+            movement_x = -gamepad1.left_stick_y;
 
+        } else {
+            movement_x = 0;
+        }
+
+        if (Math.abs(gamepad1.left_stick_x) >= threshold) {
+            movement_y = gamepad1.left_stick_x;
+
+        } else {
+            movement_y = 0;
+        }
+
+        if (Math.abs(gamepad1.right_stick_x) >= threshold) {// || Math.abs(gamepad1.right_stick_y) > threshold) {
+            movement_turn = -gamepad1.right_stick_x;
+
+        } else {
+            movement_turn = 0;
+        }
+        */
+
+        // fixed straight/strafe problem with being flipped
+        robot.driveTrain.applyMovement(movement_y, movement_x, movement_turn);
 
 
         // Intake toggling controls
-        if (gamepad1.right_bumper) {
+        if (gamepad1Advanced.rightBumperOnce()) {
             if (robot.intake.getDirection() != Intake.Directions.SUCK) {
 
                 robot.intake.suck();
@@ -87,7 +111,7 @@ public class MechanumStrafingTeleOp extends OpMode {
             }
         }
 
-        if (gamepad1.left_bumper) {
+        if (gamepad1Advanced.leftBumperOnce()) {
             if (robot.intake.getDirection() != Intake.Directions.BLOW) {
 
                 robot.intake.blow();
@@ -97,6 +121,17 @@ public class MechanumStrafingTeleOp extends OpMode {
         }
 
 
+        if (gamepad1Advanced.BOnce()) {
+            if (robot.fingers.getPepeSMASHState() != Fingers.States.OUT) {
+                robot.fingers.pepeSMASHOut();
+                //robot.fingers.pepeSMASH.setPosition(robot.fingers.PEPESMASH_OUT_POS);
+            } else {
+                robot.fingers.pepeSMASHIn();
+                //robot.fingers.pepeSMASH.setPosition(robot.fingers.pepeSMASH.PEPESMASH_IN_POS);
+            }
+        }
+        
+
         if (Math.abs(gamepad2.left_stick_y) >= threshold) {
 
             robot.outtake.setPulleySpeed(gamepad2.left_stick_y);
@@ -105,7 +140,7 @@ public class MechanumStrafingTeleOp extends OpMode {
         }
 
 
-        if (gamepadAdvanced2.rightBumperOnce()) {
+        if (gamepad2Advanced.rightBumperOnce()) {
 
             //if (robot.outtake.claw.getPosition() == robot.outtake.CLAW_CLOSED_POS) {
                 robot.outtake.openClaw();
@@ -116,7 +151,7 @@ public class MechanumStrafingTeleOp extends OpMode {
         }
 
 
-        if (gamepadAdvanced2.leftBumperOnce()) {
+        if (gamepad2Advanced.leftBumperOnce()) {
 
             if (robot.outtake.arm.getPosition() != robot.outtake.ARM_OUT_POS) {
                 depositStoneTimer = 0;
@@ -133,6 +168,7 @@ public class MechanumStrafingTeleOp extends OpMode {
         if (depositStoneTimer <= 110) {
 
             if (depositStoneTimer == 2) {
+                robot.fingers.pepeSMASH.setPosition(robot.fingers.PEPESMASH_IN_POS);
                 robot.outtake.armMid();
                 robot.outtake.openClaw();
 
@@ -160,19 +196,19 @@ public class MechanumStrafingTeleOp extends OpMode {
         }
         
         
-        if (gamepadAdvanced1.AOnce()) {
-            if (robot.pepeSMASH.getState() == Finger.States.DOWN) {
-                robot.pepeSMASH.up();
+        if (gamepad1Advanced.AOnce()) {
+            if (robot.fingers.getPepeSMASHState() != Fingers.States.OUT) {
+                robot.fingers.pepeSMASHOut();
             } else {
-                robot.pepeSMASH.down();
+                robot.fingers.pepeSMASHIn();
             }
                 
         }
         
 
 
-        gamepadAdvanced1.update();
-        gamepadAdvanced2.update();
+        gamepad1Advanced.update();
+        gamepad2Advanced.update();
 
 
         telemetry.addData("Status", "Running");
@@ -188,6 +224,8 @@ public class MechanumStrafingTeleOp extends OpMode {
         telemetry.addData("arm pos", robot.outtake.getArmPos());
         telemetry.addData("wrist pos", -robot.outtake.getWristPos());
         telemetry.addData("claw pos", robot.outtake.getClawPos());
+
+        telemetry.addData("finger pos", robot.fingers.pepeSMASH.getPosition());
 
         telemetry.addData("deposit stone timer", depositStoneTimer);
         telemetry.addData("reset arm timer", resetArmTimer);

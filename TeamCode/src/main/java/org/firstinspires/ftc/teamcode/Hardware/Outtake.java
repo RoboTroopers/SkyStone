@@ -13,7 +13,7 @@ public class Outtake {
 
     public Servo arm;
 
-    public final double ARM_IN_POS = 0.68;
+    public final double ARM_IN_POS = 0.7;
     public final double ARM_MID_POS = 0.4;
     public final double ARM_OUT_POS = 0;
 

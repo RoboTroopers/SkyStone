@@ -2,20 +2,15 @@ package org.firstinspires.ftc.teamcode.OpModes.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 
-import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.inchesToTicks;
-import static org.firstinspires.ftc.teamcode.Globals.FieldConstants.TILE_LENGTH;
 import static org.firstinspires.ftc.teamcode.Utilities.MiscUtil.pause;
-
-
 
 
 @Autonomous(name = "PerryPark", group="Autonomous")
 //@Disabled
-public class PerryPark extends LinearOpMode {
+public class PerryParkDiagonal extends LinearOpMode {
     
     private Robot perry = new Robot();
 
@@ -45,10 +40,8 @@ public class PerryPark extends LinearOpMode {
             }
 
              */
-
-            //pause(28000);
-            perry.driveTrain.straight(7);
-            pause(1000);
+            perry.driveTrain.applyMovement(0.7, 0.7, 0);
+            pause(1500);
             perry.driveTrain.brake();
         }
 
