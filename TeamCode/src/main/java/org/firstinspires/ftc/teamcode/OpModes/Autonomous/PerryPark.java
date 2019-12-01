@@ -52,6 +52,7 @@ public class PerryPark extends LinearOpMode {
             //perry.driveTrain.straight(7);
             //pause(1000);
             perry.driveTrain.straightInches(FieldConstants.TILE_LENGTH,0.8);
+
             perry.driveTrain.brake();
         }
 

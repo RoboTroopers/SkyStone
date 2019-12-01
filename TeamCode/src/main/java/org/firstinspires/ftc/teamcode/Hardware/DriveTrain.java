@@ -1,7 +1,11 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
+
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDCoefficients;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.teamcode.ppProject.company.Range;
 
@@ -11,36 +15,39 @@ import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.inchesToTick
 import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.ticksToInches;
 import static org.firstinspires.ftc.teamcode.Utilities.MiscUtil.pause;
 
+
+
 public class DriveTrain {
 
     public Robot robot;
 
     // Motors and servos
-    public DcMotor leftFront;
-    public DcMotor rightFront;
-    public DcMotor leftRear;
-    public DcMotor rightRear;
+    public DcMotorEx leftFront;
+    public DcMotorEx leftRear;
+    public DcMotorEx rightFront;
+    public DcMotorEx rightRear;
+
 
 
     public void initHardware(HardwareMap aHwMap, Robot theRobot) {
-
         this.robot = theRobot;
 
-        leftFront = aHwMap.get(DcMotor.class, "leftFront");
-        rightFront = aHwMap.get(DcMotor.class, "rightFront");
-        leftRear = aHwMap.get(DcMotor.class, "leftRear");
-        rightRear = aHwMap.get(DcMotor.class, "rightRear");
+        leftFront = aHwMap.get(DcMotorEx.class, "leftFront");
+        leftRear = aHwMap.get(DcMotorEx.class, "leftRear");
+        rightFront = aHwMap.get(DcMotorEx.class, "rightFront");
+        rightRear = aHwMap.get(DcMotorEx.class, "rightRear");
 
-        leftRear.setDirection(DcMotor.Direction.REVERSE);
-        leftFront.setDirection(DcMotor.Direction.REVERSE);
+        leftRear.setDirection(DcMotorEx.Direction.REVERSE);
+        leftFront.setDirection(DcMotorEx.Direction.REVERSE);
+        // Motor instances to be used for more complex motor functions (using PID)
 
     }
 
 
+
     public void applyMovement(double straight, double strafe, double turn) {
 
-        //Moves robot on field horizontally and vertically, rotates by turn
-
+        //Moves robot on field forward and sideways, rotates by turn
         //movement_x multiplied by 1.5 because mechanum drive strafes sideways slower than forwards/backwards
         double lf_power_raw = straight + turn - (strafe*1.5);
         double lr_power_raw = straight + turn + (strafe*1.5);
@@ -136,12 +143,11 @@ public class DriveTrain {
 
 
     public double getEncoderAvg() {
-
-        return (leftFront.getCurrentPosition()+
-                rightFront.getCurrentPosition()+
-                leftRear.getCurrentPosition()+
-                rightRear.getCurrentPosition()
-        )/4;
+        double motorAvgPower = leftFront.getCurrentPosition()+
+                               rightFront.getCurrentPosition()+
+                               leftRear.getCurrentPosition()+
+                               rightRear.getCurrentPosition();
+        return motorAvgPower/4;
     }
 
 
@@ -155,6 +161,29 @@ public class DriveTrain {
     }
 
 
+/*
+    public void moveInches(double LFInches, double LRInches, double speed) {
+
+        int relativePosition = (int)inchesToTicks(relativeInches);
+
+        setMotorModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        int leftFrontPos = relativePosition;
+        int rightFrontPos = relativePosition;
+        int leftRearPos = relativePosition;
+        int rightRearPos = relativePosition;
+
+        setMotorModes(DcMotor.RunMode.RUN_TO_POSITION);
+
+        setTargetPos(leftFrontPos, rightFrontPos, leftRearPos, rightRearPos);
+        straight(speed);
+        while (anyMotorsBusy()) {pause(10);}
+
+        setMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        brake();
+
+    }
+*/
 
     public void straightInches(double relativeInches, double speed) {
 
