@@ -4,16 +4,17 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 
+
 public class Intake {
 
 
     public DcMotor leftIntake;
     public DcMotor rightIntake;
-    
-    public final double SUCK_SPEED = 0.1;
+
+
+    public final double SUCK_SPEED = 0.35;
 
     public enum Directions { REST, SUCK, BLOW }
-
 
 
     public void initHardware(HardwareMap aHwMap) {
@@ -21,7 +22,6 @@ public class Intake {
         leftIntake = aHwMap.get(DcMotor.class, "leftIntake");
         rightIntake = aHwMap.get(DcMotor.class, "rightIntake");
         rightIntake.setDirection(DcMotor.Direction.REVERSE);
-
     }
 
 
@@ -29,7 +29,6 @@ public class Intake {
 
         leftIntake.setPower(speed);
         rightIntake.setPower(speed);
-
     }
 
 
@@ -38,7 +37,6 @@ public class Intake {
 
         leftIntake.setPower(-SUCK_SPEED);
         rightIntake.setPower(-SUCK_SPEED);
-
     }
 
 
@@ -47,7 +45,6 @@ public class Intake {
 
         leftIntake.setPower(SUCK_SPEED);
         rightIntake.setPower(SUCK_SPEED);
-
     }
 
 
@@ -55,7 +52,6 @@ public class Intake {
 
         leftIntake.setPower(0);
         rightIntake.setPower(0);
-
     }
 
 
@@ -77,7 +73,6 @@ public class Intake {
 
         return currentDirection;
     }
-
 
 
 }

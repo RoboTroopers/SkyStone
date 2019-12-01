@@ -4,27 +4,32 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 import static org.firstinspires.ftc.teamcode.Utilities.MiscUtil.pause;
 
 public class Outtake {
-    
-    
+
+
     public DcMotor pulley;
 
-    public Servo leftArm;
-    public Servo rightArm;
+    public Servo arm;
 
-    public final double ARM_IN_POS = 0.3;
-    public final double ARM_MID_POS = 0.5;
-    public final double ARM_OUT_POS = 0.7;
+    public final double ARM_IN_POS = 0.7;
+    public final double ARM_MID_POS = 0.4;
+    public final double ARM_OUT_POS = 0;
 
     public Servo wrist;
-    public final double WRIST_TURNED_POS = 0.35;
+
+    public final double WRIST_IN_POS = 0.9;
+    public final double WRIST_MID_POS = 0.7;
+    public final double WRIST_OUT_POS = 0;
+
 
     public Servo claw;
 
-    public final double CLAW_OPEN_POS = 0;
-    public final double CLAW_CLOSED_POS = 0.4;
+    public final double CLAW_OPEN_POS = 0.65;
+    public final double CLAW_CLOSED_POS = 0.95;
 
 
     //public DistanceSensor pulleySensor;
@@ -32,14 +37,13 @@ public class Outtake {
 
     public void initHardware(HardwareMap aHwMap) {
 
-        pulley = aHwMap.get(DcMotor.class, "leftPulley");
+        pulley = aHwMap.get(DcMotor.class, "pulley");
         //pulleySensor = aHwMap.get(DistanceSensor.class, "pulleySensor");
 
-        leftArm = aHwMap.get(Servo.class, "leftArm");
-        rightArm = aHwMap.get(Servo.class, "rightArm");
+        arm = aHwMap.get(Servo.class, "arm");
 
         wrist = aHwMap.get(Servo.class, "wrist");
-        wrist.setDirection(Servo.Direction.REVERSE);
+        //wrist.setDirection(Servo.Direction.REVERSE);
 
         claw = aHwMap.get(Servo.class, "claw");
 
@@ -58,53 +62,40 @@ public class Outtake {
         return pulley.getPower();
     }
 
-
     /*
     public double getPulleyHeight() {
 
         double height = pulleySensor.getDistance(DistanceUnit.INCH);
         return height;
-
     }*/
-
 
 
     // Set the arm to certain positions and set the wrist position to compensate, keeping the claw parallel to the ground
     public void armMid() {
 
-        leftArm.setPosition(ARM_MID_POS);
-        rightArm.setPosition(ARM_MID_POS);
-
-        wristToArmPos();
+        arm.setPosition(ARM_MID_POS);
+        wrist.setPosition(WRIST_MID_POS);
     }
 
 
     public void armIn() {
 
-        leftArm.setPosition(ARM_IN_POS);
-        rightArm.setPosition(ARM_IN_POS);
-
-        wristToArmPos();
+        arm.setPosition(ARM_IN_POS);
+        wrist.setPosition(WRIST_IN_POS);
     }
 
 
     public void armOut() {
 
-        wrist.setPosition(WRIST_TURNED_POS); // Rotates wrist slightly to get stone past support bar
-
-        leftArm.setPosition(ARM_IN_POS);
-        rightArm.setPosition(ARM_IN_POS);
+        arm.setPosition(ARM_OUT_POS);
+        wrist.setPosition(WRIST_OUT_POS);
     }
 
 
     public double getArmPos() {
-        return (leftArm.getPosition()+rightArm.getPosition())/2;
+        return arm.getPosition();
     }
 
-
-    public void wristToArmPos() {
-        wrist.setPosition(getArmPos());
-    }
 
     public double getWristPos() {
         return wrist.getPosition();
@@ -118,14 +109,15 @@ public class Outtake {
     public void openClaw() {
         claw.setPosition(CLAW_OPEN_POS);
     }
-    
+
     public double getClawPos() {
         return claw.getPosition();
     }
-    
 
-    public void depositStone() {
 
+
+
+    public void liftStone() {
         armMid();
         pause(1500);
 
@@ -134,11 +126,18 @@ public class Outtake {
         pause(1500);
         armOut();
 
+    }
+
+
+    public void depositStone() {
+        liftStone();
+
         openClaw();
         pause(1000);
         armMid();
 
     }
 
-    
+
+
 }

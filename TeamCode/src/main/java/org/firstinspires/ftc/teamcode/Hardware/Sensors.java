@@ -26,22 +26,23 @@ public class Sensors {
 
 
     public ColorSensor stoneSensor;
+
     public ColorSensor lineSensor;
 
-    public DistanceSensor pulleySensor;
+    //public DistanceSensor pulleySensor;
 
 
 
     public void initHardware(HardwareMap aHwMap) {
 
         imu = aHwMap.get(BNO055IMU.class, "imu");
-        
+
         //horizontalEncoder = aHwMap.get(DcMotor.class, "horizontalEncoder");
         //verticalEncoder = aHwMap.get(DcMotor.class, "verticalEncoder");
         //leftVerticalEncoder = aHwMap.get(DcMotor.class, "leftVerticalEncoder");
         //rightVerticalEncoder = aHwMap.get(DcMotor.class, "rightVerticalEncoder");
         //resetEncoders();
-        stoneSensor = aHwMap.get(ColorSensor.class, "colorSensor");
+        //stoneSensor = aHwMap.get(ColorSensor.class, "colorSensor");
         lineSensor = aHwMap.get(ColorSensor.class, "lineSensor");
 
     }
@@ -70,10 +71,9 @@ public class Sensors {
         verticalEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    
 
     public double getWorldAngleRad() { return MathFunctions.angleWrap(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).firstAngle); }
-    
+
 
 
     public float[] getColorSensorHSV(ColorSensor thisColorSensor) {
@@ -93,9 +93,8 @@ public class Sensors {
 
 
 
-    public boolean possessingStone() {
+    public boolean intookStone() {
         // Color sensor detects if yellow stone is above stone holding cell
-
         float hue = getColorSensorHSV(stoneSensor)[0];
 
         boolean isPossessing = false;
@@ -105,15 +104,14 @@ public class Sensors {
         }
 
         return isPossessing;
-
     }
 
 
 
     public boolean overLine() {
 
-        float hue = getColorSensorHSV(stoneSensor)[0];
-        float saturation = getColorSensorHSV(stoneSensor)[1];
+        float hue = getColorSensorHSV(lineSensor)[0];
+        float saturation = getColorSensorHSV(lineSensor)[1];
         boolean isOvertape = false;
 
         if (((hue >= 0 && hue <= 25) || (hue >= 180 && hue <= 250)) && saturation > 0.5) {
@@ -123,7 +121,6 @@ public class Sensors {
         return isOvertape;
 
     }
-
 
 
 

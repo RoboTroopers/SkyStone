@@ -4,12 +4,12 @@ import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.inchesToTick
 import static org.firstinspires.ftc.teamcode.Globals.FieldConstants.TILE_LENGTH;
 
 public class FieldPosition {
-    
+
 
     public final double xInches;
     public final double yInches;
-    
-    
+
+
     public double getXInches() {
         return xInches;
     }
@@ -17,12 +17,12 @@ public class FieldPosition {
     public double getYInches() {
         return yInches;
     }
-    
-    
+
+
     public final double fieldXTicks;
     public final double fieldYTicks;
-    
-    
+
+
     public double getXTicks() {
         return fieldXTicks;
     }
@@ -30,19 +30,19 @@ public class FieldPosition {
     public double getYTicks() {
         return fieldYTicks;
     }
-    
-    
+
+
     public FieldPosition(double xTile, double yTile, double addXInches, double addYInches) {
-        
+
         this.xInches = (xTile*TILE_LENGTH) + addXInches;
         this.yInches = (yTile*TILE_LENGTH) + addYInches;
-        
+
         fieldXTicks = inchesToTicks(this.xInches);
-        fieldYTicks = inchesToTicks(this.yInches);  
-        
+        fieldYTicks = inchesToTicks(this.yInches);
+
     }
-    
-    
+
+
     public FieldPosition(double xInches, double yInches) {
 
         this.xInches = xInches;
@@ -50,7 +50,7 @@ public class FieldPosition {
 
         fieldXTicks = inchesToTicks(this.xInches);
         fieldYTicks = inchesToTicks(this.yInches);
-        
+
     }
 
 
@@ -63,7 +63,7 @@ public class FieldPosition {
         fieldYTicks = inchesToTicks(yInches);
 
     }
-    
-    
-    
+
+
+
 }

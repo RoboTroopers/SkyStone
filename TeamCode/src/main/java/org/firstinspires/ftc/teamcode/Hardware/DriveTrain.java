@@ -13,23 +13,19 @@ import static org.firstinspires.ftc.teamcode.Utilities.MiscUtil.pause;
 
 public class DriveTrain {
 
-
     public Robot robot;
-    
-    
+
     // Motors and servos
     public DcMotor leftFront;
     public DcMotor rightFront;
     public DcMotor leftRear;
     public DcMotor rightRear;
 
-    public DcMotor baseMotors[] = {};
-
 
     public void initHardware(HardwareMap aHwMap, Robot theRobot) {
-        
+
         this.robot = theRobot;
-        
+
         leftFront = aHwMap.get(DcMotor.class, "leftFront");
         rightFront = aHwMap.get(DcMotor.class, "rightFront");
         leftRear = aHwMap.get(DcMotor.class, "leftRear");
@@ -37,12 +33,10 @@ public class DriveTrain {
 
         leftRear.setDirection(DcMotor.Direction.REVERSE);
         leftFront.setDirection(DcMotor.Direction.REVERSE);
-        
-        baseMotors = new DcMotor[] {leftFront, rightFront, leftRear, rightRear};
-        
+
     }
-    
-    
+
+
     public void applyMovement(double straight, double strafe, double turn) {
 
         //Moves robot on field horizontally and vertically, rotates by turn
@@ -78,30 +72,30 @@ public class DriveTrain {
             leftRear.setPower(lr_power_raw);
         if (rightRear.getPower() != rr_power_raw)
             rightRear.setPower(rr_power_raw);
-        
+
         pause(10);
-        
+
     }
-    
-    
-    
+
+
+
     // Stations the robot in current position
     public void brake() {
         applyMovement(0, 0, 0);
     }
-    
-    
+
+
     // Moves all motors at same power
-    public void straight(double speed) { 
-        applyMovement(speed, 0, 0); 
+    public void straight(double speed) {
+        applyMovement(speed, 0, 0);
     }
 
     // Moves all motors at same power
     public void turn(double speed) {
         applyMovement(0, 0, -speed);
     }
-    
-    
+
+
     // Moves the left and right side motors separate speeds
     public void steer(double leftSpeed, double rightSpeed) {
 
@@ -109,35 +103,29 @@ public class DriveTrain {
         rightFront.setPower(rightSpeed);
         leftRear.setPower(leftSpeed);
         rightRear.setPower(rightSpeed);
-        
-    }
-    
-    
-    // Moves the robot sideways without turning, positive speed is right, negative speed is left.
-    public void strafe(double speed){
-        applyMovement(0, speed, 0); 
-    }
-    
-    
-    
-    public void setMotorModes(DcMotor.RunMode runMode) {
-        for (DcMotor motor : baseMotors) {
-            motor.setMode(runMode);
-        }
-    }
-    
-    public void useEncoders() {
-        setMotorModes(DcMotor.RunMode.RUN_USING_ENCODER);
+
     }
 
-    public void stopUsingEncoders() {
-        setMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+    // Moves the robot sideways without turning, positive speed is right, negative speed is left.
+    public void strafe(double speed){
+        applyMovement(0, speed, 0);
     }
-    
-    
-    
+
+
+
+    public void setMotorModes(DcMotor.RunMode runMode) {
+
+        leftFront.setMode(runMode);
+        rightFront.setMode(runMode);
+        leftRear.setMode(runMode);
+        rightRear.setMode(runMode);
+    }
+
+
+
     public void setTargetPos(int leftFrontPos, int rightFrontPos, int leftRearPos, int rightRearPos) {
-        
+
         leftFront.setTargetPosition(leftFrontPos);
         rightFront.setTargetPosition(rightFrontPos);
         leftRear.setTargetPosition(leftRearPos);
@@ -148,21 +136,26 @@ public class DriveTrain {
 
 
     public double getEncoderAvg() {
-        return (leftFront.getCurrentPosition()+rightFront.getCurrentPosition()+leftRear.getCurrentPosition()+rightRear.getCurrentPosition())/4;
+
+        return (leftFront.getCurrentPosition()+
+                rightFront.getCurrentPosition()+
+                leftRear.getCurrentPosition()+
+                rightRear.getCurrentPosition()
+        )/4;
     }
 
 
     public double getEncoderAvgInches() {
         return ticksToInches(getEncoderAvg());
     }
-    
-    
+
+
     public boolean anyMotorsBusy() {
         return (leftFront.isBusy() || rightFront.isBusy() || leftRear.isBusy() || rightRear.isBusy());
     }
-    
-    
-    
+
+
+
     public void straightInches(double relativeInches, double speed) {
 
         int relativePosition = (int)inchesToTicks(relativeInches);
@@ -173,9 +166,9 @@ public class DriveTrain {
         int rightFrontPos = relativePosition;
         int leftRearPos = relativePosition;
         int rightRearPos = relativePosition;
-        
+
         setMotorModes(DcMotor.RunMode.RUN_TO_POSITION);
-        
+
         setTargetPos(leftFrontPos, rightFrontPos, leftRearPos, rightRearPos);
         straight(speed);
         while (anyMotorsBusy()) {pause(10);}
@@ -184,9 +177,9 @@ public class DriveTrain {
         brake();
 
     }
-    
-    
-    
+
+
+
     public void strafeInches(double relativeInches, double rightSpeed) {
 
         int relativePosition = (int)inchesToTicks(relativeInches);
@@ -195,14 +188,14 @@ public class DriveTrain {
         int LF_RRSign = -RF_LRSign;
 
         setMotorModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        
+
         int leftFrontPos = relativePosition*LF_RRSign;
         int rightFrontPos = relativePosition*RF_LRSign;
         int leftRearPos = relativePosition*RF_LRSign;
         int rightRearPos =  relativePosition*LF_RRSign;
 
         setMotorModes(DcMotor.RunMode.RUN_TO_POSITION);
-        
+
         setTargetPos(leftFrontPos, rightFrontPos, leftRearPos, rightRearPos);
         strafe(rightSpeed);
         while (anyMotorsBusy()) {pause(10);}
@@ -211,9 +204,9 @@ public class DriveTrain {
         brake();
 
     }
-    
-    
-    
+
+
+
     public void turnToRad(double absoluteRad, double maxSpeed, double deaccelRate) {
 
         /**
@@ -231,16 +224,15 @@ public class DriveTrain {
 
         do {
             errorRad = robot.sensors.getWorldAngleRad() - absoluteRad;
-            
+
             double movement_turn = (errorRad/initialRelativeRadToAngle) * deaccelRate; // Speed is greater when error is greater
             movement_turn = Range.clip(movement_turn, minSpeed, maxSpeed); // Deaccel rate only becomes apparent when it isn't being cut off by clip (while deacceling)
-            
+
             applyMovement(0, 0, -movement_turn);
-            
+
         } while (Math.abs(errorRad) > rotationAccuracyRange);
 
         robot.driveTrain.brake();
-
     }
 
 
@@ -320,6 +312,6 @@ public class DriveTrain {
     }
     
     */
-    
-    
+
+
 }

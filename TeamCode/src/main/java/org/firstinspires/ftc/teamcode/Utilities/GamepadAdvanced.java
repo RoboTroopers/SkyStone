@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 
 
-public class Controller {
+public class GamepadAdvanced {
 
     private Gamepad gamepad;
 
@@ -17,7 +17,7 @@ public class Controller {
     public double left_trigger, right_trigger;
 
 
-    public Controller(Gamepad g) {
+    public GamepadAdvanced(Gamepad g) {
         gamepad = g;
     }
 
@@ -53,6 +53,9 @@ public class Controller {
     public boolean leftBumper() { return 0 < left_bumper; }
     public boolean rightBumper() { return 0 < right_bumper; }
 
+    public int leftBumperCooldown() { return left_bumper; }
+    public int rightBumperCooldown() {return right_bumper; }
+
     public boolean dpadUpOnce() { return 1 == dpad_up; }
     public boolean dpadDownOnce() { return 1 == dpad_down; }
     public boolean dpadLeftOnce() { return 1 == dpad_left; }
@@ -66,28 +69,4 @@ public class Controller {
 
 
 
-    public static double getJoystickAngleRad(double xInput, double yInput) {
-        
-        double radians = Math.tan(yInput/xInput);
-        return radians;
-        
-    }
-    
-    
-    public static double getJoystickDistanceFromCenter(double xInput, double yInput) {
-        
-        double distance = Math.hypot(xInput, yInput);
-        return distance;
-        
-    }
-    
-    
-    public static double convertExponentialSensitivity(double joystickValue) {
-        
-        double convertedValue = Math.pow(joystickValue, 3);
-        return convertedValue;
-        
-    }
-    
-    
 }
