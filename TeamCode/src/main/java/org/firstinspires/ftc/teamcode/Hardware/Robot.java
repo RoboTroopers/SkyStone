@@ -21,7 +21,6 @@ public class Robot {
     public Sensors sensors = new Sensors();
     //public Odometry odometry = new Odometry(this);
 
-    public CustomTelemetry customTelemetry = new CustomTelemetry(this);
 
 
     public OpMode opMode;
@@ -32,6 +31,8 @@ public class Robot {
     public Robot (OpMode theOpMode, OpModeTypes opModeType) {
         opMode = theOpMode;
         currentOpModeType = opModeType;
+
+        //CustomTelemetry customTelemetry = new CustomTelemetry(this);
     }
 
 

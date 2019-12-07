@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Intake {
 
-
     public DcMotor leftIntake;
     public DcMotor rightIntake;
 
@@ -16,8 +15,8 @@ public class Intake {
 
 
     public Servo stoneYanker;
-    public final double UNYANKED_POS = 0;
-    public final double YANKED_POS = 0.5;
+    public final double UNYANKED_POS = 0.33;
+    public final double YANKED_POS = 0.51;
 
 
 
