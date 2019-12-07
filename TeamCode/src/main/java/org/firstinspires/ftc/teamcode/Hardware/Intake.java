@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.Hardware;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
+import com.qualcomm.robotcore.hardware.Servo;
 
 
 public class Intake {
@@ -11,10 +11,14 @@ public class Intake {
     public DcMotor leftIntake;
     public DcMotor rightIntake;
 
-
     public final double SUCK_SPEED = 0.35;
+    public enum Directions {REST, SUCK, BLOW}
 
-    public enum Directions { REST, SUCK, BLOW }
+
+    public Servo stoneYanker;
+    public final double UNYANKED_POS = 0;
+    public final double YANKED_POS = 0.5;
+
 
 
     public void initHardware(HardwareMap aHwMap) {
@@ -22,6 +26,8 @@ public class Intake {
         leftIntake = aHwMap.get(DcMotor.class, "leftIntake");
         rightIntake = aHwMap.get(DcMotor.class, "rightIntake");
         rightIntake.setDirection(DcMotor.Direction.REVERSE);
+
+        stoneYanker = aHwMap.get(Servo.class, "stoneYanker");
     }
 
 
@@ -72,6 +78,17 @@ public class Intake {
         }
 
         return currentDirection;
+    }
+
+
+
+    public void yankStone() {
+        stoneYanker.setPosition(YANKED_POS);
+    }
+
+
+    public void unYankStone() {
+        stoneYanker.setPosition(UNYANKED_POS);
     }
 
 

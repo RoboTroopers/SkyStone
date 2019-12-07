@@ -28,6 +28,7 @@ public class Robot {
     public OpModeTypes currentOpModeType;
 
 
+
     public Robot (OpMode theOpMode, OpModeTypes opModeType) {
         opMode = theOpMode;
         currentOpModeType = opModeType;
