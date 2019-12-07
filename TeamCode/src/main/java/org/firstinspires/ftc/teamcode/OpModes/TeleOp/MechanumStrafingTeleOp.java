@@ -75,28 +75,6 @@ public class MechanumStrafingTeleOp extends OpMode {
             movement_turn = 0;
         }
 
-        /*
-        if (Math.abs(gamepad1.left_stick_y) >= threshold) {
-            movement_x = -gamepad1.left_stick_y;
-
-        } else {
-            movement_x = 0;
-        }
-
-        if (Math.abs(gamepad1.left_stick_x) >= threshold) {
-            movement_y = gamepad1.left_stick_x;
-
-        } else {
-            movement_y = 0;
-        }
-
-        if (Math.abs(gamepad1.right_stick_x) >= threshold) {// || Math.abs(gamepad1.right_stick_y) > threshold) {
-            movement_turn = -gamepad1.right_stick_x;
-
-        } else {
-            movement_turn = 0;
-        }
-        */
 
         // fixed straight/strafe problem with being flipped
         robot.driveTrain.applyMovement(movement_y, movement_x, movement_turn);
@@ -140,7 +118,7 @@ public class MechanumStrafingTeleOp extends OpMode {
             robot.outtake.stopPulley();
         }
 
-        /*
+
         if (gamepad2Advanced.rightBumperOnce()) {
 
             //if (robot.outtake.claw.getPosition() == robot.outtake.CLAW_CLOSED_POS) {
@@ -162,10 +140,9 @@ public class MechanumStrafingTeleOp extends OpMode {
 
             }
         }
-        */
 
 
-        if (gamepad2Advanced.leftBumperOnce()) {
+        if (gamepad2Advanced.AOnce()) {
 
             if (robot.intake.stoneYanker.getPosition() != robot.intake.YANKED_POS) {
                 robot.intake.yankStone();
