@@ -140,15 +140,13 @@ public class MechanumStrafingTeleOp extends OpMode {
             robot.outtake.stopPulley();
         }
 
-
+        /*
         if (gamepad2Advanced.rightBumperOnce()) {
 
             //if (robot.outtake.claw.getPosition() == robot.outtake.CLAW_CLOSED_POS) {
             robot.outtake.openClaw();
 
-             /*} else {
-                robot.outtake.closeClaw();
-            }*/
+             //} else {robot.outtake.closeClaw();}
         }
 
 
@@ -162,6 +160,17 @@ public class MechanumStrafingTeleOp extends OpMode {
                 resetArmTimer = 0;
                 depositStoneTimer = 1000;
 
+            }
+        }
+        */
+
+
+        if (gamepad2Advanced.leftBumperOnce()) {
+
+            if (robot.intake.stoneYanker.getPosition() != robot.intake.YANKED_POS) {
+                robot.intake.yankStone();
+            } else {
+                robot.intake.unYankStone();
             }
         }
 
