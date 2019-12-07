@@ -5,13 +5,16 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Globals.FieldConstants;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
+import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
+
+import static org.firstinspires.ftc.teamcode.Globals.FieldConstants.TILE_LENGTH;
 
 
 @Autonomous(name = "PerryParkLastSecondGottem", group="Autonomous")
 //@Disabled
 public class PerryParkLastSecondGottem extends LinearOpMode {
 
-    private Robot perry = new Robot();
+    private Robot perry = new Robot(this, OpModeTypes.AUTO);
 
 
     @Override
@@ -43,7 +46,7 @@ public class PerryParkLastSecondGottem extends LinearOpMode {
             //pause(28000);
             //perry.driveTrain.straight(7);
             //pause(1000);
-            perry.driveTrain.straightInches(FieldConstants.TILE_LENGTH,0.8);
+            perry.driveTrain.straightInches(TILE_LENGTH,0.5);
             perry.driveTrain.brake();
         }
 

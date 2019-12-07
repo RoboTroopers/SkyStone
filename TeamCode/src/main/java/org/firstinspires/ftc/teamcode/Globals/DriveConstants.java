@@ -37,8 +37,9 @@ public class DriveConstants {
 
 
     //public static final double ENCODER_TICKS_PER_REV = 103;
-    private static final MotorConfigurationType MOTOR_CONFIG = MotorConfigurationType.getMotorType(DcMotor.class);
-    private static final double ENCODER_TICKS_PER_REV = MOTOR_CONFIG.getTicksPerRev();
+    //private static final MotorConfigurationType MOTOR_CONFIG = MotorConfigurationType.getMotorType(DcMotor.class);
+    //private static final double ENCODER_TICKS_PER_REV = MOTOR_CONFIG.getTicksPerRev();
+    private static final double ENCODER_TICKS_PER_REV = 383.6;
 
 
     public static double inchesToTicks(double inches) {

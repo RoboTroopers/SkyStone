@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
+import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
 
 
 @TeleOp(name = "BasicTeleopDrive")
@@ -15,7 +16,7 @@ public class BasicTeleopDrive extends OpMode {
     private DcMotor leftRear;
     private DcMotor rightRear;
     */
-    Robot robot = new Robot();
+    Robot robot = new Robot(this, OpModeTypes.TELEOP);
 
 
 

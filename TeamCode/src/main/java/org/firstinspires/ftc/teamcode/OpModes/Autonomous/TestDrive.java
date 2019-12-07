@@ -5,11 +5,12 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
+import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
 
 @Autonomous(name = "TestDrive", group = "Autonomous")
 public class TestDrive extends LinearOpMode {
 
-    private Robot robot = new Robot();
+    private Robot robot = new Robot(this, OpModeTypes.AUTO);
 
     @Override
     public void runOpMode() {

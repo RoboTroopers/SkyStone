@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
@@ -40,6 +41,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.Globals.DriveConstants;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.Utilities.FieldPosition;
+import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
 
 import java.util.List;
 
@@ -68,8 +70,9 @@ public class SeekSkyStone extends LinearOpMode {
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
 
-    FieldPosition startPos = new FieldPosition(2, 0, DriveConstants.TRACK_WIDTH/2, WHEEL_BASE/2);
-    public Robot robot = new Robot();
+
+    //sFieldPosition startPos = new FieldPosition(2, 0, DriveConstants.TRACK_WIDTH/2, WHEEL_BASE/2);
+    public Robot robot = new Robot(this, OpModeTypes.AUTO);
     //Thread odometryThread = new Thread(new OdometryThread(robot));
 
     private final double skystoneAngleOffset = 5; // How many degrees to add to skystone angle for robot to center on
@@ -115,12 +118,14 @@ public class SeekSkyStone extends LinearOpMode {
      * localization engine.
      */
     private VuforiaLocalizer vuforia;
+    private VuforiaLocalizer vuforia2;
 
     /**
      * {@link #tfod} is the variable we will use to store our instance of the TensorFlow Object
      * Detection engine.
      */
     private TFObjectDetector tfod;
+    private TFObjectDetector tfod2;
 
 
     @Override
@@ -130,7 +135,7 @@ public class SeekSkyStone extends LinearOpMode {
 
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
-        initVuforia();
+        initVuforiaWebcam();
 
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
             initTfod();
@@ -159,7 +164,7 @@ public class SeekSkyStone extends LinearOpMode {
             //robot.odometry.setPositionInches(startPos.fieldXInches, startPos.fieldYInches);
             //waitForStart();
 
-            robot.driveTrain.straightInches(TILE_LENGTH-WHEEL_BASE, 0.7);
+            robot.driveTrain.straightInches(TILE_LENGTH-WHEEL_BASE, 0.);
 
             //new Thread(odometryThread).start();
 
@@ -185,7 +190,7 @@ public class SeekSkyStone extends LinearOpMode {
                                 telemetry.addData("Program State", "Scanning");
 
                                 // Strafe left until Stone found within specific angle from center of camera
-                                robot.driveTrain.strafe(-0.3);
+                                robot.driveTrain.strafe(-0.2);
                             }
 
                         } else if (currentState == ProgramStates.APPROACHING) {
@@ -285,24 +290,23 @@ public class SeekSkyStone extends LinearOpMode {
 
     /**
      * Initialize the Vuforia localization engine.
-     */    private void initVuforia() {
+     */    private void initVuforiaPhone() {
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
          */
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
 
         //  Instantiate the Vuforia engine
-        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+        vuforia2 = ClassFactory.getInstance().createVuforia(parameters);
 
         // Loading trackables is not necessary for the TensorFlow Object Detection engine.
     }
 
 
-/*
-    @Deprecated
+
     private void initVuforiaWebcam() {
 
          // Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
@@ -316,7 +320,7 @@ public class SeekSkyStone extends LinearOpMode {
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
         // Loading trackables is not necessary for the TensorFlow Object Detection engine.
-    }*/
+    }
 
 
 
@@ -328,9 +332,15 @@ public class SeekSkyStone extends LinearOpMode {
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
         tfodParameters.minimumConfidence = 0.8;
+
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
+
+        tfod2 = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia2);
+        tfod2.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
+
+
 
 
 

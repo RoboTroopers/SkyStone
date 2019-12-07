@@ -1,6 +1,10 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.teamcode.Utilities.CustomTelemetry;
+import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
 
 
 public class Robot {
@@ -17,6 +21,18 @@ public class Robot {
     public Sensors sensors = new Sensors();
     //public Odometry odometry = new Odometry(this);
 
+    public CustomTelemetry customTelemetry = new CustomTelemetry(this);
+
+
+    public OpMode opMode;
+    public OpModeTypes currentOpModeType;
+
+
+    public Robot (OpMode theOpMode, OpModeTypes opModeType) {
+        opMode = theOpMode;
+        currentOpModeType = opModeType;
+    }
+
 
     public void initHardware (HardwareMap aHwMap) {
         // get the two expansion hubs themselves
@@ -26,13 +42,11 @@ public class Robot {
         driveTrain.initHardware(aHwMap, this);
         intake.initHardware(aHwMap);
         outtake.initHardware(aHwMap);
-
         fingers.initHardware(aHwMap);
 
         sensors.initHardware(aHwMap);
 
     }
-
 
 
 }

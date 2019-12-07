@@ -2,24 +2,19 @@ package org.firstinspires.ftc.teamcode.OpModes.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.Globals.DriveConstants;
 import org.firstinspires.ftc.teamcode.Globals.FieldConstants;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
+import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
 
-import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.inchesToTicks;
 import static org.firstinspires.ftc.teamcode.Globals.FieldConstants.TILE_LENGTH;
-import static org.firstinspires.ftc.teamcode.Utilities.MiscUtil.pause;
-
-
 
 
 @Autonomous(name = "PerryPark", group="Autonomous")
 //@Disabled
 public class PerryPark extends LinearOpMode {
 
-    private Robot perry = new Robot();
+    private Robot perry = new Robot(this, OpModeTypes.AUTO);
 
 
     @Override
@@ -47,13 +42,22 @@ public class PerryPark extends LinearOpMode {
             }
 
              */
-
             //pause(28000);
             //perry.driveTrain.straight(7);
             //pause(1000);
-            perry.driveTrain.straightInches(FieldConstants.TILE_LENGTH,0.8);
+            //perry.driveTrain.straightInches(FieldConstants.TILE_LENGTH,0.4);
+
+            /*
+            perry.driveTrain.setTargetPos(300, 300, 300, 300);
+            perry.driveTrain.straight(1);
+            while (opModeIsActive() && perry.driveTrain.anyMotorsBusy()) {}
 
             perry.driveTrain.brake();
+
+            */
+
+            perry.driveTrain.straightInches(TILE_LENGTH, 0.1);
+
         }
 
     }

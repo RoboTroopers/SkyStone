@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
+import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
 import org.firstinspires.ftc.teamcode.ppProject.company.Range;
 
 import static java.lang.Math.abs;
@@ -21,7 +23,9 @@ public class DriveTrain {
 
     public Robot robot;
 
+
     // Motors and servos
+    //DcMotorEx class allows for advanced motor functions like PID methods
     public DcMotorEx leftFront;
     public DcMotorEx leftRear;
     public DcMotorEx rightFront;
@@ -30,7 +34,7 @@ public class DriveTrain {
 
 
     public void initHardware(HardwareMap aHwMap, Robot theRobot) {
-        this.robot = theRobot;
+        robot = theRobot;
 
         leftFront = aHwMap.get(DcMotorEx.class, "leftFront");
         leftRear = aHwMap.get(DcMotorEx.class, "leftRear");
@@ -39,10 +43,10 @@ public class DriveTrain {
 
         leftRear.setDirection(DcMotorEx.Direction.REVERSE);
         leftFront.setDirection(DcMotorEx.Direction.REVERSE);
-        // Motor instances to be used for more complex motor functions (using PID)
+
+        resetEncoders();
 
     }
-
 
 
     public void applyMovement(double straight, double strafe, double turn) {
@@ -85,7 +89,6 @@ public class DriveTrain {
     }
 
 
-
     // Stations the robot in current position
     public void brake() {
         applyMovement(0, 0, 0);
@@ -121,32 +124,48 @@ public class DriveTrain {
 
 
 
-    public void setMotorModes(DcMotor.RunMode runMode) {
+    public void setMotorModes(DcMotorEx.RunMode runMode) {
 
         leftFront.setMode(runMode);
         rightFront.setMode(runMode);
         leftRear.setMode(runMode);
         rightRear.setMode(runMode);
+
+    }
+
+
+    public void resetEncoders() {
+
+        setMotorModes(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        if (robot.currentOpModeType == OpModeTypes.AUTO) {
+            setTargetPos(0, 0, 0, 0);
+            setMotorModes(DcMotorEx.RunMode.RUN_TO_POSITION);
+            robot.opMode.telemetry.addData("RunToPositiojn", "Set");
+            robot.opMode.telemetry.update();
+        } else {
+            setMotorModes(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+
+        }
     }
 
 
 
-    public void setTargetPos(int leftFrontPos, int rightFrontPos, int leftRearPos, int rightRearPos) {
+    public void setTargetPos(int leftFrontPos, int leftRearPos,  int rightFrontPos, int rightRearPos) {
 
         leftFront.setTargetPosition(leftFrontPos);
-        rightFront.setTargetPosition(rightFrontPos);
         leftRear.setTargetPosition(leftRearPos);
-        rightFront.setTargetPosition(rightRearPos);
+        rightFront.setTargetPosition(rightFrontPos);
+        rightRear.setTargetPosition(rightRearPos);
 
     }
-
 
 
     public double getEncoderAvg() {
-        double motorAvgPower = leftFront.getCurrentPosition()+
-                               rightFront.getCurrentPosition()+
-                               leftRear.getCurrentPosition()+
-                               rightRear.getCurrentPosition();
+        double motorAvgPower =
+            leftFront.getCurrentPosition()+
+            leftRear.getCurrentPosition()+
+            rightFront.getCurrentPosition()+
+            rightRear.getCurrentPosition();
         return motorAvgPower/4;
     }
 
@@ -161,79 +180,54 @@ public class DriveTrain {
     }
 
 
-/*
-    public void moveInches(double LFInches, double LRInches, double speed) {
 
-        int relativePosition = (int)inchesToTicks(relativeInches);
+    public void moveInches(double LFinches, double LRinches,
+                           double RFinches, double RRinches,
+                           double speed) {
+        //moveInches(inches, inches, inches, inches, speed);
+        double leftFrontTargetPos = (int)inchesToTicks(LFinches);
+        double leftRearTargetPos = (int)inchesToTicks(LRinches);
+        double rightFrontTargetPos = (int)inchesToTicks(RFinches);
+        double rightRearTargetPos = (int)inchesToTicks(RRinches);
 
-        setMotorModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        double averageTargetPos =
+                rightRearTargetPos+
+                rightRearTargetPos+
+                rightRearTargetPos+
+                rightRearTargetPos;
 
-        int leftFrontPos = relativePosition;
-        int rightFrontPos = relativePosition;
-        int leftRearPos = relativePosition;
-        int rightRearPos = relativePosition;
 
-        setMotorModes(DcMotor.RunMode.RUN_TO_POSITION);
+        setTargetPos(
+                (int)leftFrontTargetPos+leftFront.getCurrentPosition(),
+                (int)leftRearTargetPos+leftRear.getCurrentPosition(),
+                (int)rightFrontTargetPos+rightFront.getCurrentPosition(),
+                (int)rightRearTargetPos+rightRear.getCurrentPosition());
 
-        setTargetPos(leftFrontPos, rightFrontPos, leftRearPos, rightRearPos);
         straight(speed);
-        while (anyMotorsBusy()) {pause(10);}
+        while (anyMotorsBusy() && (Math.abs(averageTargetPos) - Math.abs(getEncoderAvg()) > 1)) {
+            robot.opMode.telemetry.addData("Desired distance", averageTargetPos);
+            robot.opMode.telemetry.addData("Distance covered", getEncoderAvg());
 
-        setMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            robot.opMode.telemetry.update();
+        }
+
         brake();
-
-    }
-*/
-
-    public void straightInches(double relativeInches, double speed) {
-
-        int relativePosition = (int)inchesToTicks(relativeInches);
-
-        setMotorModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        int leftFrontPos = relativePosition;
-        int rightFrontPos = relativePosition;
-        int leftRearPos = relativePosition;
-        int rightRearPos = relativePosition;
-
-        setMotorModes(DcMotor.RunMode.RUN_TO_POSITION);
-
-        setTargetPos(leftFrontPos, rightFrontPos, leftRearPos, rightRearPos);
-        straight(speed);
-        while (anyMotorsBusy()) {pause(10);}
-
-        setMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        brake();
-
     }
 
 
-
-    public void strafeInches(double relativeInches, double rightSpeed) {
-
-        int relativePosition = (int)inchesToTicks(relativeInches);
-
-        int RF_LRSign = (int)(rightSpeed / abs(rightSpeed));
-        int LF_RRSign = -RF_LRSign;
-
-        setMotorModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        int leftFrontPos = relativePosition*LF_RRSign;
-        int rightFrontPos = relativePosition*RF_LRSign;
-        int leftRearPos = relativePosition*RF_LRSign;
-        int rightRearPos =  relativePosition*LF_RRSign;
-
-        setMotorModes(DcMotor.RunMode.RUN_TO_POSITION);
-
-        setTargetPos(leftFrontPos, rightFrontPos, leftRearPos, rightRearPos);
-        strafe(rightSpeed);
-        while (anyMotorsBusy()) {pause(10);}
-
-        setMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        brake();
-
+    public void straightInches(double inches, double speed) {
+        moveInches(inches, inches, inches, inches, speed);
     }
 
+
+    public void turnInches(double inches, double speed) {
+        moveInches(inches, inches, -inches, -inches, speed);
+    }
+
+
+    public void strafeInches(double inches, double speed) {
+        moveInches(inches, -inches, -inches, inches, speed);
+    }
 
 
     public void turnToRad(double absoluteRad, double maxSpeed, double deaccelRate) {

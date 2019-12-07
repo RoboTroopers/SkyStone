@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Fingers;
 import org.firstinspires.ftc.teamcode.Hardware.Intake;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.Utilities.GamepadAdvanced;
+import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
 
 import static org.firstinspires.ftc.teamcode.ppProject.RobotUtilities.MovementVars.movement_turn;
 import static org.firstinspires.ftc.teamcode.ppProject.RobotUtilities.MovementVars.movement_x;
@@ -16,7 +17,7 @@ import static org.firstinspires.ftc.teamcode.ppProject.RobotUtilities.MovementVa
 @TeleOp(name = "Mechanum Strafing TeleOp")
 public class MechanumStrafingTeleOp extends OpMode {
 
-    private Robot robot = new Robot();
+    private Robot robot = new Robot(this, OpModeTypes.TELEOP);
 
     private double threshold = 0.0;
 
