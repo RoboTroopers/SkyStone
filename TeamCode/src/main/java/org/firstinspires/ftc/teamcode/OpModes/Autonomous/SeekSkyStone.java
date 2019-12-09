@@ -35,6 +35,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
@@ -46,7 +47,9 @@ import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
 import java.util.List;
 
 import static java.lang.Math.toRadians;
+import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.TRACK_WIDTH;
 import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.WHEEL_BASE;
+import static org.firstinspires.ftc.teamcode.Globals.FieldConstants.STONE_WIDTH;
 import static org.firstinspires.ftc.teamcode.Globals.FieldConstants.TILE_LENGTH;
 
 
@@ -97,7 +100,6 @@ public class SeekSkyStone extends LinearOpMode {
     public double objectHeightRatio; // How much of the screen the skystone takes up vertically.
 
 
-
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
      * 'parameters.vuforiaLicenseKey' is initialized is for illustration only, and will not function.
@@ -118,14 +120,12 @@ public class SeekSkyStone extends LinearOpMode {
      * localization engine.
      */
     private VuforiaLocalizer vuforia;
-    private VuforiaLocalizer vuforia2;
 
     /**
      * {@link #tfod} is the variable we will use to store our instance of the TensorFlow Object
      * Detection engine.
      */
     private TFObjectDetector tfod;
-    private TFObjectDetector tfod2;
 
 
     @Override
@@ -164,7 +164,7 @@ public class SeekSkyStone extends LinearOpMode {
             //robot.odometry.setPositionInches(startPos.fieldXInches, startPos.fieldYInches);
             //waitForStart();
 
-            robot.driveTrain.straightInches(TILE_LENGTH-WHEEL_BASE, 0.);
+            robot.driveTrain.strafeInches(TILE_LENGTH, 0.2);
 
             //new Thread(odometryThread).start();
 
@@ -190,12 +190,13 @@ public class SeekSkyStone extends LinearOpMode {
                                 telemetry.addData("Program State", "Scanning");
 
                                 // Strafe left until Stone found within specific angle from center of camera
-                                robot.driveTrain.strafe(-0.2);
+                                //robot.driveTrain.strafeInches(STONE_WIDTH, -0.2);
+                                robot.driveTrain.straightInches(STONE_WIDTH, 0.2);
                             }
 
                         } else if (currentState == ProgramStates.APPROACHING) {
 
-
+                            robot.intake.unYankStone();
                             if (nearestSkystone != null) {
                                 objectAngle = nearestSkystone.estimateAngleToObject(AngleUnit.RADIANS);
                                 objectHeight = nearestSkystone.getHeight();
@@ -210,14 +211,17 @@ public class SeekSkyStone extends LinearOpMode {
 
 
                                 // The "1 - ([ratio])" is used to make robot slower when closer to skystone for precision.
-                                double forwardSpeed = 0.3*(1 - (objectHeightRatio));
-                                double strafeSpeed = (objectAngle+skystoneAngleOffset)*0.15;
+                                //double forwardSpeed = 0.3*(1 - (objectHeightRatio));
+                                //double strafeSpeed = (objectAngle+skystoneAngleOffset)*0.15;
+
+                                double strafeSpeed = 0.2*(1 - (objectHeightRatio));
+                                double forwardSpeed = (objectAngle+skystoneAngleOffset)*0.15;
 
                                 telemetry.addData("Program State", "Approaching ");
                                 // Move towards the skystone until it takes up enough of the screen, meaning it is close enough to pick up.
 
-                                robot.driveTrain.applyMovement(strafeSpeed, forwardSpeed, 0);
-                                robot.intake.suck();
+                                robot.driveTrain.applyMovement(forwardSpeed, strafeSpeed, 0);
+                                //robot.intake.suck();
 
                             } else {
                                 //Robot cannot recognize skystone any longer when it is close because camera is looking over it.
@@ -227,28 +231,32 @@ public class SeekSkyStone extends LinearOpMode {
 
                         } else if (currentState == ProgramStates.TRANSPORTING) {
 
+                            //robot.driveTrain.straightInches(4, 0.4)
+                            robot.driveTrain.strafeInches(6,0.2);
+
+                            robot.intake.yankStone();
                             /*while (!robot.sensors.possessingStone()) {
                                 robot.driveTrain.straightInches(10, 0.5);
-                            }*/
-
-                            robot.driveTrain.straightInches(4, 0.6);
+                            }   */
 
                             telemetry.addData("Ladies and gentlemen!", "We gottem.");
 
                             sleep(1500);
                             skystonesTransported += 1;
-                            robot.intake.rest();
-                            robot.driveTrain.brake();
-                            robot.driveTrain.straightInches(-10, 0.7);
 
-                            robot.driveTrain.turnToRad(toRadians(-90), 0.6, 6);
+                            //robot.intake.rest();
+                            robot.driveTrain.brake();
+                            //robot.driveTrain.straightInches(-10, 0.7);
+                            robot.driveTrain.strafeInches(-10, 0.7);
+
+                            //robot.driveTrain.turnToRad(toRadians(-90), 0.6, 6);
                             robot.driveTrain.straightInches(TILE_LENGTH*3, 5);
 
                             // Release skystone onto ground
                             robot.outtake.depositStone();
 
                             robot.driveTrain.straightInches(-TILE_LENGTH*3, 5);
-                            robot.driveTrain.turnToRad(0, 0.6, 6);
+                            //robot.driveTrain.turnToRad(0, 0.6, 6);
 
                             if (skystonesTransported < 2) {
                                 currentState = ProgramStates.SCANNING;
@@ -271,38 +279,19 @@ public class SeekSkyStone extends LinearOpMode {
                 telemetry.addData("Program State", "Parking");
                 robot.driveTrain.strafe(0.5);
 
-                //while (!robot.sensors.overLine()) {
-                telemetry.addData("Parking...", true);
-                //}
+                while (!robot.sensors.overLine()) {
+                    telemetry.addData("LightSensor", robot.sensors.getColorSensorHSV(robot.sensors.lineSensor));
+                    telemetry.update();
+                }
 
                 robot.driveTrain.brake();
                 //robot.advancedMovement.myGoToPosition(BRIDGE_X, TILE_LENGTH, 0.6, 0, 0.5);
-
             }
         }
 
         if (tfod != null) {
             tfod.shutdown();
         }
-    }
-
-
-
-    /**
-     * Initialize the Vuforia localization engine.
-     */    private void initVuforiaPhone() {
-        /*
-         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
-         */
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-
-        parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
-
-        //  Instantiate the Vuforia engine
-        vuforia2 = ClassFactory.getInstance().createVuforia(parameters);
-
-        // Loading trackables is not necessary for the TensorFlow Object Detection engine.
     }
 
 
@@ -336,11 +325,7 @@ public class SeekSkyStone extends LinearOpMode {
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
 
-        tfod2 = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia2);
-        tfod2.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
-
-
 
 
 
@@ -369,6 +354,7 @@ public class SeekSkyStone extends LinearOpMode {
 
         return nearestSkystone;
     }
+
 
 
 }

@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.ppProject.treamcode.MathFunctions;
 
 public class Sensors {
@@ -25,7 +26,7 @@ public class Sensors {
     //public DcMotor rightVerticalEncoder;
 
 
-    public ColorSensor stoneSensor;
+    //public DistanceSensor stoneSensor;
 
     public ColorSensor lineSensor;
 
@@ -42,8 +43,9 @@ public class Sensors {
         //leftVerticalEncoder = aHwMap.get(DcMotor.class, "leftVerticalEncoder");
         //rightVerticalEncoder = aHwMap.get(DcMotor.class, "rightVerticalEncoder");
         //resetEncoders();
-        //stoneSensor = aHwMap.get(ColorSensor.class, "colorSensor");
+        //stoneSensor = aHwMap.get(DistanceSensor.class, "stoneSensor");
         lineSensor = aHwMap.get(ColorSensor.class, "lineSensor");
+        lineSensor.enableLed(true);
 
     }
 
@@ -92,7 +94,7 @@ public class Sensors {
     }
 
 
-
+    /*
     public boolean intookStone() {
         // Color sensor detects if yellow stone is above stone holding cell
         float hue = getColorSensorHSV(stoneSensor)[0];
@@ -105,6 +107,21 @@ public class Sensors {
 
         return isPossessing;
     }
+    */
+
+
+/*
+    public boolean holdingStone() {
+
+        double distanceInches = stoneSensor.getDistance(DistanceUnit.INCH);
+        boolean holdingStone = false;
+
+        if (distanceInches < 3) {
+            holdingStone = true;
+        }
+
+        return holdingStone();
+    }*/
 
 
     public boolean overLine() {

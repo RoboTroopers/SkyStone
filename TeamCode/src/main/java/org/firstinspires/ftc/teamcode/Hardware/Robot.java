@@ -22,7 +22,6 @@ public class Robot {
     //public Odometry odometry = new Odometry(this);
 
 
-
     public OpMode opMode;
     public OpModeTypes currentOpModeType;
 

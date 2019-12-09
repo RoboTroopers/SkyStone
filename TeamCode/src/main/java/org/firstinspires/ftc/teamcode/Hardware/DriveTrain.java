@@ -140,7 +140,7 @@ public class DriveTrain {
         if (robot.currentOpModeType == OpModeTypes.AUTO) {
             setTargetPos(0, 0, 0, 0);
             setMotorModes(DcMotorEx.RunMode.RUN_TO_POSITION);
-            robot.opMode.telemetry.addData("RunToPositiojn", "Set");
+            robot.opMode.telemetry.addData("RunToPosition", "Set");
             robot.opMode.telemetry.update();
         } else {
             setMotorModes(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
@@ -149,13 +149,22 @@ public class DriveTrain {
     }
 
 
-
     public void setTargetPos(int leftFrontPos, int leftRearPos,  int rightFrontPos, int rightRearPos) {
 
         leftFront.setTargetPosition(leftFrontPos);
         leftRear.setTargetPosition(leftRearPos);
         rightFront.setTargetPosition(rightFrontPos);
         rightRear.setTargetPosition(rightRearPos);
+
+    }
+
+
+    public void setTargetPosInches(double leftFrontInches, double leftRearInches, double rightFrontInches, double rightRearInches) {
+
+        leftFront.setTargetPosition((int)inchesToTicks(leftFrontInches));
+        leftRear.setTargetPosition((int)inchesToTicks(leftRearInches));
+        rightFront.setTargetPosition((int)inchesToTicks(rightFrontInches));
+        rightRear.setTargetPosition((int)inchesToTicks(rightRearInches));
 
     }
 
@@ -196,7 +205,6 @@ public class DriveTrain {
                 rightRearTargetPos+
                 rightRearTargetPos;
 
-
         setTargetPos(
                 (int)leftFrontTargetPos+leftFront.getCurrentPosition(),
                 (int)leftRearTargetPos+leftRear.getCurrentPosition(),
@@ -226,8 +234,10 @@ public class DriveTrain {
 
 
     public void strafeInches(double inches, double speed) {
+        //inches *= 1.5;
         moveInches(inches, -inches, -inches, inches, speed);
     }
+
 
 
     public void turnToRad(double absoluteRad, double maxSpeed, double deaccelRate) {
