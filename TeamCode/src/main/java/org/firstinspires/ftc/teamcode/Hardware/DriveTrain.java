@@ -211,7 +211,11 @@ public class DriveTrain {
                 (int)rightFrontTargetPos+rightFront.getCurrentPosition(),
                 (int)rightRearTargetPos+rightRear.getCurrentPosition());
 
-        straight(speed);
+        leftFront.setPower(speed);
+        leftRear.setPower(speed);
+        rightFront.setPower(speed);
+        rightRear.setPower(speed);
+
         while (anyMotorsBusy() && (Math.abs(averageTargetPos) - Math.abs(getEncoderAvg()) > 1)) {
             robot.opMode.telemetry.addData("Desired distance", averageTargetPos);
             robot.opMode.telemetry.addData("Distance covered", getEncoderAvg());
