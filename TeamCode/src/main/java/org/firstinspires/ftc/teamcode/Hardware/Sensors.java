@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -26,9 +27,11 @@ public class Sensors {
     //public DcMotor rightVerticalEncoder;
 
 
-    //public DistanceSensor stoneSensor;
+    public DistanceSensor stoneSensor;
 
     public ColorSensor lineSensor;
+
+    public TouchSensor stoneBumpSensor;
 
     //public DistanceSensor pulleySensor;
 
@@ -110,7 +113,6 @@ public class Sensors {
     */
 
 
-/*
     public boolean holdingStone() {
 
         double distanceInches = stoneSensor.getDistance(DistanceUnit.INCH);
@@ -121,7 +123,13 @@ public class Sensors {
         }
 
         return holdingStone();
-    }*/
+    }
+
+
+    public boolean stoneAtBack() {
+        return stoneBumpSensor.isPressed();
+    }
+
 
 
     public boolean overLine() {

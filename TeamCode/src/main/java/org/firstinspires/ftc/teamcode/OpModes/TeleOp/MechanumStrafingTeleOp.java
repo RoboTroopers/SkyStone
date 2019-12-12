@@ -131,8 +131,8 @@ public class MechanumStrafingTeleOp extends OpMode {
         if (gamepad2Advanced.leftBumperOnce()) {
 
             if (robot.outtake.arm.getPosition() != robot.outtake.ARM_OUT_POS) {
-                depositStoneTimer = 0;
-                resetArmTimer = 1000;
+                depositStoneTimer = 0; // Starts timer to pick up the stone and place it on the ground
+                resetArmTimer = 1000; // Arbitrary value above timer threshold
 
             } else {
                 resetArmTimer = 0;
@@ -152,6 +152,17 @@ public class MechanumStrafingTeleOp extends OpMode {
         }
 
 
+        if (robot.sensors.holdingStone()) {
+            robot.fingers.pepeSMASHIn();
+        }
+
+        if (robot.sensors.stoneAtBack()) {
+            depositStoneTimer = 0;
+            resetArmTimer = 1000;
+        }
+
+
+
         if (depositStoneTimer <= 110) {
 
             if (depositStoneTimer == 2) {
@@ -168,6 +179,7 @@ public class MechanumStrafingTeleOp extends OpMode {
             } else if (depositStoneTimer == 110) {
                 robot.outtake.armOut();
             }
+
             depositStoneTimer += 1;
         }
 

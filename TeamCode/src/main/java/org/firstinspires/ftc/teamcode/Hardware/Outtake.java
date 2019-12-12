@@ -116,9 +116,10 @@ public class Outtake {
 
 
 
-
+/*
     public void liftStone() {
         armMid();
+
         pause(1500);
 
         armIn();
@@ -136,7 +137,7 @@ public class Outtake {
         pause(1000);
         armMid();
 
-    }
+    }*/
 
 
 
