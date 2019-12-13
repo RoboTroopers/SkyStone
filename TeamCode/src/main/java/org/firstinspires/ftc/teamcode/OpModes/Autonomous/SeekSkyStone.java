@@ -164,8 +164,7 @@ public class SeekSkyStone extends LinearOpMode {
             //robot.odometry.setPositionInches(startPos.fieldXInches, startPos.fieldYInches);
             //waitForStart();
 
-            robot.driveTrain.strafe(0.3);
-            sleep(1000);
+            robot.driveTrain.strafe(0.35);
 
             //new Thread(odometryThread).start();
 
@@ -210,7 +209,6 @@ public class SeekSkyStone extends LinearOpMode {
                                 telemetry.addData("Object height ratio", objectHeightRatio);
                                 telemetry.addData("Object angle", objectAngle);
 
-
                                 // The "1 - ([ratio])" is used to make robot slower when closer to skystone for precision.
                                 //double forwardSpeed = 0.3*(1 - (objectHeightRatio));
                                 //double strafeSpeed = (objectAngle+skystoneAngleOffset)*0.15;
@@ -235,14 +233,13 @@ public class SeekSkyStone extends LinearOpMode {
                             //robot.driveTrain.straightInches(4, 0.4)
                             //robot.driveTrain.strafeInches(6,0.2);
                             robot.driveTrain.strafe(0.3);
+                            robot.driveTrain.straightInches(3, 0.3);
                             sleep(1000);
 
                             robot.intake.yankStone();
                             /*while (!robot.sensors.possessingStone()) {
                                 robot.driveTrain.straightInches(10, 0.5);
                             }*/
-
-
                             //robot.driveTrain.
 
                             telemetry.addData("Ladies and gentlemen!", "We gottem.");
