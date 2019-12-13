@@ -28,36 +28,12 @@ public class PerryPark extends LinearOpMode {
 
         waitForStart();
 
-
         if (opModeIsActive()) {
-            /*
-            int distance = (int)inchesToTicks(12);
-            perry.driveTrain.setTargetPos(distance, distance, distance, distance);
-            perry.driveTrain.setMotorModes(DcMotor.RunMode.RUN_TO_POSITION);
 
-            perry.driveTrain.straight(0.5);
-            while (!perry.driveTrain.anyMotorsBusy()) {
-                telemetry.addData("Inches", perry.driveTrain.getEncoderAvgInches());
-                pause(10);
-            }
-
-             */
-            //pause(28000);
-            //perry.driveTrain.straight(7);
-            //pause(1000);
-            //perry.driveTrain.straightInches(FieldConstants.TILE_LENGTH,0.4);
-
-            /*
-            perry.driveTrain.setTargetPos(300, 300, 300, 300);
-            perry.driveTrain.straight(1);
-            while (opModeIsActive() && perry.driveTrain.anyMotorsBusy()) {}
-
+            perry.driveTrain.straightInches(TILE_LENGTH, 0.75);
+            //while (!perry.sensors.overLine()) {}
             perry.driveTrain.brake();
 
-            */
-
-            //perry.driveTrain.straightInches(TILE_LENGTH, 0.1);
-            perry.driveTrain.strafeInches(TILE_LENGTH, 0.05);
         }
 
     }

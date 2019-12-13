@@ -26,23 +26,28 @@ public class DriveTrain {
 
     // Motors and servos
     //DcMotorEx class allows for advanced motor functions like PID methods
-    public DcMotorEx leftFront;
-    public DcMotorEx leftRear;
-    public DcMotorEx rightFront;
-    public DcMotorEx rightRear;
-
+    public DcMotor leftFront;
+    public DcMotor leftRear;
+    public DcMotor rightFront;
+    public DcMotor rightRear;
 
 
     public void initHardware(HardwareMap aHwMap, Robot theRobot) {
+
         robot = theRobot;
 
-        leftFront = aHwMap.get(DcMotorEx.class, "leftFront");
-        leftRear = aHwMap.get(DcMotorEx.class, "leftRear");
-        rightFront = aHwMap.get(DcMotorEx.class, "rightFront");
-        rightRear = aHwMap.get(DcMotorEx.class, "rightRear");
+        leftFront = aHwMap.get(DcMotor.class, "leftFront");
+        leftRear = aHwMap.get(DcMotor.class, "leftRear");
+        rightFront = aHwMap.get(DcMotor.class, "rightFront");
+        rightRear = aHwMap.get(DcMotor.class, "rightRear");
 
-        leftRear.setDirection(DcMotorEx.Direction.REVERSE);
-        leftFront.setDirection(DcMotorEx.Direction.REVERSE);
+        leftRear.setDirection(DcMotor.Direction.REVERSE);
+        leftFront.setDirection(DcMotor.Direction.REVERSE);
+
+        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         resetEncoders();
 
@@ -50,6 +55,7 @@ public class DriveTrain {
 
 
     public void applyMovement(double straight, double strafe, double turn) {
+        setMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         //Moves robot on field forward and sideways, rotates by turn
         //movement_x multiplied by 1.5 because mechanum drive strafes sideways slower than forwards/backwards
@@ -57,7 +63,6 @@ public class DriveTrain {
         double lr_power_raw = straight + turn + (strafe*1.5);
         double rf_power_raw = straight - turn + (strafe*1.5);
         double rr_power_raw = straight - turn - (strafe*1.5);
-
 
         // Find greatest power
         double maxRawPower = Math.max(Math.max(lf_power_raw, rf_power_raw), Math.max(lr_power_raw, rr_power_raw));
@@ -91,23 +96,34 @@ public class DriveTrain {
 
     // Stations the robot in current position
     public void brake() {
-        applyMovement(0, 0, 0);
+
+        leftFront.setPower(0);
+        leftRear.setPower(0);
+        rightFront.setPower(0);
+        rightRear.setPower(0);
     }
 
 
     // Moves all motors at same power
     public void straight(double speed) {
+        setMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         applyMovement(speed, 0, 0);
     }
 
+
     // Moves all motors at same power
     public void turn(double speed) {
+        setMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         applyMovement(0, 0, -speed);
     }
 
 
     // Moves the left and right side motors separate speeds
     public void steer(double leftSpeed, double rightSpeed) {
+
+        setMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         leftFront.setPower(leftSpeed);
         rightFront.setPower(rightSpeed);
@@ -119,13 +135,13 @@ public class DriveTrain {
 
     // Moves the robot sideways without turning, positive speed is right, negative speed is left.
     public void strafe(double speed){
+        setMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         applyMovement(0, speed, 0);
     }
 
 
 
     public void setMotorModes(DcMotorEx.RunMode runMode) {
-
         leftFront.setMode(runMode);
         rightFront.setMode(runMode);
         leftRear.setMode(runMode);
@@ -159,28 +175,13 @@ public class DriveTrain {
     }
 
 
-    public void setTargetPosInches(double leftFrontInches, double leftRearInches, double rightFrontInches, double rightRearInches) {
-
-        leftFront.setTargetPosition((int)inchesToTicks(leftFrontInches));
-        leftRear.setTargetPosition((int)inchesToTicks(leftRearInches));
-        rightFront.setTargetPosition((int)inchesToTicks(rightFrontInches));
-        rightRear.setTargetPosition((int)inchesToTicks(rightRearInches));
-
-    }
-
-
     public double getEncoderAvg() {
         double motorAvgPower =
-            leftFront.getCurrentPosition()+
-            leftRear.getCurrentPosition()+
-            rightFront.getCurrentPosition()+
-            rightRear.getCurrentPosition();
+            abs(leftFront.getCurrentPosition()) +
+            abs(leftRear.getCurrentPosition()) +
+            abs(rightFront.getCurrentPosition()) +
+            abs(rightRear.getCurrentPosition());
         return motorAvgPower/4;
-    }
-
-
-    public double getEncoderAvgInches() {
-        return ticksToInches(getEncoderAvg());
     }
 
 
@@ -193,32 +194,48 @@ public class DriveTrain {
     public void moveInches(double LFinches, double LRinches,
                            double RFinches, double RRinches,
                            double speed) {
+        resetEncoders();
+
         //moveInches(inches, inches, inches, inches, speed);
         double leftFrontTargetPos = (int)inchesToTicks(LFinches);
         double leftRearTargetPos = (int)inchesToTicks(LRinches);
         double rightFrontTargetPos = (int)inchesToTicks(RFinches);
         double rightRearTargetPos = (int)inchesToTicks(RRinches);
 
-        double averageTargetPos =
-                rightRearTargetPos+
-                rightRearTargetPos+
-                rightRearTargetPos+
-                rightRearTargetPos;
-
         setTargetPos(
-                (int)leftFrontTargetPos+leftFront.getCurrentPosition(),
-                (int)leftRearTargetPos+leftRear.getCurrentPosition(),
-                (int)rightFrontTargetPos+rightFront.getCurrentPosition(),
-                (int)rightRearTargetPos+rightRear.getCurrentPosition());
+                (int)leftFrontTargetPos,//+leftFront.getCurrentPosition(),
+                (int)leftRearTargetPos,//+leftRear.getCurrentPosition(),
+                (int)rightFrontTargetPos,//+rightFront.getCurrentPosition(),
+                (int)rightRearTargetPos//+rightRear.getCurrentPosition());
+            );
+
+        double averageTargetPos = (
+                abs(rightRearTargetPos) +
+                abs(rightRearTargetPos) +
+                abs(rightRearTargetPos) +
+                abs(rightRearTargetPos)
+            )/4;
 
         leftFront.setPower(speed);
         leftRear.setPower(speed);
         rightFront.setPower(speed);
         rightRear.setPower(speed);
 
-        while (anyMotorsBusy() && (Math.abs(averageTargetPos) - Math.abs(getEncoderAvg()) > 1)) {
+        robot.opMode.telemetry.update();
+
+        double error = averageTargetPos - getEncoderAvg();
+
+        // While the motors are moving or the error is less than 1
+
+        while (anyMotorsBusy()  && error > 1) {
+            error = averageTargetPos - getEncoderAvg();
+
             robot.opMode.telemetry.addData("Desired distance", averageTargetPos);
-            robot.opMode.telemetry.addData("Distance covered", getEncoderAvg());
+            robot.opMode.telemetry.addData("Distance error", error);
+
+            robot.opMode.telemetry.addData("Avg pos", getEncoderAvg());
+
+            robot.opMode.telemetry.addData("anyMotorsBusy", anyMotorsBusy());
 
             robot.opMode.telemetry.update();
         }
@@ -228,6 +245,7 @@ public class DriveTrain {
 
 
     public void straightInches(double inches, double speed) {
+        resetEncoders();
         moveInches(inches, inches, inches, inches, speed);
     }
 
@@ -238,10 +256,44 @@ public class DriveTrain {
 
 
     public void strafeInches(double inches, double speed) {
-        //inches *= 1.5;
-        moveInches(inches, -inches, -inches, inches, speed);
-    }
+        int newLeftFrontTarget;
+        int newRightRearTarget;
+        int newRightFrontTarget;
+        int newLeftRearTarget;
 
+        resetEncoders();
+
+        int relativePosition = (int)inchesToTicks(inches * 1.5);
+
+        newLeftFrontTarget = leftFront.getCurrentPosition() + relativePosition;
+        newLeftRearTarget = leftRear.getCurrentPosition() - relativePosition;
+        newRightFrontTarget = rightFront.getCurrentPosition() - relativePosition;
+        newRightRearTarget = rightRear.getCurrentPosition() + relativePosition;
+
+        setTargetPos(
+                newLeftFrontTarget,
+                newLeftRearTarget,
+                newRightFrontTarget,
+                newRightRearTarget
+        );
+
+        leftFront.setPower(Math.abs(speed));
+        rightFront.setPower(Math.abs(speed));
+        leftRear.setPower(Math.abs(speed));
+        rightRear.setPower(Math.abs(speed));
+
+        while (leftRear.isBusy() && rightFront.isBusy() && rightRear.isBusy() && leftFront.isBusy()) {
+            robot.opMode.telemetry.addData("Left Front:", leftFront.getCurrentPosition());
+            robot.opMode.telemetry.addData("Left Rear:", leftRear.getCurrentPosition());
+            robot.opMode.telemetry.addData("Right Front:", rightFront.getCurrentPosition());
+            robot.opMode.telemetry.addData("Right Rear:", rightRear.getCurrentPosition());
+
+            robot.opMode.telemetry.update();
+        }
+
+        brake();
+    }
+    
 
 
     public void turnToRad(double absoluteRad, double maxSpeed, double deaccelRate) {

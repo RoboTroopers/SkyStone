@@ -142,7 +142,7 @@ public class MechanumStrafingTeleOp extends OpMode {
         }
 
 
-        if (gamepad2Advanced.AOnce()) {
+        if (gamepad1Advanced.XOnce()) {
 
             if (robot.intake.stoneYanker.getPosition() != robot.intake.YANKED_POS) {
                 robot.intake.yankStone();

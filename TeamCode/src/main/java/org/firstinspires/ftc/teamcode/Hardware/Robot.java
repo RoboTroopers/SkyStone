@@ -45,7 +45,7 @@ public class Robot {
         outtake.initHardware(aHwMap);
         fingers.initHardware(aHwMap);
 
-        sensors.initHardware(aHwMap);
+        sensors.initHardware(aHwMap, this);
 
     }
 

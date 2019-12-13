@@ -13,10 +13,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
 import org.firstinspires.ftc.teamcode.ppProject.treamcode.MathFunctions;
 
 public class Sensors {
 
+    private Robot robot;
 
     // Sensors
     public BNO055IMU imu;
@@ -27,18 +29,16 @@ public class Sensors {
     //public DcMotor rightVerticalEncoder;
 
 
-    public DistanceSensor stoneSensor;
-
+    public DistanceSensor stoneDistanceSensor;
     public ColorSensor lineSensor;
-
     public TouchSensor stoneBumpSensor;
 
     //public DistanceSensor pulleySensor;
 
 
+    public void initHardware(HardwareMap aHwMap, Robot theRobot) {
 
-    public void initHardware(HardwareMap aHwMap) {
-
+        robot = theRobot;
         imu = aHwMap.get(BNO055IMU.class, "imu");
 
         //horizontalEncoder = aHwMap.get(DcMotor.class, "horizontalEncoder");
@@ -46,12 +46,15 @@ public class Sensors {
         //leftVerticalEncoder = aHwMap.get(DcMotor.class, "leftVerticalEncoder");
         //rightVerticalEncoder = aHwMap.get(DcMotor.class, "rightVerticalEncoder");
         //resetEncoders();
-        //stoneSensor = aHwMap.get(DistanceSensor.class, "stoneSensor");
+
         lineSensor = aHwMap.get(ColorSensor.class, "lineSensor");
-        lineSensor.enableLed(true);
+        stoneDistanceSensor = aHwMap.get(DistanceSensor.class, "stoneDistanceSensor");
+        stoneBumpSensor = aHwMap.get(TouchSensor.class, "stoneBumpSensor");
+        if (robot.currentOpModeType == OpModeTypes.AUTO) {
+            lineSensor.enableLed(true);
+        }
 
     }
-
 
 
     public double getHorizontalEncoder() { return horizontalEncoder.getCurrentPosition(); }
@@ -115,7 +118,7 @@ public class Sensors {
 
     public boolean holdingStone() {
 
-        double distanceInches = stoneSensor.getDistance(DistanceUnit.INCH);
+        double distanceInches = stoneDistanceSensor.getDistance(DistanceUnit.INCH);
         boolean holdingStone = false;
 
         if (distanceInches < 3) {

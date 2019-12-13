@@ -164,7 +164,8 @@ public class SeekSkyStone extends LinearOpMode {
             //robot.odometry.setPositionInches(startPos.fieldXInches, startPos.fieldYInches);
             //waitForStart();
 
-            robot.driveTrain.strafeInches(TILE_LENGTH, 0.2);
+            robot.driveTrain.strafe(0.3);
+            sleep(1000);
 
             //new Thread(odometryThread).start();
 
@@ -232,12 +233,17 @@ public class SeekSkyStone extends LinearOpMode {
                         } else if (currentState == ProgramStates.TRANSPORTING) {
 
                             //robot.driveTrain.straightInches(4, 0.4)
-                            robot.driveTrain.strafeInches(6,0.2);
+                            //robot.driveTrain.strafeInches(6,0.2);
+                            robot.driveTrain.strafe(0.3);
+                            sleep(1000);
 
                             robot.intake.yankStone();
                             /*while (!robot.sensors.possessingStone()) {
                                 robot.driveTrain.straightInches(10, 0.5);
-                            }   */
+                            }*/
+
+
+                            //robot.driveTrain.
 
                             telemetry.addData("Ladies and gentlemen!", "We gottem.");
 
@@ -247,13 +253,15 @@ public class SeekSkyStone extends LinearOpMode {
                             //robot.intake.rest();
                             robot.driveTrain.brake();
                             //robot.driveTrain.straightInches(-10, 0.7);
-                            robot.driveTrain.strafeInches(-10, 0.7);
+                            //robot.driveTrain.strafeInches(-10, 0.7);
+                            robot.driveTrain.strafe(-0.4);
+                            sleep(1500);
 
                             //robot.driveTrain.turnToRad(toRadians(-90), 0.6, 6);
                             robot.driveTrain.straightInches(TILE_LENGTH*3, 5);
 
                             // Release skystone onto ground
-                            robot.outtake.depositStone();
+                            robot.intake.unYankStone();
 
                             robot.driveTrain.straightInches(-TILE_LENGTH*3, 5);
                             //robot.driveTrain.turnToRad(0, 0.6, 6);

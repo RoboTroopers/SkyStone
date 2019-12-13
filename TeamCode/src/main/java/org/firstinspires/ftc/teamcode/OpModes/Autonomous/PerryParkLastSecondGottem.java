@@ -30,22 +30,8 @@ public class PerryParkLastSecondGottem extends LinearOpMode {
 
 
         if (opModeIsActive()) {
-            /*
-            int distance = (int)inchesToTicks(12);
-            perry.driveTrain.setTargetPos(distance, distance, distance, distance);
-            perry.driveTrain.setMotorModes(DcMotor.RunMode.RUN_TO_POSITION);
 
-            perry.driveTrain.straight(0.5);
-            while (!perry.driveTrain.anyMotorsBusy()) {
-                telemetry.addData("Inches", perry.driveTrain.getEncoderAvgInches());
-                pause(10);
-            }
-
-             */
-
-            //pause(28000);
-            //perry.driveTrain.straight(7);
-            //pause(1000);
+            sleep(28000);
             perry.driveTrain.straightInches(TILE_LENGTH,0.5);
             perry.driveTrain.brake();
         }
