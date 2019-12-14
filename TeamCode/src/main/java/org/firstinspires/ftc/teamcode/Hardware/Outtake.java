@@ -115,7 +115,6 @@ public class Outtake {
     }
 
 
-
 /*
     public void liftStone() {
         armMid();

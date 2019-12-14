@@ -15,8 +15,8 @@ public class Intake {
 
 
     public Servo stoneYanker;
-    public final double UNYANKED_POS = 0.33;
-    public final double YANKED_POS = 0.51;
+    public final double YANKED_POS = 0.34;
+    public final double UNYANKED_POS = 0.9;
 
 
 

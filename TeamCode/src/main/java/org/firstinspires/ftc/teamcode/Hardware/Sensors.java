@@ -30,8 +30,13 @@ public class Sensors {
 
 
     public DistanceSensor stoneDistanceSensor;
+
+    public final double WALL_DETECT_DIST = 13; // Max inches robot can detect wall at using distance sensor
+    public final double HOLDING_STONE_DIST = 6; // How many inches away the stone can be for pepeSMASH to goSMASH!
+
     public ColorSensor lineSensor;
     public TouchSensor stoneBumpSensor;
+
 
     //public DistanceSensor pulleySensor;
 
@@ -112,20 +117,33 @@ public class Sensors {
         }
 
         return isPossessing;
+    }*/
+
+
+    // If the distance sensor detects a wall at 13 inches (sensor distance from front of robot)
+    public boolean frontTouchingWall() {
+
+        double distanceInches = stoneDistanceSensor.getDistance(DistanceUnit.INCH);
+        boolean frontToucingWall = false;
+
+        if (distanceInches < WALL_DETECT_DIST) {
+            frontToucingWall = true;
+        }
+        return frontToucingWall;
     }
-    */
 
 
+    //
     public boolean holdingStone() {
 
         double distanceInches = stoneDistanceSensor.getDistance(DistanceUnit.INCH);
         boolean holdingStone = false;
 
-        if (distanceInches < 3) {
+        if (distanceInches < HOLDING_STONE_DIST) {
             holdingStone = true;
         }
 
-        return holdingStone();
+        return holdingStone;
     }
 
 

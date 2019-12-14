@@ -165,12 +165,23 @@ public class DriveTrain {
     }
 
 
+
     public void setTargetPos(int leftFrontPos, int leftRearPos,  int rightFrontPos, int rightRearPos) {
 
         leftFront.setTargetPosition(leftFrontPos);
         leftRear.setTargetPosition(leftRearPos);
         rightFront.setTargetPosition(rightFrontPos);
         rightRear.setTargetPosition(rightRearPos);
+
+    }
+
+
+    public void setTargetPosInches(int leftFrontPos, int leftRearPos,  int rightFrontPos, int rightRearPos) {
+
+        leftFront.setTargetPosition((int)inchesToTicks(leftFrontPos));
+        leftRear.setTargetPosition((int)inchesToTicks(leftRearPos));
+        rightFront.setTargetPosition((int)inchesToTicks(rightFrontPos));
+        rightRear.setTargetPosition((int)inchesToTicks(rightRearPos));
 
     }
 

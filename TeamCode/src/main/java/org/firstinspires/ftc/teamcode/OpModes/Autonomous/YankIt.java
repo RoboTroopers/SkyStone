@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
 import static org.firstinspires.ftc.teamcode.Globals.FieldConstants.TILE_LENGTH;
 
 
-@Autonomous(name = "Yank it baby", group="Autonomous")
+@Autonomous(name = "Yank it baby TEST", group="Autonomous")
 //@Disabled
 public class YankIt extends LinearOpMode {
 
