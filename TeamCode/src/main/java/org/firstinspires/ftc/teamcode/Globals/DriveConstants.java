@@ -43,9 +43,9 @@ public class DriveConstants {
     private static final double ENCODER_TICKS_PER_REV = 383.6;
 
 
-    public static double inchesToTicks(double inches) {
+    public static int inchesToTicks(double inches) {
         double ticks = (inches / WHEEL_CIRCUMFERENCE) * ENCODER_TICKS_PER_REV;
-        return ticks;
+        return (int)ticks;
 
     }
 
@@ -55,6 +55,15 @@ public class DriveConstants {
 
     }
 
+
+    public static double degToServoPos(double deg) {
+        return deg/270;
+    }
+
+
+    public static double degTo180ServoPos(double deg) {
+        return deg/180;
+    }
 
 
 }

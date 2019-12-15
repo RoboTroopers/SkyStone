@@ -19,7 +19,7 @@ public class CustomTelemetry {
     }
 
 
-    public void driveTrainSpeedTelemetry() {
+    public void driveTrainSpeedData() {
         telemetry.addData("Base Speed",
                 "\n" +
                         "(%.1f)---(%.1f)\n" +
@@ -35,7 +35,7 @@ public class CustomTelemetry {
 
 
 
-    public void driveTrainEncoderTelemetry() {
+    public void encoderData() {
         telemetry.addData("Base Speed",
                 "\n" +
                         "(%.1f)---(%.1f)\n" +
@@ -47,6 +47,18 @@ public class CustomTelemetry {
                 robot.driveTrain.leftRear.getCurrentPosition(),
                 robot.driveTrain.rightRear.getCurrentPosition()
         );
+    }
+
+
+
+    public void sensorData() {
+        telemetry.addData("Angle", robot.sensors.getWorldAngleDeg());
+        telemetry.addData("LineSensor Hue", robot.sensors.getLineSensorHSV()[0]);
+        telemetry.addData("LineSensor Sat", robot.sensors.getLineSensorHSV()[1]);
+        telemetry.addData("LineSensor Val", robot.sensors.getLineSensorHSV()[2]);
+        telemetry.addData("Distance from Sensor", robot.sensors.getDistance());
+
+        telemetry.addData("Distance from Sensor", robot.sensors.stoneFullyIn());
     }
 
 

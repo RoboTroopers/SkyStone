@@ -304,42 +304,48 @@ public class DriveTrain {
 
         brake();
     }
-    
 
 
-    public void turnToRad(double absoluteRad, double maxSpeed, double deaccelRate) { //TODO: test
+
+    public void Deg(double absoluteDeg, double maxSpeed) { //TODO: test
 
         /**
-         * Turns drivetrain to a specific absolute angle in radians.
-         * Negative angles are clockwise, positive angles are counterclockwise.
+         * Turns drivetrain to a specific absolute angle in degrees.
+         * Positive angles are clockwise, negative angles are counterclockwise.
          */
 
-        final double initialRad = robot.sensors.getWorldAngleRad();
-        final double initialRelativeRadToAngle = initialRad - absoluteRad;
+        setMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        double errorRad;
+        final double initialDeg = robot.sensors.getWorldAngleDeg();
+        final double initialError = initialDeg - absoluteDeg;
+
+        double errorDeg = initialError;
 
         double rotationAccuracyRange = toRadians(2);
         double minSpeed = 0.01;
 
-        do {
-            robot.opMode.telemetry.addData("Angle", robot.sensors.getWorldAngleRad());
+        while ((Math.abs(errorDeg) > rotationAccuracyRange)) {
+
+            errorDeg = robot.sensors.getWorldAngleDeg() - absoluteDeg;
+
+            double rawSpeed = (errorDeg/initialError);
+
+            double turnSpeed = Range.clip((rawSpeed*maxSpeed), -maxSpeed, maxSpeed);
+
+            turn(turnSpeed);
+
+            robot.opMode.telemetry.addData("Angle", robot.sensors.getWorldAngleDeg());
+            robot.opMode.telemetry.addData("Error (Deg)", errorDeg);
+            robot.opMode.telemetry.addData("RawSpeed", rawSpeed);
+            robot.opMode.telemetry.addData("TurnSpeed", turnSpeed);
             robot.opMode.telemetry.update();
-            errorRad = robot.sensors.getWorldAngleRad() - absoluteRad;
 
-            double movement_turn = (errorRad/initialRelativeRadToAngle) * deaccelRate; // Speed is greater when error is greater
-            movement_turn = Range.clip(movement_turn, minSpeed, maxSpeed); // Deaccel rate only becomes apparent when it isn't being cut off by clip (while deacceling)
-
-            applyMovement(0, 0, -movement_turn);
-
-        } while (Math.abs(errorRad) > rotationAccuracyRange);
+        }
 
         robot.driveTrain.brake();
     }
 
 
-    public void turnToRad(double absoluteRad, double maxSpeed) { turnToRad(absoluteRad, maxSpeed, 3); }
-    
     
     
     /*

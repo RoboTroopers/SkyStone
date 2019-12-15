@@ -12,9 +12,11 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
-import org.firstinspires.ftc.teamcode.ppProject.treamcode.MathFunctions;
+
+import static java.lang.Math.toDegrees;
+import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
+import static org.firstinspires.ftc.teamcode.ppProject.treamcode.MathFunctions.angleWrap;
 
 public class Sensors {
 
@@ -29,7 +31,7 @@ public class Sensors {
     //public DcMotor rightVerticalEncoder;
 
 
-    public DistanceSensor stoneDistanceSensor;
+    public DistanceSensor distanceSensor;
 
     public final double WALL_DETECT_DIST = 13; // Max inches robot can detect wall at using distance sensor
     public final double HOLDING_STONE_DIST = 6; // How many inches away the stone can be for pepeSMASH to goSMASH!
@@ -53,7 +55,7 @@ public class Sensors {
         //resetEncoders();
 
         lineSensor = aHwMap.get(ColorSensor.class, "lineSensor");
-        stoneDistanceSensor = aHwMap.get(DistanceSensor.class, "stoneDistanceSensor");
+        distanceSensor = aHwMap.get(DistanceSensor.class, "stoneDistanceSensor");
         stoneBumpSensor = aHwMap.get(TouchSensor.class, "stoneBumpSensor");
         if (robot.currentOpModeType == OpModeTypes.AUTO) {
             lineSensor.enableLed(true);
@@ -85,8 +87,9 @@ public class Sensors {
     }
 
 
-    public double getWorldAngleRad() { return MathFunctions.angleWrap(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).firstAngle); }
+    public double getWorldAngleRad() { return angleWrap(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).firstAngle); }
 
+    public double getWorldAngleDeg() { return toDegrees(getWorldAngleRad());}
 
 
     public float[] getColorSensorHSV(ColorSensor thisColorSensor) {
@@ -95,13 +98,19 @@ public class Sensors {
         final float values[] = hsvValues;
 
         // convert the RGB values to HSV values.
-        Color.RGBToHSV((int) (thisColorSensor.red() * 255),
-                (int) (thisColorSensor.green() * 255),
-                (int) (thisColorSensor.blue() * 255),
-                hsvValues);
+        Color.RGBToHSV(
+            (thisColorSensor.red() * 255),
+            (thisColorSensor.green() * 255),
+            (thisColorSensor.blue() * 255),
+            hsvValues);
 
         return hsvValues;
 
+    }
+
+
+    public float[] getLineSensorHSV() {
+        return getColorSensorHSV(lineSensor);
     }
 
 
@@ -120,23 +129,36 @@ public class Sensors {
     }*/
 
 
-    // If the distance sensor detects a wall at 13 inches (sensor distance from front of robot)
-    public boolean frontTouchingWall() {
+    //Gets distance from sensor in back of robot to anything in the front of the robot
+    public double getDistance() {
+        return distanceSensor.getDistance(INCH);
+    }
 
-        double distanceInches = stoneDistanceSensor.getDistance(DistanceUnit.INCH);
-        boolean frontToucingWall = false;
+    // Gets distance from front of the robot to anything it front of it
+    public double getDistanceFromFront() {
 
-        if (distanceInches < WALL_DETECT_DIST) {
-            frontToucingWall = true;
-        }
-        return frontToucingWall;
+        double distanceFromFront = getDistance()-WALL_DETECT_DIST;
+        return distanceFromFront;
     }
 
 
-    //
+    // If the distance sensor detects a wall at 13 inches (sensor distance from front of robot)
+    public boolean frontTouchingWall() {
+
+        double distanceInches = distanceSensor.getDistance(INCH);
+        boolean frontTouchingWall = false;
+
+        if (distanceInches < WALL_DETECT_DIST) {
+            frontTouchingWall = true;
+        }
+        return frontTouchingWall;
+    }
+
+
+    // If stone is within distance to be considered inside robot
     public boolean holdingStone() {
 
-        double distanceInches = stoneDistanceSensor.getDistance(DistanceUnit.INCH);
+        double distanceInches = distanceSensor.getDistance(INCH);
         boolean holdingStone = false;
 
         if (distanceInches < HOLDING_STONE_DIST) {
@@ -147,7 +169,7 @@ public class Sensors {
     }
 
 
-    public boolean stoneAtBack() {
+    public boolean stoneFullyIn() {
         return stoneBumpSensor.isPressed();
     }
 
