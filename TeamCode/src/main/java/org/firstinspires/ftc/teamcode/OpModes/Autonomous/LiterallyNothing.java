@@ -3,16 +3,15 @@ package org.firstinspires.ftc.teamcode.OpModes.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.Globals.FieldConstants;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
 
 import static org.firstinspires.ftc.teamcode.Globals.FieldConstants.TILE_LENGTH;
 
 
-@Autonomous(name = "PerryPark 1 Tile", group="Autonomous")
+@Autonomous(name = "Do literally nothing lol", group="Autonomous")
 //@Disabled
-public class PerryPark extends LinearOpMode {
+public class LiterallyNothing extends LinearOpMode {
 
     private Robot perry = new Robot(this, OpModeTypes.AUTO);
 
@@ -30,9 +29,9 @@ public class PerryPark extends LinearOpMode {
 
         if (opModeIsActive()) {
 
-            perry.driveTrain.straightInches(TILE_LENGTH, 0.75);
-            //while (!perry.sensors.overLine()) {}
             perry.driveTrain.brake();
+            telemetry.addData("Doing", "nothing.");
+
 
         }
 

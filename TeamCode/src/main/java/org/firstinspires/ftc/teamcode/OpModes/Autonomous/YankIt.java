@@ -35,6 +35,7 @@ public class YankIt extends LinearOpMode {
             robot.intake.yankStone();
             sleep(3000);
             robot.intake.unYankStone();
+            sleep(1000);
 
         }
     }

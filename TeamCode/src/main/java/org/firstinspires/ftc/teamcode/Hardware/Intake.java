@@ -10,21 +10,20 @@ public class Intake {
     public DcMotor leftIntake;
     public DcMotor rightIntake;
 
-    public final double SUCK_SPEED = 0.35;
+    public final double SUCK_SPEED = 0.6;
     public enum Directions {REST, SUCK, BLOW}
 
 
     public Servo stoneYanker;
-    public final double YANKED_POS = 0.34;
-    public final double UNYANKED_POS = 0.9;
-
+    public final double YANKED_POS = 0.92;
+    public final double UNYANKED_POS = 0.6;
 
 
     public void initHardware(HardwareMap aHwMap) {
 
         leftIntake = aHwMap.get(DcMotor.class, "leftIntake");
         rightIntake = aHwMap.get(DcMotor.class, "rightIntake");
-        rightIntake.setDirection(DcMotor.Direction.REVERSE);
+        //rightIntake.setDirection(DcMotor.Direction.REVERSE);
 
         stoneYanker = aHwMap.get(Servo.class, "stoneYanker");
     }

@@ -32,7 +32,7 @@ public class PerryParkLastSecondGottem extends LinearOpMode {
         if (opModeIsActive()) {
 
             sleep(28000);
-            perry.driveTrain.straightInches(TILE_LENGTH,0.5);
+            perry.driveTrain.straightInches(TILE_LENGTH,0.4);
             perry.driveTrain.brake();
         }
 

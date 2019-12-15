@@ -159,7 +159,7 @@ public class Sensors {
         float saturation = getColorSensorHSV(lineSensor)[1];
         boolean isOvertape = false;
 
-        if (((hue >= 0 && hue <= 25) || (hue >= 180 && hue <= 250)) && saturation > 0.5) {
+        if (((hue >= 0 && hue <= 25) || (hue >= 180 && hue <= 250)) && saturation > 0.4) {
             isOvertape = true;
         }
 
