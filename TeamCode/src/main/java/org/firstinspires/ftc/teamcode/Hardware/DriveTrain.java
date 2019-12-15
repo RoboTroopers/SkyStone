@@ -266,7 +266,7 @@ public class DriveTrain {
     }
 
 
-    public void strafeInches(double inches, double speed) {
+    public void strafeInches(double inches, double speed) { //TODO: fix
         int newLeftFrontTarget;
         int newRightRearTarget;
         int newRightFrontTarget;
@@ -307,7 +307,7 @@ public class DriveTrain {
     
 
 
-    public void turnToRad(double absoluteRad, double maxSpeed, double deaccelRate) {
+    public void turnToRad(double absoluteRad, double maxSpeed, double deaccelRate) { //TODO: test
 
         /**
          * Turns drivetrain to a specific absolute angle in radians.
@@ -323,6 +323,8 @@ public class DriveTrain {
         double minSpeed = 0.01;
 
         do {
+            robot.opMode.telemetry.addData("Angle", robot.sensors.getWorldAngleRad());
+            robot.opMode.telemetry.update();
             errorRad = robot.sensors.getWorldAngleRad() - absoluteRad;
 
             double movement_turn = (errorRad/initialRelativeRadToAngle) * deaccelRate; // Speed is greater when error is greater
