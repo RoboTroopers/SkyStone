@@ -66,7 +66,7 @@ import static org.firstinspires.ftc.teamcode.Globals.FieldConstants.TILE_LENGTH;
 
 
 
-@Autonomous(name = "Seek Skystones", group="Autonomous")
+@Autonomous(name = "Seek Skystones OLD", group="Autonomous")
 //@Disabled
 public class SeekSkyStone extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";

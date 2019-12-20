@@ -307,7 +307,7 @@ public class DriveTrain {
 
 
 
-    public void Deg(double absoluteDeg, double maxSpeed) { //TODO: test
+    public void turnDeg(double absoluteDeg, double maxSpeed) { //TODO: test
 
         /**
          * Turns drivetrain to a specific absolute angle in degrees.

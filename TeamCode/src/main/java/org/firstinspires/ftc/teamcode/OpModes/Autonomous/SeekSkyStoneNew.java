@@ -61,7 +61,7 @@ import static org.firstinspires.ftc.teamcode.Globals.FieldConstants.TILE_LENGTH;
 
 
 
-@Autonomous(name = "Seek Skystones", group="Autonomous")
+@Autonomous(name = "Seek Skystones NEW", group="Autonomous")
 //@Disabled
 public class SeekSkyStoneNew extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
@@ -71,7 +71,6 @@ public class SeekSkyStoneNew extends LinearOpMode {
     public Robot robot = new Robot(this, OpModeTypes.AUTO);
     //Thread odometryThread = new Thread(new OdometryThread(robot));
 
-    private final double skystoneAngleOffset = -5; // How many degrees to add to skystone angle for robot to center on
     private int skystonesDelivered = 0;
 
     private enum ProgramStates {
@@ -154,14 +153,9 @@ public class SeekSkyStoneNew extends LinearOpMode {
             // robot.odometry.setPositionInches(startPos.fieldXInches, startPos.fieldYInches);
             //waitForStart();
 
-            robot.driveTrain.strafe(0.3
-            );
-            sleep(1200);
-            robot.driveTrain.brake();
-
+            //robot.driveTrain.strafe(0.3);
+            robot.driveTrain.straightInches(TILE_LENGTH, 0.3);
             //new Thread(odometryThread).start();
-
-            robot.intake.unYankStone();
 
             while (skystonesDelivered < 2) {
 
@@ -169,15 +163,18 @@ public class SeekSkyStoneNew extends LinearOpMode {
                     // getUpdatedRecognitions() will return null if no new information is available since
                     // the last time that call was made.
                     Recognition nearestSkystone = getNearestSkystone();
+
+                    currentState = ProgramStates.SCANNING;
+
                     while (nearestSkystone == null) {
 
-                        currentState = ProgramStates.SCANNING;
+                        nearestSkystone = getNearestSkystone();
 
                         telemetry.addData("Program State", "Scanning");
                         // Strafe left until Stone found within specific angle from center of camera
                         //robot.driveTrain.strafeInches(STONE_WIDTH, -0.2);
                         //robot.driveTrain.straightInches(STONE_WIDTH, 0.05);
-                        robot.driveTrain.straight(0.175);
+                        robot.driveTrain.strafe(-0.1);
                     }
 
                     if (nearestSkystone != null) {
@@ -206,51 +203,54 @@ public class SeekSkyStoneNew extends LinearOpMode {
                     //double forwardSpeed = ((objectAngle+skystoneAngleOffset)/45)*0.5;
                     // Set vertical speed proportional to distance from skystone.
                     //double strafeSpeed = 0.5*(1 - (objectHeightRatio))+0.12;
-
-                    robot.driveTrain.applyMovement(0, 0.15, 0);
-                    sleep(900);
-                    robot.driveTrain.brake();
+                    /*
+                    robot.intake.suck();
+                    robot.driveTrain.straightInches(TILE_LENGTH*0.5, 0.1);
 
                     currentState = ProgramStates.TRANSPORTING;
-
-                    robot.intake.yankStone();
-                    sleep(1500);
+                    sleep(1000);
 
                     telemetry.addData("Ladies and gentlemen!", "We gottem.");
 
                     //sleep(1500);
                     skystonesDelivered += 1;
+                    sleep(1000);
 
-                    //robot.intake.rest();
-                    robot.driveTrain.brake();
-                    //robot.driveTrain.straightInches(-10, 0.7);
+                    robot.intake.rest();
+                    robot.driveTrain.straightInches(-6, 0.7);
                     //robot.driveTrain.strafeInches(-10, 0.7);
 
-                    robot.driveTrain.turn(-0.15);
-                    sleep(1300);
-                    robot.driveTrain.straightInches(-TILE_LENGTH * 2.75, 0.1);
-                    sleep(500);
-                    robot.intake.unYankStone();
-                    sleep(500);
-
-                    robot.driveTrain.straightInches(TILE_LENGTH * 2.5, 0.1);
-                    currentState = ProgramStates.PARKING;
-
-                    robot.sensors.lineSensor.enableLed(true);
-
-                    telemetry.addData("Program State", "Parking");
-                    robot.driveTrain.straightInches(-TILE_LENGTH, 0.3);
-                    robot.driveTrain.brake();
-
-                    while (!robot.sensors.overLine()) {
-                        telemetry.addData("LightSensor", robot.sensors.getColorSensorHSV(robot.sensors.lineSensor));
-                        telemetry.update();
-                    }
+                    robot.driveTrain.strafe(0.1);
+                    sleep(5000);
 
                     robot.driveTrain.brake();
-                    //robot.advancedMovement.myGoToPosition(BRIDGE_X, TILE_LENGTH, 0.6, 0, 0.5);
+                    robot.intake.blow();
+
+                    sleep(2000);
+                    robot.intake.rest();
+
+                    robot.driveTrain.strafe(0.1);
+                    sleep(3000);
+                    robot.driveTrain.brake();
+*/
                 }
             }
+
+            currentState = ProgramStates.PARKING;
+
+            robot.sensors.lineSensor.enableLed(true);
+
+            telemetry.addData("Program State", "Parking");
+            robot.driveTrain.straightInches(-TILE_LENGTH, 0.3);
+            robot.driveTrain.brake();
+
+            while (!robot.sensors.overLine()) {
+                telemetry.addData("LightSensor", robot.sensors.getColorSensorHSV(robot.sensors.lineSensor));
+                telemetry.update();
+            }
+
+            robot.driveTrain.brake();
+            //robot.advancedMovement.myGoToPosition(BRIDGE_X, TILE_LENGTH, 0.6, 0, 0.5);
         }
 
         if (tfod != null) {
