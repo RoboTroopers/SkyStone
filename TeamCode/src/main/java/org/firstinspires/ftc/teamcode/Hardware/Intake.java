@@ -39,16 +39,16 @@ public class Intake {
     // Set intake speed to suck in skystone
     public void suck() {
 
-        leftIntake.setPower(-SUCK_SPEED);
-        rightIntake.setPower(-SUCK_SPEED);
+        leftIntake.setPower(SUCK_SPEED);
+        rightIntake.setPower(SUCK_SPEED);
     }
 
 
     // Set intake speed to adjust in skystone
     public void blow() {
 
-        leftIntake.setPower(SUCK_SPEED);
-        rightIntake.setPower(SUCK_SPEED);
+        leftIntake.setPower(-SUCK_SPEED);
+        rightIntake.setPower(-SUCK_SPEED);
     }
 
 

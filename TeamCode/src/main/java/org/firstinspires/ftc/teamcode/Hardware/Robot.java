@@ -31,7 +31,7 @@ public class Robot {
         opMode = theOpMode;
         currentOpModeType = opModeType;
 
-        //CustomTelemetry customTelemetry = new CustomTelemetry(this);
+        CustomTelemetry customTelemetry = new CustomTelemetry(this);
     }
 
 
