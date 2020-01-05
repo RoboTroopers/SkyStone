@@ -205,11 +205,14 @@ public class SeekSkyStone extends LinearOpMode {
                     //double strafeSpeed = 0.5*(1 - (objectHeightRatio))+0.12;
 
                     robot.intake.suck();
-                    robot.driveTrain.straightInches(TILE_LENGTH*0.3, 0.05);
+                    //robot.driveTrain.straightInches(TILE_LENGTH*0.3, 0.05);
+                    robot.driveTrain.straight(0.075);
+                    sleep(4000);
+                    robot.driveTrain.brake();
 
                     currentState = ProgramStates.TRANSPORTING;
-                    sleep(3000);
-                    sleep(10000);
+                    sleep(1000);
+                    sleep(10000); // Remove when done testing
 
                     telemetry.addData("Ladies and gentlemen!", "We gottem.");
 
@@ -288,7 +291,8 @@ public class SeekSkyStone extends LinearOpMode {
         tfodParameters.minimumConfidence = 0.5;
 
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
+        //tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT); idk but this might fix the problem of the robot going for normal stones
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_SECOND_ELEMENT, LABEL_SECOND_ELEMENT);
 
     }
 
