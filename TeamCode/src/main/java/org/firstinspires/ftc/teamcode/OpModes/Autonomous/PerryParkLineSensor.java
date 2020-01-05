@@ -29,7 +29,7 @@ public class PerryParkLineSensor extends LinearOpMode {
 
         if (opModeIsActive()) {
             //perry.driveTrain.straightInches(TILE_LENGTH, 0.75);
-            perry.driveTrain.straight(0.2);
+            perry.driveTrain.straight(0.05);
 
             while (!perry.sensors.overLine()) {
             }

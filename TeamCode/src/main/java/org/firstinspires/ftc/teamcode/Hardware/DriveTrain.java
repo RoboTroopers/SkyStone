@@ -136,7 +136,12 @@ public class DriveTrain {
     // Moves the robot sideways without turning, positive speed is right, negative speed is left.
     public void strafe(double speed){
         setMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        applyMovement(0, speed, 0);
+        //applyMovement(0, speed, 0);
+
+        leftFront.setPower(-speed);
+        rightFront.setPower(speed);
+        leftRear.setPower(speed);
+        rightRear.setPower(-speed);
     }
 
 
@@ -231,6 +236,7 @@ public class DriveTrain {
         leftRear.setPower(speed);
         rightFront.setPower(speed);
         rightRear.setPower(speed);
+
 
         robot.opMode.telemetry.update();
 

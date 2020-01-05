@@ -57,9 +57,6 @@ import static org.firstinspires.ftc.teamcode.Globals.FieldConstants.TILE_LENGTH;
  */
 
 
-//TODO: use front intake instead of stone yanker on side
-
-
 
 @Autonomous(name = "Seek Skystones NEW", group="Autonomous")
 //@Disabled
@@ -155,6 +152,7 @@ public class SeekSkyStone extends LinearOpMode {
 
             //robot.driveTrain.strafe(0.3);
             robot.driveTrain.straightInches(TILE_LENGTH*1, 0.1);
+
             //new Thread(odometryThread).start();
 
             while (skystonesDelivered < 1 && opModeIsActive()) {
@@ -174,16 +172,13 @@ public class SeekSkyStone extends LinearOpMode {
                         // Strafe left until Stone found within specific angle from center of camera
                         //robot.driveTrain.strafeInches(STONE_WIDTH, -0.2);
                         //robot.driveTrain.straightInches(STONE_WIDTH, 0.05);
-                        robot.driveTrain.strafe(-0.2);
-                    }
 
+                        robot.driveTrain.strafe(-0.25);
+                    }
 
                     // If skystone has been found
                     currentState = ProgramStates.APPROACHING;
                     robot.driveTrain.brake();
-                    telemetry.addData("Skystone found!", "");
-                    telemetry.update();
-
 
                     objectAngle = nearestSkystone.estimateAngleToObject(AngleUnit.DEGREES);
                     objectHeight = nearestSkystone.getHeight();
@@ -204,27 +199,31 @@ public class SeekSkyStone extends LinearOpMode {
                     // Set vertical speed proportional to distance from skystone.
                     //double strafeSpeed = 0.5*(1 - (objectHeightRatio))+0.12;
 
-                    robot.intake.suck();
-                    //robot.driveTrain.straightInches(TILE_LENGTH*0.3, 0.05);
-                    robot.driveTrain.straight(0.075);
-                    sleep(4000);
+                    robot.driveTrain.applyMovement(0.175,-0.15, -0.1);
+                    sleep(1000);
                     robot.driveTrain.brake();
 
+                    robot.intake.setSpeed(0.45);
+                    //robot.driveTrain.straightInches(TILE_LENGTH*0.3, 0.05);
+                    robot.driveTrain.straight(0.25);
+                    sleep(1250);
+                    robot.driveTrain.brake();
+
+                    sleep(500);
                     currentState = ProgramStates.TRANSPORTING;
-                    sleep(1000);
-                    sleep(10000); // Remove when done testing
 
+                    robot.intake.rest();
                     telemetry.addData("Ladies and gentlemen!", "We gottem.");
-
-                    //sleep(1500);
                     skystonesDelivered += 1;
+
+                    robot.driveTrain.turn(-0.15);
                     sleep(1000);
 
                     robot.intake.rest();
-                    robot.driveTrain.straightInches(-6, 0.1);
+                    robot.driveTrain.straightInches(-13, 0.1);
                     //robot.driveTrain.strafeInches(-10, 0.7);
 
-                    robot.driveTrain.strafe(0.2);
+                    robot.driveTrain.strafe(0.45);
                     sleep(5000);
 
                     robot.driveTrain.brake();
@@ -233,7 +232,7 @@ public class SeekSkyStone extends LinearOpMode {
                     sleep(2000);
                     robot.intake.rest();
 
-                    robot.driveTrain.strafe(-0.2);
+                    robot.driveTrain.applyMovement(0, -0.4, -0.1);
                     sleep(3000);
                     robot.driveTrain.brake();
 
@@ -245,7 +244,6 @@ public class SeekSkyStone extends LinearOpMode {
             robot.sensors.lineSensor.enableLed(true);
 
             telemetry.addData("Program State", "Parking");
-            robot.driveTrain.straightInches(-TILE_LENGTH, 0.1);
             robot.driveTrain.brake();
 
             while (!robot.sensors.overLine()) {
@@ -288,11 +286,11 @@ public class SeekSkyStone extends LinearOpMode {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.5;
+        tfodParameters.minimumConfidence = 0.8;
 
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-        //tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT); idk but this might fix the problem of the robot going for normal stones
-        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_SECOND_ELEMENT, LABEL_SECOND_ELEMENT);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);// idk but this might fix the problem of the robot going for normal stones
+        //tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_SECOND_ELEMENT, LABEL_SECOND_ELEMENT);
 
     }
 
@@ -319,14 +317,16 @@ public class SeekSkyStone extends LinearOpMode {
                         recognition.estimateAngleToObject(AngleUnit.DEGREES));
 
                 // Gets the nearest skystone (largest height on the screen) to the robot.
-                //if ()
-                if (nearestSkystone != null) {
-                    // If the previous nearest skystone has been declared and is farther than current recognition, set nearest skystone to current recognition.
-                    if (recognition.getHeight() > nearestSkystone.getHeight()) {
-                        nearestSkystone = recognition;
-                    }
-                    //If current recognition is the first skystone recognized, then use it as the nearest skystone.
-                } else nearestSkystone = recognition;
+                if (recognition.getLabel().equals(LABEL_SECOND_ELEMENT)) {
+                    if (nearestSkystone != null) {
+                        // If the previous nearest skystone has been declared and is farther than current recognition, set nearest skystone to current recognition.
+                        if (recognition.getHeight() > nearestSkystone.getHeight()) {
+                            nearestSkystone = recognition;
+                        }
+                        //If current recognition is the first skystone recognized, then use it as the nearest skystone.
+                    } else nearestSkystone = recognition;
+                }
+
             }
         }
         return nearestSkystone;

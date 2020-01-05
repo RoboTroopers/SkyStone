@@ -48,6 +48,14 @@ public class Sensors {
         robot = theRobot;
         imu = aHwMap.get(BNO055IMU.class, "imu");
 
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.mode                = BNO055IMU.SensorMode.IMU;
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.loggingEnabled      = false;
+
+        imu.initialize(parameters);
+
         //horizontalEncoder = aHwMap.get(DcMotor.class, "horizontalEncoder");
         //verticalEncoder = aHwMap.get(DcMotor.class, "verticalEncoder");
         //leftVerticalEncoder = aHwMap.get(DcMotor.class, "leftVerticalEncoder");
@@ -136,13 +144,13 @@ public class Sensors {
 
     // Gets distance from front of the robot to anything it front of it
     public double getDistanceFromFront() {
-
-        double distanceFromFront = getDistance()-WALL_DETECT_DIST;
-        return distanceFromFront;
+        return getDistance()-WALL_DETECT_DIST;
     }
 
 
-    // If the distance sensor detects a wall at 13 inches (sensor distance from front of robot)
+    /** If the distance sensor detects a wall at 13 inches (sensor distance from front of robot)
+     * This won't work if a stone or anything is blocking the distance sensor
+     */
     public boolean frontTouchingWall() {
 
         double distanceInches = distanceSensor.getDistance(INCH);
@@ -178,10 +186,15 @@ public class Sensors {
     public boolean overLine() {
 
         float hue = getColorSensorHSV(lineSensor)[0];
+        robot.opMode.telemetry.addData("Hue", hue);
+
         float saturation = getColorSensorHSV(lineSensor)[1];
+        robot.opMode.telemetry.addData("Saturation", saturation);
+        robot.opMode.telemetry.update();
+
         boolean isOvertape = false;
 
-        if (((hue >= 0 && hue <= 25) || (hue >= 180 && hue <= 250)) && saturation > 0.4) {
+        if (((hue >= 0 && hue <= 30) || (hue >= 180 && hue <= 250)) && saturation > 0.4) {
             isOvertape = true;
         }
 
