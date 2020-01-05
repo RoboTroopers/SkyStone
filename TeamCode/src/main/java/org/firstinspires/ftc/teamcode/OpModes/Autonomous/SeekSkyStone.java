@@ -220,11 +220,14 @@ public class SeekSkyStone extends LinearOpMode {
                     sleep(1000);
 
                     robot.intake.rest();
-                    robot.driveTrain.straightInches(-13, 0.1);
+                    robot.driveTrain.straightInches(-15, 0.1);
                     //robot.driveTrain.strafeInches(-10, 0.7);
 
                     robot.driveTrain.strafe(0.45);
-                    sleep(5000);
+                    if(skystonesDelivered == 1)
+                        sleep(5000);
+                    else
+                        sleep(10000);
 
                     robot.driveTrain.brake();
                     robot.intake.blow();
@@ -232,7 +235,7 @@ public class SeekSkyStone extends LinearOpMode {
                     sleep(2000);
                     robot.intake.rest();
 
-                    robot.driveTrain.applyMovement(0, -0.4, -0.1);
+                    robot.driveTrain.applyMovement(0, -0.4, -0.01);
                     sleep(3000);
                     robot.driveTrain.brake();
 
