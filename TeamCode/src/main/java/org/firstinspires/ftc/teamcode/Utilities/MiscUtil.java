@@ -14,7 +14,13 @@ public class MiscUtil {
             e.printStackTrace();
         }
     }
-    
-    
-    
+
+
+
+    public static long getCurrentTime() { return System.currentTimeMillis(); }
+
+
+
+
+
 }

@@ -210,13 +210,15 @@ public class DriveTrain {
     public void moveInches(double LFinches, double LRinches,
                            double RFinches, double RRinches,
                            double speed) {
+        brake();
         resetEncoders();
 
-        //moveInches(inches, inches, inches, inches, speed);
         double leftFrontTargetPos = (int)inchesToTicks(LFinches);
         double leftRearTargetPos = (int)inchesToTicks(LRinches);
         double rightFrontTargetPos = (int)inchesToTicks(RFinches);
         double rightRearTargetPos = (int)inchesToTicks(RRinches);
+
+        brake();
 
         setTargetPos(
                 (int)leftFrontTargetPos,//+leftFront.getCurrentPosition(),
@@ -224,6 +226,7 @@ public class DriveTrain {
                 (int)rightFrontTargetPos,//+rightFront.getCurrentPosition(),
                 (int)rightRearTargetPos//+rightRear.getCurrentPosition());
             );
+
 
         double averageTargetPos = (
                 abs(rightRearTargetPos) +
@@ -237,21 +240,21 @@ public class DriveTrain {
         rightFront.setPower(speed);
         rightRear.setPower(speed);
 
-
         robot.opMode.telemetry.update();
 
         double error = averageTargetPos - getEncoderAvg();
 
         // While the motors are moving or the error is less than 1
 
-        while (anyMotorsBusy()  && error > 1) {
+        while (anyMotorsBusy() && error > 1.0) {
             error = averageTargetPos - getEncoderAvg();
+
+            robot.opMode.telemetry.addData("LeftFrontMotor", leftFront.getPower());
 
             robot.opMode.telemetry.addData("Desired distance", averageTargetPos);
             robot.opMode.telemetry.addData("Distance error", error);
 
             robot.opMode.telemetry.addData("Avg pos", getEncoderAvg());
-
             robot.opMode.telemetry.addData("anyMotorsBusy", anyMotorsBusy());
 
             robot.opMode.telemetry.update();
@@ -262,7 +265,6 @@ public class DriveTrain {
 
 
     public void straightInches(double inches, double speed) {
-        resetEncoders();
         moveInches(inches, inches, inches, inches, speed);
     }
 

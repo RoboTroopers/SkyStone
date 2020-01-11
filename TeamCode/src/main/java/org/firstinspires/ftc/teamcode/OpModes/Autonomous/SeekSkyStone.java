@@ -155,7 +155,7 @@ public class SeekSkyStone extends LinearOpMode {
 
             //new Thread(odometryThread).start();
 
-            while (skystonesDelivered < 1 && opModeIsActive()) {
+            while (skystonesDelivered < 2 && opModeIsActive()) {
 
                 if (tfod != null) {
                     // getUpdatedRecognitions() will return null if no new information is available since
@@ -199,14 +199,14 @@ public class SeekSkyStone extends LinearOpMode {
                     // Set vertical speed proportional to distance from skystone.
                     //double strafeSpeed = 0.5*(1 - (objectHeightRatio))+0.12;
 
-                    robot.driveTrain.applyMovement(0.175,-0.15, -0.1);
+                    robot.driveTrain.applyMovement(0.18,-0.15, -0.11);
                     sleep(1000);
                     robot.driveTrain.brake();
 
                     robot.intake.setSpeed(0.45);
                     //robot.driveTrain.straightInches(TILE_LENGTH*0.3, 0.05);
-                    robot.driveTrain.straight(0.25);
-                    sleep(1250);
+                    robot.driveTrain.straight(0.20);
+                    sleep(1500);
                     robot.driveTrain.brake();
 
                     sleep(500);
@@ -216,18 +216,20 @@ public class SeekSkyStone extends LinearOpMode {
                     telemetry.addData("Ladies and gentlemen!", "We gottem.");
                     skystonesDelivered += 1;
 
-                    robot.driveTrain.turn(-0.15);
+                    robot.driveTrain.turn(-0.155);
                     sleep(1000);
 
                     robot.intake.rest();
-                    robot.driveTrain.straightInches(-15, 0.1);
-                    //robot.driveTrain.strafeInches(-10, 0.7);
 
-                    robot.driveTrain.strafe(0.45);
+
+                    robot.driveTrain.straightInches(20, 0.1);
+                    sleep(500);
+
+                    robot.driveTrain.strafe(0.3);
                     if(skystonesDelivered == 1)
-                        sleep(5000);
+                        sleep(8000);
                     else
-                        sleep(10000);
+                        sleep(16000);
 
                     robot.driveTrain.brake();
                     robot.intake.blow();
