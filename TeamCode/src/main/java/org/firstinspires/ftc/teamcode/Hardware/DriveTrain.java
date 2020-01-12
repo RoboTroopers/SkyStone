@@ -1,12 +1,8 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.PIDCoefficients;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
 import org.firstinspires.ftc.teamcode.ppProject.company.Range;
@@ -14,7 +10,8 @@ import org.firstinspires.ftc.teamcode.ppProject.company.Range;
 import static java.lang.Math.abs;
 import static java.lang.Math.toRadians;
 import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.inchesToTicks;
-import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.ticksToInches;
+import static org.firstinspires.ftc.teamcode.Utilities.GamerMath.castRound;
+import static org.firstinspires.ftc.teamcode.Utilities.GamerMath.clampSigned;
 import static org.firstinspires.ftc.teamcode.Utilities.MiscUtil.pause;
 
 
@@ -25,7 +22,6 @@ public class DriveTrain {
 
 
     // Motors and servos
-    //DcMotorEx class allows for advanced motor functions like PID methods
     public DcMotor leftFront;
     public DcMotor leftRear;
     public DcMotor rightFront;
@@ -146,7 +142,7 @@ public class DriveTrain {
 
 
 
-    public void setMotorModes(DcMotorEx.RunMode runMode) {
+    public void setMotorModes(DcMotor.RunMode runMode) {
         leftFront.setMode(runMode);
         rightFront.setMode(runMode);
         leftRear.setMode(runMode);
@@ -156,48 +152,27 @@ public class DriveTrain {
 
 
     public void resetEncoders() {
+        setMotorModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        /*if (robot.currentOpModeType == OpModeTypes.AUTO) {
 
-        setMotorModes(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        if (robot.currentOpModeType == OpModeTypes.AUTO) {
-            setTargetPos(0, 0, 0, 0);
-            setMotorModes(DcMotorEx.RunMode.RUN_TO_POSITION);
+            setMotorModes(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.opMode.telemetry.addData("RunToPosition", "Set");
             robot.opMode.telemetry.update();
         } else {
-            setMotorModes(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-
-        }
+            setMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }*/
+        setMotorModes(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
 
 
-    public void setTargetPos(int leftFrontPos, int leftRearPos,  int rightFrontPos, int rightRearPos) {
-
-        leftFront.setTargetPosition(leftFrontPos);
-        leftRear.setTargetPosition(leftRearPos);
-        rightFront.setTargetPosition(rightFrontPos);
-        rightRear.setTargetPosition(rightRearPos);
-
-    }
-
-
-    public void setTargetPosInches(int leftFrontPos, int leftRearPos,  int rightFrontPos, int rightRearPos) {
-
-        leftFront.setTargetPosition((int)inchesToTicks(leftFrontPos));
-        leftRear.setTargetPosition((int)inchesToTicks(leftRearPos));
-        rightFront.setTargetPosition((int)inchesToTicks(rightFrontPos));
-        rightRear.setTargetPosition((int)inchesToTicks(rightRearPos));
-
-    }
-
-
-    public double getEncoderAvg() {
-        double motorAvgPower =
+    public int getAvgMotorPosAbs() {
+        int motorAvgPower =
             abs(leftFront.getCurrentPosition()) +
             abs(leftRear.getCurrentPosition()) +
             abs(rightFront.getCurrentPosition()) +
             abs(rightRear.getCurrentPosition());
-        return motorAvgPower/4;
+        return castRound(motorAvgPower/4.0);
     }
 
 
@@ -207,54 +182,133 @@ public class DriveTrain {
 
 
 
-    public void moveInches(double LFinches, double LRinches,
-                           double RFinches, double RRinches,
-                           double speed) {
+    public void straightInches(double inches,
+                               double maxSpeed) {
+
+        double minSpeed = 0.09;
+        double accelRate = 1;
+        double deaccelRate = 1;
+
+        final int targetPos = inchesToTicks(inches);
+        final int initialError = targetPos - getAvgMotorPosAbs();
+        final int acceptableError = 2;
+
         brake();
         resetEncoders();
 
-        double leftFrontTargetPos = (int)inchesToTicks(LFinches);
-        double leftRearTargetPos = (int)inchesToTicks(LRinches);
-        double rightFrontTargetPos = (int)inchesToTicks(RFinches);
-        double rightRearTargetPos = (int)inchesToTicks(RRinches);
+        double error = targetPos - getAvgMotorPosAbs();
 
-        brake();
+        // While the error is not within acceptable error range, move to the desired position.
+        while (abs(error) > acceptableError) {
+            error = targetPos - getAvgMotorPosAbs(); // Error = desired - actual.
+            double speed = (error/initialError); // Speed is proportional to the error
 
-        setTargetPos(
-                (int)leftFrontTargetPos,//+leftFront.getCurrentPosition(),
-                (int)leftRearTargetPos,//+leftRear.getCurrentPosition(),
-                (int)rightFrontTargetPos,//+rightFront.getCurrentPosition(),
-                (int)rightRearTargetPos//+rightRear.getCurrentPosition());
-            );
+            // Accel at respective accel rate depending if acceling before halfway point or deacceling after halfway point.
+            if (error > initialError/2.0) {
+                speed *= accelRate;
+            } else {
+                speed *= deaccelRate;
+            }
 
+            // Keep speed within min and max, no matter if speed is positive or negative.
+            speed = clampSigned(speed, minSpeed, maxSpeed);
 
-        double averageTargetPos = (
-                abs(rightRearTargetPos) +
-                abs(rightRearTargetPos) +
-                abs(rightRearTargetPos) +
-                abs(rightRearTargetPos)
-            )/4;
-
-        leftFront.setPower(speed);
-        leftRear.setPower(speed);
-        rightFront.setPower(speed);
-        rightRear.setPower(speed);
-
-        robot.opMode.telemetry.update();
-
-        double error = averageTargetPos - getEncoderAvg();
-
-        // While the motors are moving or the error is less than 1
-
-        while (anyMotorsBusy() && error > 1.0) {
-            error = averageTargetPos - getEncoderAvg();
+            applyMovement(speed, 0, 0);
 
             robot.opMode.telemetry.addData("LeftFrontMotor", leftFront.getPower());
 
-            robot.opMode.telemetry.addData("Desired distance", averageTargetPos);
+            //robot.opMode.telemetry.addData("Desired distance", targetPos);
+            robot.opMode.telemetry.addData("Avg pos", getAvgMotorPosAbs());
+            //robot.opMode.telemetry.addData("Distance error", error);
+            robot.opMode.telemetry.addData("anyMotorsBusy", anyMotorsBusy());
+
+            robot.opMode.telemetry.update();
+        }
+        brake();
+    }
+
+
+
+
+    public void turnInches(double inches,
+                               double maxSpeed) {
+
+        double minSpeed = 0.09;
+        double deaccelRate = 2;
+
+        final int targetPos = inchesToTicks(inches);
+        final int initialError = targetPos - getAvgMotorPosAbs();
+        final int acceptableError = 2;
+
+        brake();
+        resetEncoders();
+
+        double error = targetPos - getAvgMotorPosAbs();
+
+        // While the error is not within acceptable error range, move to the desired position.
+        while (error > acceptableError) {
+            error = targetPos - getAvgMotorPosAbs(); // Error = desired - actual.
+            double speed = (error/initialError)*deaccelRate; // Speed is proportional to the error
+
+            // Keep speed within min and max, no matter if speed is positive or negative.
+            speed = clampSigned(speed, minSpeed, maxSpeed);
+
+            applyMovement(0, 0, speed);
+
+            robot.opMode.telemetry.addData("LeftFrontMotor", leftFront.getPower());
+
+            robot.opMode.telemetry.addData("Desired distance", targetPos);
+            robot.opMode.telemetry.addData("Avg pos", getAvgMotorPosAbs());
             robot.opMode.telemetry.addData("Distance error", error);
 
-            robot.opMode.telemetry.addData("Avg pos", getEncoderAvg());
+            robot.opMode.telemetry.addData("anyMotorsBusy", anyMotorsBusy());
+
+            robot.opMode.telemetry.update();
+        }
+        brake();
+    }
+
+
+
+    public void strafeInches(double inches,
+                               double maxSpeed) {
+
+        double minSpeed = 0.12;
+        double accelRate = 3;
+        double deaccelRate = 2;
+
+        final int targetPos = inchesToTicks(inches);
+        final int initialError = targetPos - getAvgMotorPosAbs();
+        final int acceptableError = 2;
+
+        brake();
+        resetEncoders();
+
+        double error = targetPos - getAvgMotorPosAbs();
+
+        // While the error is not within acceptable error range, move to the desired position.
+        while (error > acceptableError) {
+            error = targetPos - getAvgMotorPosAbs(); // Error = desired - actual.
+            double speed = (error/initialError); // Speed is proportional to the error
+
+            // Accel at respective accel rate depending if acceling before halfway point or deacceling after halfway point.
+            if (error > initialError/2.0) {
+                speed *= accelRate;
+            } else {
+                speed *= deaccelRate;
+            }
+
+            // Keep speed within min and max, no matter if speed is positive or negative.
+            speed = clampSigned(speed, minSpeed, maxSpeed);
+
+            applyMovement(0, speed, 0);
+
+            robot.opMode.telemetry.addData("LeftFrontMotor", leftFront.getPower());
+
+            robot.opMode.telemetry.addData("Desired distance", targetPos);
+            robot.opMode.telemetry.addData("Avg pos", getAvgMotorPosAbs());
+            robot.opMode.telemetry.addData("Distance error", error);
+
             robot.opMode.telemetry.addData("anyMotorsBusy", anyMotorsBusy());
 
             robot.opMode.telemetry.update();
@@ -264,63 +318,12 @@ public class DriveTrain {
     }
 
 
-    public void straightInches(double inches, double speed) {
-        moveInches(inches, inches, inches, inches, speed);
-    }
 
 
-    public void turnInches(double inches, double speed) {
-        moveInches(inches, inches, -inches, -inches, speed);
-    }
-
-
-    public void strafeInches(double inches, double speed) { //TODO: fix
-        int newLeftFrontTarget;
-        int newRightRearTarget;
-        int newRightFrontTarget;
-        int newLeftRearTarget;
-
-        resetEncoders();
-
-        int relativePosition = (int)inchesToTicks(inches * 1.5);
-
-        newLeftFrontTarget = leftFront.getCurrentPosition() + relativePosition;
-        newLeftRearTarget = leftRear.getCurrentPosition() - relativePosition;
-        newRightFrontTarget = rightFront.getCurrentPosition() - relativePosition;
-        newRightRearTarget = rightRear.getCurrentPosition() + relativePosition;
-
-        setTargetPos(
-                newLeftFrontTarget,
-                newLeftRearTarget,
-                newRightFrontTarget,
-                newRightRearTarget
-        );
-
-        leftFront.setPower(Math.abs(speed));
-        rightFront.setPower(Math.abs(speed));
-        leftRear.setPower(Math.abs(speed));
-        rightRear.setPower(Math.abs(speed));
-
-        while (leftRear.isBusy() && rightFront.isBusy() && rightRear.isBusy() && leftFront.isBusy()) {
-            robot.opMode.telemetry.addData("Left Front:", leftFront.getCurrentPosition());
-            robot.opMode.telemetry.addData("Left Rear:", leftRear.getCurrentPosition());
-            robot.opMode.telemetry.addData("Right Front:", rightFront.getCurrentPosition());
-            robot.opMode.telemetry.addData("Right Rear:", rightRear.getCurrentPosition());
-
-            robot.opMode.telemetry.update();
-        }
-
-        brake();
-    }
-
-
-
+    /** Turns drivetrain to a specific absolute angle in degrees.
+     *  Positive angles are clockwise, negative angles are counterclockwise.
+     */
     public void turnDeg(double absoluteDeg, double maxSpeed) { //TODO: test
-
-        /**
-         * Turns drivetrain to a specific absolute angle in degrees.
-         * Positive angles are clockwise, negative angles are counterclockwise.
-         */
 
         setMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 

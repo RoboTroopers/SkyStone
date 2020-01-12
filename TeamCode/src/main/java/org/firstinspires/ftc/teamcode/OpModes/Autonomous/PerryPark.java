@@ -30,7 +30,8 @@ public class PerryPark extends LinearOpMode {
 
         if (opModeIsActive()) {
 
-            perry.driveTrain.straightInches(TILE_LENGTH, 0.75);
+            perry.driveTrain.straightInches(TILE_LENGTH, 0.1);
+            perry.driveTrain.strafeInches(TILE_LENGTH, 0.4);
             //while (!perry.sensors.overLine()) {}
             perry.driveTrain.brake();
 

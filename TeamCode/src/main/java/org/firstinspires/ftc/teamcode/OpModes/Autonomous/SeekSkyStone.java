@@ -151,11 +151,11 @@ public class SeekSkyStone extends LinearOpMode {
             //waitForStart();
 
             //robot.driveTrain.strafe(0.3);
-            robot.driveTrain.straightInches(TILE_LENGTH*1, 0.1);
+            robot.driveTrain.straightInches(TILE_LENGTH*1.5, 0.33);
 
             //new Thread(odometryThread).start();
 
-            while (skystonesDelivered < 2 && opModeIsActive()) {
+            while (skystonesDelivered < 1 && opModeIsActive()) {
 
                 if (tfod != null) {
                     // getUpdatedRecognitions() will return null if no new information is available since
@@ -173,7 +173,7 @@ public class SeekSkyStone extends LinearOpMode {
                         //robot.driveTrain.strafeInches(STONE_WIDTH, -0.2);
                         //robot.driveTrain.straightInches(STONE_WIDTH, 0.05);
 
-                        robot.driveTrain.strafe(-0.25);
+                        robot.driveTrain.strafe(-0.26);
                     }
 
                     // If skystone has been found
@@ -199,46 +199,49 @@ public class SeekSkyStone extends LinearOpMode {
                     // Set vertical speed proportional to distance from skystone.
                     //double strafeSpeed = 0.5*(1 - (objectHeightRatio))+0.12;
 
-                    robot.driveTrain.applyMovement(0.18,-0.15, -0.11);
-                    sleep(1000);
+                    robot.intake.setSpeed(0.47);
+                    robot.driveTrain.applyMovement(0.31,-0.154, -0.136);
+                    sleep(1400);
                     robot.driveTrain.brake();
 
-                    robot.intake.setSpeed(0.45);
                     //robot.driveTrain.straightInches(TILE_LENGTH*0.3, 0.05);
-                    robot.driveTrain.straight(0.20);
-                    sleep(1500);
-                    robot.driveTrain.brake();
-
-                    sleep(500);
+                    //robot.driveTrain.straightInches(6, 0.15);
                     currentState = ProgramStates.TRANSPORTING;
 
+                    sleep(400);
                     robot.intake.rest();
                     telemetry.addData("Ladies and gentlemen!", "We gottem.");
                     skystonesDelivered += 1;
 
-                    robot.driveTrain.turn(-0.155);
-                    sleep(1000);
+                    //robot.driveTrain.turn(-0.155);
+                    robot.driveTrain.turnInches(11, -0.35);
+                    sleep(850);
 
                     robot.intake.rest();
 
+                    //robot.driveTrain.straightInches(-20, 0.30);
+                    robot.driveTrain.straight(-0.4);
+                    sleep(1200);
 
-                    robot.driveTrain.straightInches(20, 0.1);
-                    sleep(500);
-
-                    robot.driveTrain.strafe(0.3);
+                    /*robot.driveTrain.strafe(0.3);
                     if(skystonesDelivered == 1)
                         sleep(8000);
                     else
                         sleep(16000);
+                     */
+
+                    if (skystonesDelivered == 1)
+                        robot.driveTrain.strafeInches(TILE_LENGTH*4.5, 0.4);
+                    else robot.driveTrain.strafeInches(TILE_LENGTH*6.5, 0.4);
 
                     robot.driveTrain.brake();
                     robot.intake.blow();
-
                     sleep(2000);
+
                     robot.intake.rest();
 
-                    robot.driveTrain.applyMovement(0, -0.4, -0.01);
-                    sleep(3000);
+                    robot.driveTrain.applyMovement(0, -0.55, -0.05);
+                    sleep(1300);
                     robot.driveTrain.brake();
 
                 }
@@ -252,7 +255,10 @@ public class SeekSkyStone extends LinearOpMode {
             robot.driveTrain.brake();
 
             while (!robot.sensors.overLine()) {
-                telemetry.addData("LightSensor", robot.sensors.getColorSensorHSV(robot.sensors.lineSensor));
+                telemetry.addData("Hue", robot.sensors.getColorSensorHSV(robot.sensors.lineSensor)[0]);
+                telemetry.addData("Sat", robot.sensors.getColorSensorHSV(robot.sensors.lineSensor)[1]);
+                telemetry.addData("Val", robot.sensors.getColorSensorHSV(robot.sensors.lineSensor)[2]);
+
                 telemetry.update();
             }
 
