@@ -61,7 +61,7 @@ public class DriveTrain {
         double rr_power_raw = straight - turn - (strafe*1.5);
 
         // Find greatest power
-        double maxRawPower = Math.max(Math.max(lf_power_raw, rf_power_raw), Math.max(lr_power_raw, rr_power_raw));
+        double maxRawPower = Math.max(Math.max(abs(lf_power_raw), abs(rf_power_raw)), Math.max(abs(lr_power_raw), abs(rr_power_raw)));
 
         double scaleDownFactor = 1.0;
         if (maxRawPower > 1.0) {
@@ -217,15 +217,63 @@ public class DriveTrain {
 
             robot.opMode.telemetry.addData("LeftFrontMotor", leftFront.getPower());
 
-            //robot.opMode.telemetry.addData("Desired distance", targetPos);
+            robot.opMode.telemetry.addData("Desired distance", targetPos);
             robot.opMode.telemetry.addData("Avg pos", getAvgMotorPosAbs());
-            //robot.opMode.telemetry.addData("Distance error", error);
+            robot.opMode.telemetry.addData("Distance error", error);
             robot.opMode.telemetry.addData("anyMotorsBusy", anyMotorsBusy());
 
             robot.opMode.telemetry.update();
         }
         brake();
     }
+
+
+
+
+    public void backwardInches(double inches,
+                               double maxSpeed) {
+
+        double minSpeed = 0.09;
+        double accelRate = 1;
+        double deaccelRate = 1;
+
+        final int targetPos = inchesToTicks(inches);
+        final int initialError = targetPos - getAvgMotorPosAbs();
+        final int acceptableError = 2;
+
+        brake();
+        resetEncoders();
+
+        double error = targetPos - getAvgMotorPosAbs();
+
+        // While the error is not within acceptable error range, move to the desired position.
+        while (abs(error) > acceptableError) {
+            error = targetPos - getAvgMotorPosAbs(); // Error = desired - actual.
+            double speed = (error/initialError); // Speed is proportional to the error
+
+            // Accel at respective accel rate depending if acceling before halfway point or deacceling after halfway point.
+            if (error < initialError/2.0) {
+                speed *= accelRate;
+            } else {
+                speed *= deaccelRate;
+            }
+
+            // Keep speed within min and max, no matter if speed is positive or negative.
+            speed = clampSigned(speed, minSpeed, maxSpeed);
+            applyMovement(-speed, 0, 0);
+
+            robot.opMode.telemetry.addData("LeftFrontMotor", leftFront.getPower());
+
+            robot.opMode.telemetry.addData("Desired distance", targetPos);
+            robot.opMode.telemetry.addData("Avg pos", getAvgMotorPosAbs());
+            robot.opMode.telemetry.addData("Distance error", error);
+            robot.opMode.telemetry.addData("anyMotorsBusy", anyMotorsBusy());
+
+            robot.opMode.telemetry.update();
+        }
+        brake();
+    }
+
 
 
 

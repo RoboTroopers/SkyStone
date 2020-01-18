@@ -155,7 +155,7 @@ public class SeekSkyStone extends LinearOpMode {
 
             //new Thread(odometryThread).start();
 
-            while (skystonesDelivered < 1 && opModeIsActive()) {
+            while (skystonesDelivered < 2 && opModeIsActive()) {
 
                 if (tfod != null) {
                     // getUpdatedRecognitions() will return null if no new information is available since

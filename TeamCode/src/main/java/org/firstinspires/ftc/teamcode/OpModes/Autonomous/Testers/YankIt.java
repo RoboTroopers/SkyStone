@@ -1,39 +1,43 @@
-package org.firstinspires.ftc.teamcode.OpModes.Autonomous;
+package org.firstinspires.ftc.teamcode.OpModes.Autonomous.Testers;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.Globals.FieldConstants;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
 
 import static org.firstinspires.ftc.teamcode.Globals.FieldConstants.TILE_LENGTH;
 
 
-@Autonomous(name = "TurnTest", group="Autonomous")
+@Autonomous(name = "Yank it baby TEST", group="Autonomous")
 //@Disabled
-public class TurnTest extends LinearOpMode {
+public class YankIt extends LinearOpMode {
 
-    private Robot perry = new Robot(this, OpModeTypes.AUTO);
+    private Robot robot = new Robot(this, OpModeTypes.AUTO);
 
 
     @Override
     public void runOpMode() {
 
-        perry.initHardware(hardwareMap);
+        robot.initHardware(hardwareMap);
 
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start op mode");
         telemetry.update();
 
+        robot.intake.unYankStone();
+
         waitForStart();
 
         if (opModeIsActive()) {
 
-            perry.driveTrain.turnDeg(90, 0.1);
-            perry.driveTrain.brake();
+            robot.intake.yankStone();
+            sleep(3000);
+            robot.intake.unYankStone();
+            sleep(1000);
 
         }
-
     }
 
 }

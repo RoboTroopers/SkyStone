@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.OpModes.Autonomous;
+package org.firstinspires.ftc.teamcode.OpModes.Autonomous.Testers;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -10,34 +10,33 @@ import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
 import static org.firstinspires.ftc.teamcode.Globals.FieldConstants.TILE_LENGTH;
 
 
-@Autonomous(name = "Yank it baby TEST", group="Autonomous")
+@Autonomous(name = "PerryPark 1 Tile", group="Autonomous")
 //@Disabled
-public class YankIt extends LinearOpMode {
+public class PerryPark extends LinearOpMode {
 
-    private Robot robot = new Robot(this, OpModeTypes.AUTO);
+    private Robot perry = new Robot(this, OpModeTypes.AUTO);
 
 
     @Override
     public void runOpMode() {
 
-        robot.initHardware(hardwareMap);
+        perry.initHardware(hardwareMap);
 
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start op mode");
         telemetry.update();
 
-        robot.intake.unYankStone();
-
         waitForStart();
 
         if (opModeIsActive()) {
 
-            robot.intake.yankStone();
-            sleep(3000);
-            robot.intake.unYankStone();
-            sleep(1000);
+            perry.driveTrain.straightInches(TILE_LENGTH, 0.1);
+            perry.driveTrain.strafeInches(TILE_LENGTH, 0.4);
+            //while (!perry.sensors.overLine()) {}
+            perry.driveTrain.brake();
 
         }
+
     }
 
 }
