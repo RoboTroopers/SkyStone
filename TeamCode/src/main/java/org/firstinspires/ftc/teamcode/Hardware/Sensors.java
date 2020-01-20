@@ -15,7 +15,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
 
 import static java.lang.Math.toDegrees;
+import static java.lang.Thread.sleep;
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
+import static org.firstinspires.ftc.teamcode.Utilities.MiscUtil.pause;
 import static org.firstinspires.ftc.teamcode.ppProject.treamcode.MathFunctions.angleWrap;
 
 public class Sensors {
@@ -56,6 +58,11 @@ public class Sensors {
 
         imu.initialize(parameters);
 
+        while (!imu.isGyroCalibrated())
+        {
+            pause(50);
+        }
+
         //horizontalEncoder = aHwMap.get(DcMotor.class, "horizontalEncoder");
         //verticalEncoder = aHwMap.get(DcMotor.class, "verticalEncoder");
         //leftVerticalEncoder = aHwMap.get(DcMotor.class, "leftVerticalEncoder");
@@ -95,9 +102,11 @@ public class Sensors {
     }
 
 
-    public double getWorldAngleRad() { return angleWrap(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).firstAngle); }
+    public double getWorldAngleDeg() { return imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle; }
 
-    public double getWorldAngleDeg() { return toDegrees(getWorldAngleRad());}
+
+    public double getWorldAngleRad() { return angleWrap(imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).thirdAngle); }
+
 
 
     public float[] getColorSensorHSV(ColorSensor thisColorSensor) {

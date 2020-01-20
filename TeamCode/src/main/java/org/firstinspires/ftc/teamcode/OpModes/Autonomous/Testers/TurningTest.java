@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
 
 import static org.firstinspires.ftc.teamcode.Globals.FieldConstants.TILE_LENGTH;
+import static org.firstinspires.ftc.teamcode.Utilities.MiscUtil.pause;
 
 
 @Autonomous(name = "TurningTest", group="Autonomous")
@@ -29,10 +30,19 @@ public class TurningTest extends LinearOpMode {
 
         if (opModeIsActive()) {
 
-            perry.driveTrain.turnDeg(90, 0.1);
-            perry.driveTrain.brake();
+            perry.driveTrain.turnDeg(180, 0.6);
+            pause(500);
+            perry.driveTrain.turnDeg(0, 0.7);
+            pause(500);
+            perry.driveTrain.turnDeg(-90, 0.3);
+            pause(500);
+            perry.driveTrain.turnDeg(90, 0.5);
 
         }
+
+        telemetry.addData("deg", perry.sensors.getWorldAngleDeg());
+        telemetry.update();
+        pause(10000);
 
     }
 
