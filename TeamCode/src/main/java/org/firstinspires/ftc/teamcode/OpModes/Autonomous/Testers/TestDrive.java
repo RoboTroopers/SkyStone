@@ -2,12 +2,14 @@ package org.firstinspires.ftc.teamcode.OpModes.Autonomous.Testers;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
 
 @Autonomous(name = "TestDrive", group = "Autonomous")
+@Disabled
 public class TestDrive extends LinearOpMode {
 
     private Robot robot = new Robot(this, OpModeTypes.AUTO);

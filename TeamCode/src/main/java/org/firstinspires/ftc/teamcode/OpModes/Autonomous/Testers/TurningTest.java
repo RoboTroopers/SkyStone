@@ -1,17 +1,17 @@
 package org.firstinspires.ftc.teamcode.OpModes.Autonomous.Testers;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
 
-import static org.firstinspires.ftc.teamcode.Globals.FieldConstants.TILE_LENGTH;
 import static org.firstinspires.ftc.teamcode.Utilities.MiscUtil.pause;
 
 
 @Autonomous(name = "TurningTest", group="Autonomous")
-//@Disabled
+@Disabled
 public class TurningTest extends LinearOpMode {
 
     private Robot perry = new Robot(this, OpModeTypes.AUTO);
@@ -30,13 +30,13 @@ public class TurningTest extends LinearOpMode {
 
         if (opModeIsActive()) {
 
-            perry.driveTrain.turnDeg(180, 0.6);
+            perry.driveTrain.turnToDeg(180, 0.6);
             pause(500);
-            perry.driveTrain.turnDeg(0, 0.7);
+            perry.driveTrain.turnToDeg(0, 0.7);
             pause(500);
-            perry.driveTrain.turnDeg(-90, 0.3);
+            perry.driveTrain.turnToDeg(-90, 0.3);
             pause(500);
-            perry.driveTrain.turnDeg(90, 0.5);
+            perry.driveTrain.turnToDeg(90, 0.5);
 
         }
 

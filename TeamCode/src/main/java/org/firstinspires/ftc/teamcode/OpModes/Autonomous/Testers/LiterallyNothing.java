@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.OpModes.Autonomous.Testers;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
@@ -10,7 +11,7 @@ import static org.firstinspires.ftc.teamcode.Globals.FieldConstants.TILE_LENGTH;
 
 
 @Autonomous(name = "Do literally nothing lol", group="Autonomous")
-//@Disabled
+@Disabled
 public class LiterallyNothing extends LinearOpMode {
 
     private Robot perry = new Robot(this, OpModeTypes.AUTO);

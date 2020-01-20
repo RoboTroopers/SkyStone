@@ -191,7 +191,7 @@ public class DriveTrain {
 
         final int targetPos = inchesToTicks(inches);
         final int initialError = targetPos - getAvgMotorPosAbs();
-        final int acceptableError = 4;
+        final int acceptableError = 5;
 
         brake();
         resetEncoders();
@@ -239,7 +239,7 @@ public class DriveTrain {
 
         final int targetPos = inchesToTicks(inches);
         final int initialError = targetPos - getAvgMotorPosAbs();
-        final int acceptableError = 2;
+        final int acceptableError = 5;
 
         brake();
         resetEncoders();
@@ -286,7 +286,7 @@ public class DriveTrain {
 
         final int targetPos = inchesToTicks(inches);
         final int initialError = targetPos - getAvgMotorPosAbs();
-        final int acceptableError = 2;
+        final int acceptableError = 5;
 
         brake();
         resetEncoders();
@@ -327,7 +327,7 @@ public class DriveTrain {
 
         final int targetPos = inchesToTicks(inches);
         final int initialError = targetPos - getAvgMotorPosAbs();
-        final int acceptableError = 2;
+        final int acceptableError = 3;
 
         brake();
         resetEncoders();
@@ -370,7 +370,7 @@ public class DriveTrain {
     /** Turns drivetrain to a specific absolute angle in degrees.
      *  Positive angles are clockwise, negative angles are counterclockwise.
      */
-    public void turnDeg(double absoluteDeg, double maxSpeed) {
+    public void turnToDeg(double absoluteDeg, double maxSpeed) {
 
         setMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 

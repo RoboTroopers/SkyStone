@@ -58,9 +58,9 @@ import static org.firstinspires.ftc.teamcode.Globals.FieldConstants.TILE_LENGTH;
 
 
 
-@Autonomous(name = "Seek Skystones", group="Autonomous")
+@Autonomous(name = "Seek Skystones using time", group="Autonomous")
 //@Disabled
-public class SeekSkyStone extends LinearOpMode {
+public class SeekSkyStoneTime extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
@@ -151,11 +151,11 @@ public class SeekSkyStone extends LinearOpMode {
             //waitForStart();
 
             //robot.driveTrain.strafe(0.3);
-            robot.driveTrain.straightInches(TILE_LENGTH*1.55, 0.35);
+            robot.driveTrain.straightInches(TILE_LENGTH*1.5, 0.33);
 
             //new Thread(odometryThread).start();
 
-            while (skystonesDelivered < 1 && opModeIsActive()) {
+            while (skystonesDelivered < 2 && opModeIsActive()) {
 
                 if (tfod != null) {
                     // getUpdatedRecognitions() will return null if no new information is available since
@@ -190,51 +190,69 @@ public class SeekSkyStone extends LinearOpMode {
                     telemetry.addData("Object angle", objectAngle);
                     telemetry.update();
 
-                    // Swoop towards skystone to pick it up.
+                    // The "1 - ([ratio])" is used to make robot slower when closer to skystone for precision.
+                    //double forwardSpeed = 0.3*(1 - (objectHeightRatio));
+                    //double strafeSpeed = (objectAngle+skystoneAngleOffset)*0.15;
+
+                    // Go sideways (since robot is sideways, forward) proportional to angle of stone in camera.
+                    //double forwardSpeed = ((objectAngle+skystoneAngleOffset)/45)*0.5;
+                    // Set vertical speed proportional to distance from skystone.
+                    //double strafeSpeed = 0.5*(1 - (objectHeightRatio))+0.12;
+
                     robot.intake.setSpeed(0.47);
-                    robot.driveTrain.applyMovement(0.315,-0.16, -0.14);
+                    robot.driveTrain.applyMovement(0.31,-0.154, -0.136);
                     sleep(1400);
                     robot.driveTrain.brake();
 
+                    //robot.driveTrain.straightInches(TILE_LENGTH*0.3, 0.05);
+                    //robot.driveTrain.straightInches(6, 0.15);
                     currentState = ProgramStates.TRANSPORTING;
 
-                    sleep(450);
+                    sleep(400);
                     robot.intake.rest();
                     telemetry.addData("Ladies and gentlemen!", "We gottem.");
-
-                    // Back up and straighten out robot.
-                    robot.driveTrain.turnToDeg(0, 0.2);
-                    robot.driveTrain.resetEncoders();
-                    robot.driveTrain.backwardInches(30, 0.45);
-                    sleep(150);
-                    robot.driveTrain.turnToDeg(0, 0.2);
-
-                    // Go back to original position
-                    //if (skystonesDelivered < 2) {
-                        robot.driveTrain.strafeInches(TILE_LENGTH * 5, 0.3);
-                        /*
-                    } else{
-                        robot.driveTrain.strafeInches(TILE_LENGTH*7, 0.4);
-                    }*/
-
-                    robot.intake.blow();
-                    sleep(1500);
-                    robot.intake.rest();
                     skystonesDelivered += 1;
-                    break;
-                    /*
-                    if (skystonesDelivered  < 2) {
-                        robot.driveTrain.strafeInches(-TILE_LENGTH*2, 0.55);
-                    }
-                    robot.driveTrain.turnToDeg(0, 0.4);
-                    */
+
+                    //robot.driveTrain.turn(-0.155);
+                    robot.driveTrain.turnInches(11, -0.35);
+                    sleep(850);
+
+                    robot.intake.rest();
+
+                    //robot.driveTrain.straightInches(-20, 0.30);
+                    robot.driveTrain.straight(-0.4);
+                    sleep(1200);
+
+                    /*robot.driveTrain.strafe(0.3);
+                    if(skystonesDelivered == 1)
+                        sleep(8000);
+                    else
+                        sleep(16000);
+                     */
+
+                    if (skystonesDelivered == 1)
+                        robot.driveTrain.strafeInches(TILE_LENGTH*4.5, 0.4);
+                    else robot.driveTrain.strafeInches(TILE_LENGTH*6.5, 0.4);
+
+                    robot.driveTrain.brake();
+                    robot.intake.blow();
+                    sleep(2000);
+
+                    robot.intake.rest();
+
+                    robot.driveTrain.applyMovement(0, -0.55, -0.05);
+                    sleep(1300);
+                    robot.driveTrain.brake();
+
                 }
             }
 
             currentState = ProgramStates.PARKING;
-            telemetry.addData("Program State", "Parking");
+
             robot.sensors.lineSensor.enableLed(true);
-            robot.driveTrain.strafeInches(-6, 0.35);
+
+            telemetry.addData("Program State", "Parking");
+            robot.driveTrain.brake();
 
             while (!robot.sensors.overLine()) {
                 telemetry.addData("Hue", robot.sensors.getColorSensorHSV(robot.sensors.lineSensor)[0]);
@@ -245,6 +263,7 @@ public class SeekSkyStone extends LinearOpMode {
             }
 
             robot.driveTrain.brake();
+            //robot.advancedMovement.myGoToPosition(BRIDGE_X, TILE_LENGTH, 0.6, 0, 0.5);
         }
 
         if (tfod != null) {
