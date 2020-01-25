@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.teamcode.Utilities.GamerMath;
 import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
 
 import static java.lang.Math.toDegrees;
@@ -102,7 +103,7 @@ public class Sensors {
     }
 
 
-    public double getWorldAngleDeg() { return imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle; }
+    public double getWorldAngleDeg() { return GamerMath.angleWrapDeg(imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle); }
 
 
     public double getWorldAngleRad() { return angleWrap(imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).thirdAngle); }

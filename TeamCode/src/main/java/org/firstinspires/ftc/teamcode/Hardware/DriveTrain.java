@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.ppProject.company.Range;
 import static java.lang.Math.abs;
 import static java.lang.Math.toRadians;
 import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.inchesToTicks;
+import static org.firstinspires.ftc.teamcode.Utilities.GamerMath.angleWrapDeg;
 import static org.firstinspires.ftc.teamcode.Utilities.GamerMath.castRound;
 import static org.firstinspires.ftc.teamcode.Utilities.GamerMath.clampSigned;
 import static org.firstinspires.ftc.teamcode.Utilities.MiscUtil.pause;
@@ -176,6 +177,7 @@ public class DriveTrain {
     }
 
 
+
     public boolean anyMotorsBusy() {
         return (leftFront.isBusy() || rightFront.isBusy() || leftRear.isBusy() || rightRear.isBusy());
     }
@@ -332,12 +334,13 @@ public class DriveTrain {
         brake();
         resetEncoders();
 
-        double error = targetPos - getAvgMotorPosAbs();
+        double error = targetPos - leftFront.getCurrentPosition();
 
         // While the error is not within acceptable error range, move to the desired position.
-        while (error > acceptableError) {
-            error = targetPos - getAvgMotorPosAbs(); // Error = desired - actual.
-            double speed = (error/initialError); // Speed is proportional to the error
+        while (abs(error) > acceptableError) {
+            error = targetPos - leftFront.getCurrentPosition(); // Error = desired - actual.
+            double sign = error/abs(error);
+            double speed = abs(error/initialError); // Speed is proportional to the error
 
             // Accel at respective accel rate depending if acceling before halfway point or deacceling after halfway point.
             if (error > initialError/2.0) {
@@ -349,12 +352,12 @@ public class DriveTrain {
             // Keep speed within min and max, no matter if speed is positive or negative.
             speed = clampSigned(speed, minSpeed, maxSpeed);
 
-            applyMovement(0, speed, 0);
+            applyMovement(0, speed*sign, 0);
 
             robot.opMode.telemetry.addData("LeftFrontMotor", leftFront.getPower());
 
             robot.opMode.telemetry.addData("Desired distance", targetPos);
-            robot.opMode.telemetry.addData("Avg pos", getAvgMotorPosAbs());
+            robot.opMode.telemetry.addData("Avg pos", leftFront.getCurrentPosition());
             robot.opMode.telemetry.addData("Distance error", error);
 
             robot.opMode.telemetry.addData("anyMotorsBusy", anyMotorsBusy());
@@ -377,7 +380,7 @@ public class DriveTrain {
         maxSpeed = abs(maxSpeed);
 
         final double initialDeg = robot.sensors.getWorldAngleDeg();
-        final double initialError = initialDeg - absoluteDeg;
+        final double initialError = angleWrapDeg(initialDeg - absoluteDeg);
 
         double errorDeg = initialError;
 
@@ -387,7 +390,7 @@ public class DriveTrain {
 
         while ((Math.abs(errorDeg) > rotationAccuracyRange)) {
 
-            errorDeg = absoluteDeg-robot.sensors.getWorldAngleDeg(); // Error = desired - actual
+            errorDeg = angleWrapDeg(absoluteDeg-robot.sensors.getWorldAngleDeg()); // Error = desired - actual
             double sign = errorDeg/abs(errorDeg); // Get sign to know which way to turn. idk why the math doesn't do this automatically but this works.
             double rawSpeed = (errorDeg/initialError);
 

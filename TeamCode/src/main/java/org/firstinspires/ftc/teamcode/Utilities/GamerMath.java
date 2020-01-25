@@ -33,4 +33,14 @@ public class GamerMath {
         return number;
     }
 
+
+    public static double angleWrapDeg(double angle) {
+        if (angle <= -180) angle += 360;
+        if (angle >= 180) angle -= 360;
+        return angle;
+
+    }
+
+
+
 }
