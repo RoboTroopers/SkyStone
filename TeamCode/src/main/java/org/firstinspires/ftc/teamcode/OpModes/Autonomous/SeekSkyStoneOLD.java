@@ -36,22 +36,14 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.teamcode.Globals.DriveConstants;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
-import org.firstinspires.ftc.teamcode.Utilities.FieldPosition;
 import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
 
 import java.util.List;
 
-import static java.lang.Math.PI;
-import static java.lang.Math.toRadians;
-import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.TRACK_WIDTH;
-import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.WHEEL_BASE;
-import static org.firstinspires.ftc.teamcode.Globals.FieldConstants.STONE_WIDTH;
 import static org.firstinspires.ftc.teamcode.Globals.FieldConstants.TILE_LENGTH;
 
 /**
@@ -307,8 +299,7 @@ public class SeekSkyStoneOLD extends LinearOpMode {
                 robot.driveTrain.straightInches(-TILE_LENGTH, 0.3);
                 robot.driveTrain.brake();
 
-                while (!robot.sensors.overLine()) {
-                    telemetry.addData("LightSensor", robot.sensors.getColorSensorHSV(robot.sensors.lineSensor));
+                while (!robot.sensors.isOverLine()) {
                     telemetry.update();
                 }
 

@@ -6,8 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
 
-import static org.firstinspires.ftc.teamcode.Globals.FieldConstants.TILE_LENGTH;
-
 
 @Autonomous(name = "PerryPark Line Sensor TEST", group="Autonomous")
 //@Disabled
@@ -31,7 +29,7 @@ public class PerryParkLineSensor extends LinearOpMode {
             //perry.driveTrain.straightInches(TILE_LENGTH, 0.75);
             perry.driveTrain.straight(0.05);
 
-            while (!perry.sensors.overLine()) {
+            while (!perry.sensors.isOverLine()) {
             }
             perry.driveTrain.brake();
 

@@ -187,16 +187,16 @@ public class DriveTrain {
     public void straightInches(double inches,
                                double maxSpeed) {
 
+        brake();
+        resetEncoders();
+
         double minSpeed = 0.09;
         double accelRate = 1;
         double deaccelRate = 1;
 
         final int targetPos = inchesToTicks(inches);
         final int initialError = targetPos - getAvgMotorPosAbs();
-        final int acceptableError = 5;
-
-        brake();
-        resetEncoders();
+        final int acceptableError = 6;
 
         double error = targetPos - getAvgMotorPosAbs();
 
@@ -235,16 +235,16 @@ public class DriveTrain {
     public void backwardInches(double inches,
                                double maxSpeed) {
 
+        brake();
+        resetEncoders();
+
         double minSpeed = 0.09;
         double accelRate = 1;
         double deaccelRate = 1;
 
         final int targetPos = inchesToTicks(inches);
         final int initialError = targetPos - getAvgMotorPosAbs();
-        final int acceptableError = 5;
-
-        brake();
-        resetEncoders();
+        final int acceptableError = 6;
 
         double error = targetPos - getAvgMotorPosAbs();
 
@@ -283,6 +283,9 @@ public class DriveTrain {
     public void turnInches(double inches,
                                double maxSpeed) {
 
+        brake();
+        resetEncoders();
+
         double minSpeed = 0.09;
         double deaccelRate = 2;
 
@@ -290,8 +293,6 @@ public class DriveTrain {
         final int initialError = targetPos - getAvgMotorPosAbs();
         final int acceptableError = 5;
 
-        brake();
-        resetEncoders();
 
         double error = targetPos - getAvgMotorPosAbs();
 
@@ -329,7 +330,7 @@ public class DriveTrain {
 
         final int targetPos = inchesToTicks(inches);
         final int initialError = targetPos - getAvgMotorPosAbs();
-        final int acceptableError = 3;
+        final int acceptableError = 4;
 
         brake();
         resetEncoders();
@@ -374,6 +375,10 @@ public class DriveTrain {
      *  Positive angles are clockwise, negative angles are counterclockwise.
      */
     public void turnToDeg(double absoluteDeg, double maxSpeed) {
+
+        brake();
+        resetEncoders();
+
 
         setMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 

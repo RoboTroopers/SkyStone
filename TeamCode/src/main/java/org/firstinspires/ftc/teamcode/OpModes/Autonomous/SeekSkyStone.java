@@ -151,7 +151,7 @@ public class SeekSkyStone extends LinearOpMode {
             //waitForStart();
 
             //robot.driveTrain.strafe(0.3);
-            robot.driveTrain.straightInches(TILE_LENGTH*1.55, 0.35);
+            robot.driveTrain.straightInches(TILE_LENGTH*1.7, 0.35);
 
             //new Thread(odometryThread).start();
 
@@ -167,11 +167,7 @@ public class SeekSkyStone extends LinearOpMode {
                     while (nearestSkystone == null) {
 
                         nearestSkystone = getNearestSkystone();
-
                         telemetry.addData("Program State", "Scanning");
-                        // Strafe left until Stone found within specific angle from center of camera
-                        //robot.driveTrain.strafeInches(STONE_WIDTH, -0.2);
-                        //robot.driveTrain.straightInches(STONE_WIDTH, 0.05);
 
                         robot.driveTrain.strafe(-0.255);
                     }
@@ -193,37 +189,35 @@ public class SeekSkyStone extends LinearOpMode {
                     // Swoop towards skystone to pick it up.
                     robot.intake.setSpeed(0.47);
                     robot.driveTrain.applyMovement(0.157,-0.075, -0.075);
-                    sleep(2700);
+                    sleep(2600);
                     robot.driveTrain.brake();
+
 
                     currentState = ProgramStates.TRANSPORTING;
 
-                    sleep(450);
+                    sleep(250);
                     robot.intake.rest();
                     telemetry.addData("Ladies and gentlemen!", "We gottem.");
 
                     // Back up and straighten out robot.
-                    robot.driveTrain.resetEncoders();
                     robot.driveTrain.turnToDeg(0, 0.2);
-                    sleep(500);
-                    robot.driveTrain.resetEncoders();
-                    robot.driveTrain.backwardInches(30, 0.45);
+                    sleep(250);
+                    robot.driveTrain.backwardInches(28, 0.40);
                     sleep(150);
-                    robot.driveTrain.turnToDeg(0, 0.2);
+                    //robot.driveTrain.turnToDeg(0, 0.2);
 
                     // Go back to original position
                     //if (skystonesDelivered < 2) {
-                        robot.driveTrain.strafeInches(TILE_LENGTH * 5.5, 0.3);
+                        robot.driveTrain.strafeInches(TILE_LENGTH * 5.35, 0.4);
                         /*
                     } else{
                         robot.driveTrain.strafeInches(TILE_LENGTH*7, 0.4);
                     }*/
 
                     robot.intake.blow();
-                    sleep(1500);
+                    sleep(1250);
                     robot.intake.rest();
                     skystonesDelivered += 1;
-                    robot.driveTrain.resetEncoders();
                     break;
                     /*
                     if (skystonesDelivered  < 2) {
@@ -237,17 +231,14 @@ public class SeekSkyStone extends LinearOpMode {
             currentState = ProgramStates.PARKING;
             telemetry.addData("Program State", "Parking");
             robot.sensors.lineSensor.enableLed(true);
-            robot.driveTrain.strafeInches(-1.5*TILE_LENGTH, 0.35);
+            robot.driveTrain.strafe(-0.22);
 
-            while (!robot.sensors.overLine()) {
-                telemetry.addData("Hue", robot.sensors.getColorSensorHSV(robot.sensors.lineSensor)[0]);
-                telemetry.addData("Sat", robot.sensors.getColorSensorHSV(robot.sensors.lineSensor)[1]);
-                telemetry.addData("Val", robot.sensors.getColorSensorHSV(robot.sensors.lineSensor)[2]);
+            while (!robot.sensors.isOverLine()) {}
 
-                telemetry.update();
-            }
+            robot.driveTrain.straightInches(8, 0.15);
 
             robot.driveTrain.brake();
+            robot.sensors.lineSensor.enableLed(false);
         }
 
         if (tfod != null) {

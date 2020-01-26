@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+import org.firstinspires.ftc.robotcontroller.external.samples.SensorREVColorDistance;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -59,10 +60,7 @@ public class Sensors {
 
         imu.initialize(parameters);
 
-        while (!imu.isGyroCalibrated())
-        {
-            pause(50);
-        }
+        while (!imu.isGyroCalibrated()) pause(15);
 
         //horizontalEncoder = aHwMap.get(DcMotor.class, "horizontalEncoder");
         //verticalEncoder = aHwMap.get(DcMotor.class, "verticalEncoder");
@@ -108,28 +106,6 @@ public class Sensors {
 
     public double getWorldAngleRad() { return angleWrap(imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).thirdAngle); }
 
-
-
-    public float[] getColorSensorHSV(ColorSensor thisColorSensor) {
-
-        float[] hsvValues = new float[3];
-        final float values[] = hsvValues;
-
-        // convert the RGB values to HSV values.
-        Color.RGBToHSV(
-            (thisColorSensor.red() * 255),
-            (thisColorSensor.green() * 255),
-            (thisColorSensor.blue() * 255),
-            hsvValues);
-
-        return hsvValues;
-
-    }
-
-
-    public float[] getLineSensorHSV() {
-        return getColorSensorHSV(lineSensor);
-    }
 
 
     /*
@@ -193,23 +169,9 @@ public class Sensors {
 
 
 
-    public boolean overLine() {
-
-        float hue = getColorSensorHSV(lineSensor)[0];
-        robot.opMode.telemetry.addData("Hue", hue);
-
-        float saturation = getColorSensorHSV(lineSensor)[1];
-        robot.opMode.telemetry.addData("Saturation", saturation);
-        robot.opMode.telemetry.update();
-
-        boolean isOvertape = false;
-
-        if (((hue >= 0 && hue <= 30) || (hue >= 180 && hue <= 250)) && saturation > 0.4) {
-            isOvertape = true;
-        }
-
-        return isOvertape;
-
+    // IDK how this works but it does
+    public boolean isOverLine() {
+        return lineSensor.argb() < 50364673;
     }
 
 

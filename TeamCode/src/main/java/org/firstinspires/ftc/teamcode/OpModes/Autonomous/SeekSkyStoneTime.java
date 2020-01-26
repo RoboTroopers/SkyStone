@@ -254,10 +254,7 @@ public class SeekSkyStoneTime extends LinearOpMode {
             telemetry.addData("Program State", "Parking");
             robot.driveTrain.brake();
 
-            while (!robot.sensors.overLine()) {
-                telemetry.addData("Hue", robot.sensors.getColorSensorHSV(robot.sensors.lineSensor)[0]);
-                telemetry.addData("Sat", robot.sensors.getColorSensorHSV(robot.sensors.lineSensor)[1]);
-                telemetry.addData("Val", robot.sensors.getColorSensorHSV(robot.sensors.lineSensor)[2]);
+            while (!robot.sensors.isOverLine()) {
 
                 telemetry.update();
             }

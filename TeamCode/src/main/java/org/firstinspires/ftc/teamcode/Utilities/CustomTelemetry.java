@@ -50,7 +50,7 @@ public class CustomTelemetry {
     }
 
 
-
+/*
     public void sensorData() {
         telemetry.addData("Angle", robot.sensors.getWorldAngleDeg());
         telemetry.addData("LineSensor Hue", robot.sensors.getLineSensorHSV()[0]);
@@ -59,7 +59,7 @@ public class CustomTelemetry {
         telemetry.addData("Distance from Sensor", robot.sensors.getDistance());
 
         telemetry.addData("Distance from Sensor", robot.sensors.stoneFullyIn());
-    }
+    }*/
 
 
 }
