@@ -325,12 +325,12 @@ public class DriveTrain {
                                double maxSpeed) {
 
         double minSpeed = 0.12;
-        double accelRate = 3;
-        double deaccelRate = 2;
+        double accelRate = 1;
+        double deaccelRate = 1;
 
         final int targetPos = inchesToTicks(inches);
         final int initialError = targetPos - getAvgMotorPosAbs();
-        final int acceptableError = 4;
+        final int acceptableError = 5;
 
         brake();
         resetEncoders();

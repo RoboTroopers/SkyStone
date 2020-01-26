@@ -202,20 +202,27 @@ public class SeekSkyStone extends LinearOpMode {
                     // Back up and straighten out robot.
                     robot.driveTrain.turnToDeg(0, 0.2);
                     sleep(250);
-                    robot.driveTrain.backwardInches(28, 0.40);
+                    robot.driveTrain.backwardInches(27, 0.40);
                     sleep(150);
-                    //robot.driveTrain.turnToDeg(0, 0.2);
+                    robot.driveTrain.turnToDeg(0, 0.2);
 
                     // Go back to original position
                     //if (skystonesDelivered < 2) {
-                        robot.driveTrain.strafeInches(TILE_LENGTH * 5.35, 0.4);
                         /*
                     } else{
                         robot.driveTrain.strafeInches(TILE_LENGTH*7, 0.4);
                     }*/
+                    robot.driveTrain.strafeInches(TILE_LENGTH*1.5, 0.37);
+                    robot.driveTrain.strafe(0.25);
+
+                    robot.sensors.lineSensor.enableLed(true);
+                    while (!robot.sensors.isOverLine()) {}
+
+                    robot.sensors.lineSensor.enableLed(false);
+                    robot.driveTrain.strafeInches(25, 0.35);
 
                     robot.intake.blow();
-                    sleep(1250);
+                    sleep(1000);
                     robot.intake.rest();
                     skystonesDelivered += 1;
                     break;
@@ -230,14 +237,7 @@ public class SeekSkyStone extends LinearOpMode {
 
             currentState = ProgramStates.PARKING;
             telemetry.addData("Program State", "Parking");
-            robot.sensors.lineSensor.enableLed(true);
-            robot.driveTrain.strafe(-0.22);
-
-            while (!robot.sensors.isOverLine()) {}
-
-            robot.driveTrain.straightInches(8, 0.15);
-
-            robot.driveTrain.brake();
+            robot.driveTrain.strafeInches(-25, 0.3);
             robot.sensors.lineSensor.enableLed(false);
         }
 
