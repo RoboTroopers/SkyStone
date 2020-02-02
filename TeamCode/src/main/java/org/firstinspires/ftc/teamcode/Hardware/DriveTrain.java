@@ -8,10 +8,12 @@ import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
 import org.firstinspires.ftc.teamcode.ppProject.company.Range;
 
 import static java.lang.Math.abs;
+import static java.lang.Math.max;
 import static java.lang.Math.toRadians;
 import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.inchesToTicks;
 import static org.firstinspires.ftc.teamcode.Utilities.GamerMath.angleWrapDeg;
 import static org.firstinspires.ftc.teamcode.Utilities.GamerMath.castRound;
+import static org.firstinspires.ftc.teamcode.Utilities.GamerMath.clamp;
 import static org.firstinspires.ftc.teamcode.Utilities.GamerMath.clampSigned;
 import static org.firstinspires.ftc.teamcode.Utilities.MiscUtil.pause;
 
@@ -234,7 +236,6 @@ public class DriveTrain {
 
     public void backwardInches(double inches,
                                double maxSpeed) {
-
         brake();
         resetEncoders();
 
@@ -278,15 +279,12 @@ public class DriveTrain {
 
 
 
-
-
     public void turnInches(double inches,
                                double maxSpeed) {
-
         brake();
         resetEncoders();
 
-        double minSpeed = 0.09;
+        double minSpeed = 0.08;
         double deaccelRate = 2;
 
         final int targetPos = inchesToTicks(inches);
@@ -297,12 +295,15 @@ public class DriveTrain {
         double error = targetPos - getAvgMotorPosAbs();
 
         // While the error is not within acceptable error range, move to the desired position.
-        while (error > acceptableError) {
+        while (abs(error) > acceptableError) {
             error = targetPos - getAvgMotorPosAbs(); // Error = desired - actual.
             double speed = (error/initialError)*deaccelRate; // Speed is proportional to the error
 
             // Keep speed within min and max, no matter if speed is positive or negative.
-            speed = clampSigned(speed, minSpeed, maxSpeed);
+            if (speed < 0)
+                speed = clamp(speed, -maxSpeed, -minSpeed);
+            if (speed > 0)
+                speed = clamp(speed, minSpeed, maxSpeed);
 
             applyMovement(0, 0, speed);
 
@@ -323,6 +324,8 @@ public class DriveTrain {
 
     public void strafeInches(double inches,
                                double maxSpeed) {
+        brake();
+        resetEncoders();
 
         double minSpeed = 0.12;
         double accelRate = 1;
@@ -330,10 +333,8 @@ public class DriveTrain {
 
         final int targetPos = inchesToTicks(inches);
         final int initialError = targetPos - getAvgMotorPosAbs();
-        final int acceptableError = 5;
+        final int acceptableError = 8;
 
-        brake();
-        resetEncoders();
 
         double error = targetPos - leftFront.getCurrentPosition();
 
@@ -379,7 +380,6 @@ public class DriveTrain {
         brake();
         resetEncoders();
 
-
         setMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         maxSpeed = abs(maxSpeed);
@@ -397,19 +397,20 @@ public class DriveTrain {
 
             errorDeg = angleWrapDeg(absoluteDeg-robot.sensors.getWorldAngleDeg()); // Error = desired - actual
             double sign = errorDeg/abs(errorDeg); // Get sign to know which way to turn. idk why the math doesn't do this automatically but this works.
-            double rawSpeed = (errorDeg/initialError);
+            double errorRatio = (errorDeg/initialError);
 
             // Keep speed slower than maxSpeed.
-            double turnSpeed = Range.clip((rawSpeed*maxSpeed*deaccelRate), -maxSpeed, maxSpeed);
-            // Keep speed faster than minSpeed to eliminate steady-state error.
-            if (turnSpeed < 0 && turnSpeed > -minSpeed) turnSpeed = -minSpeed;
-            if (turnSpeed > 0 && turnSpeed < minSpeed) turnSpeed = minSpeed;
+            double turnSpeed = errorRatio*maxSpeed*deaccelRate;
+            if (turnSpeed > 0)
+                turnSpeed = clamp(turnSpeed, minSpeed, maxSpeed);
+            if (turnSpeed < 0)
+                turnSpeed = clamp(turnSpeed, -maxSpeed, -minSpeed);
 
             turn(turnSpeed*sign);
 
             robot.opMode.telemetry.addData("Angle", robot.sensors.getWorldAngleDeg());
             robot.opMode.telemetry.addData("Error (Deg)", errorDeg);
-            robot.opMode.telemetry.addData("RawSpeed", rawSpeed);
+            robot.opMode.telemetry.addData("ErrorRatio", errorRatio);
             robot.opMode.telemetry.addData("TurnSpeed", turnSpeed);
             robot.opMode.telemetry.update();
 

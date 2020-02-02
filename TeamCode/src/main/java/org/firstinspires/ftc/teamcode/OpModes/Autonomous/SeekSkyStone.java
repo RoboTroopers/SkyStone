@@ -40,6 +40,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
+import org.firstinspires.ftc.teamcode.Utilities.StonePosChecker;
 
 import java.util.List;
 
@@ -69,6 +70,7 @@ public class SeekSkyStone extends LinearOpMode {
     //Thread odometryThread = new Thread(new OdometryThread(robot));
 
     private int skystonesDelivered = 0;
+    private int firstSkystoneNum; // The ordinal number that the skystone is positioned, with the stone closest to the skybridge being 1 and farthest being 6;
 
     private enum ProgramStates {
 
@@ -151,7 +153,7 @@ public class SeekSkyStone extends LinearOpMode {
             //waitForStart();
 
             //robot.driveTrain.strafe(0.3);
-            robot.driveTrain.straightInches(TILE_LENGTH*1.7, 0.35);
+            robot.driveTrain.straightInches(TILE_LENGTH*1.7, 0.4);
 
             //new Thread(odometryThread).start();
 
@@ -164,17 +166,28 @@ public class SeekSkyStone extends LinearOpMode {
 
                     currentState = ProgramStates.SCANNING;
 
-                    while (nearestSkystone == null) {
-
+                    while (nearestSkystone == null && opModeIsActive()) {
                         nearestSkystone = getNearestSkystone();
                         telemetry.addData("Program State", "Scanning");
+                        //telemetry.update();
 
-                        robot.driveTrain.strafe(-0.255);
+                        robot.driveTrain.strafe(-0.27);
+                        // Store the position of the first skystone to know which one to pick up next.
+                        firstSkystoneNum = StonePosChecker.getFirstStoneNumRed(robot.driveTrain.getAvgMotorPosAbs());
+                        telemetry.addData("Encoder Pos", robot.driveTrain.getAvgMotorPosAbs());
+                        telemetry.addData("Stone pos", firstSkystoneNum);
+                        telemetry.update();
                     }
 
-                    // If skystone has been found
+                    firstSkystoneNum = StonePosChecker.getFirstStoneNumRed(robot.driveTrain.getAvgMotorPosAbs());
+                    telemetry.addData("Encoder Pos", robot.driveTrain.getAvgMotorPosAbs());
+                    telemetry.addData("Stone pos", firstSkystoneNum);
+                    telemetry.update();
+
+                    // If skystone has been found, then go on to pick it up and deliver it.
                     robot.driveTrain.brake();
                     currentState = ProgramStates.APPROACHING;
+                    sleep(7000);
 
                     objectAngle = nearestSkystone.estimateAngleToObject(AngleUnit.DEGREES);
                     objectHeight = nearestSkystone.getHeight();
@@ -187,22 +200,22 @@ public class SeekSkyStone extends LinearOpMode {
                     telemetry.update();
 
                     // Swoop towards skystone to pick it up.
-                    robot.intake.setSpeed(0.47);
-                    robot.driveTrain.applyMovement(0.157,-0.075, -0.075);
+                    robot.intake.setSpeed(0.5);
+                    robot.driveTrain.applyMovement(0.147,0.175, 0.079);
                     sleep(2600);
                     robot.driveTrain.brake();
 
 
                     currentState = ProgramStates.TRANSPORTING;
 
-                    sleep(250);
+                    sleep(260);
                     robot.intake.rest();
                     telemetry.addData("Ladies and gentlemen!", "We gottem.");
 
                     // Back up and straighten out robot.
                     robot.driveTrain.turnToDeg(0, 0.2);
                     sleep(250);
-                    robot.driveTrain.backwardInches(27, 0.40);
+                    robot.driveTrain.backwardInches(28, 0.40);
                     sleep(150);
                     robot.driveTrain.turnToDeg(0, 0.2);
 
@@ -212,11 +225,14 @@ public class SeekSkyStone extends LinearOpMode {
                     } else{
                         robot.driveTrain.strafeInches(TILE_LENGTH*7, 0.4);
                     }*/
-                    robot.driveTrain.strafeInches(TILE_LENGTH*1.5, 0.37);
+                    robot.driveTrain.strafeInches(TILE_LENGTH*1.5, 0.36);
                     robot.driveTrain.strafe(0.25);
 
                     robot.sensors.lineSensor.enableLed(true);
-                    while (!robot.sensors.isOverLine()) {}
+                    while (!robot.sensors.isOverLine()) {
+                        telemetry.addData("", robot.sensors.lineSensor.argb());
+                        telemetry.update();
+                    }
 
                     robot.sensors.lineSensor.enableLed(false);
                     robot.driveTrain.strafeInches(25, 0.35);
