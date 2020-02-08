@@ -34,13 +34,12 @@ public class GamerMath {
     }
 
 
+    //Keeps angle within -180 to 180 degrees while preserving angle measure
     public static double angleWrapDeg(double angle) {
-        if (angle <= -180) angle += 360;
-        if (angle >= 180) angle -= 360;
+        while (angle < -180) angle += 360;
+        while (angle > 180) angle -= 360;
         return angle;
 
     }
-
-
 
 }

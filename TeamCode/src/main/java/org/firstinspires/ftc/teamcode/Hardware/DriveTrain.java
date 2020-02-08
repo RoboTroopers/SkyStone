@@ -375,7 +375,7 @@ public class DriveTrain {
     /** Turns drivetrain to a specific absolute angle in degrees.
      *  Positive angles are clockwise, negative angles are counterclockwise.
      */
-    public void turnToDeg(double absoluteDeg, double maxSpeed) {
+    public void turnToDeg(double desiredDeg, double maxSpeed) {
 
         brake();
         resetEncoders();
@@ -384,32 +384,30 @@ public class DriveTrain {
 
         maxSpeed = abs(maxSpeed);
 
-        final double initialDeg = robot.sensors.getWorldAngleDeg();
-        final double initialError = angleWrapDeg(initialDeg - absoluteDeg);
-
+        final double initialError = desiredDeg - robot.sensors.getWorldAngleDeg(); // Error = desired - actual
         double errorDeg = initialError;
 
-        double rotationAccuracyRange = 0.65;
-        double minSpeed = 0.115;
-        double deaccelRate = 2.85;
+        final double rotationAccuracyRange = 0.65;
+        final double minSpeed = 0.115;
+        final double deaccelRate = 2.85;
 
-        while ((Math.abs(errorDeg) > rotationAccuracyRange)) {
+        while (Math.abs(errorDeg) > rotationAccuracyRange) {
 
-            errorDeg = angleWrapDeg(absoluteDeg-robot.sensors.getWorldAngleDeg()); // Error = desired - actual
-            double sign = errorDeg/abs(errorDeg); // Get sign to know which way to turn. idk why the math doesn't do this automatically but this works.
+            errorDeg = angleWrapDeg(desiredDeg-robot.sensors.getWorldAngleDeg()); // Error = desired - actual
             double errorRatio = (errorDeg/initialError);
 
             // Keep speed slower than maxSpeed.
-            double turnSpeed = errorRatio*maxSpeed*deaccelRate;
+            double turnSpeed = -(errorRatio*maxSpeed*deaccelRate);
             if (turnSpeed > 0)
                 turnSpeed = clamp(turnSpeed, minSpeed, maxSpeed);
             if (turnSpeed < 0)
                 turnSpeed = clamp(turnSpeed, -maxSpeed, -minSpeed);
 
-            turn(turnSpeed*sign);
+            turn(turnSpeed);
 
             robot.opMode.telemetry.addData("Angle", robot.sensors.getWorldAngleDeg());
             robot.opMode.telemetry.addData("Error (Deg)", errorDeg);
+            robot.opMode.telemetry.addData("InitialError", initialError);
             robot.opMode.telemetry.addData("ErrorRatio", errorRatio);
             robot.opMode.telemetry.addData("TurnSpeed", turnSpeed);
             robot.opMode.telemetry.update();

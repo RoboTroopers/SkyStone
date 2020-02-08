@@ -153,7 +153,7 @@ public class SeekSkyStone extends LinearOpMode {
             //waitForStart();
 
             //robot.driveTrain.strafe(0.3);
-            robot.driveTrain.straightInches(TILE_LENGTH*1.7, 0.4);
+            robot.driveTrain.straightInches(TILE_LENGTH*1.7 , 0.45);
 
             //new Thread(odometryThread).start();
 
@@ -187,7 +187,7 @@ public class SeekSkyStone extends LinearOpMode {
                     // If skystone has been found, then go on to pick it up and deliver it.
                     robot.driveTrain.brake();
                     currentState = ProgramStates.APPROACHING;
-                    sleep(7000);
+                    sleep(3000);
 
                     objectAngle = nearestSkystone.estimateAngleToObject(AngleUnit.DEGREES);
                     objectHeight = nearestSkystone.getHeight();
@@ -200,24 +200,24 @@ public class SeekSkyStone extends LinearOpMode {
                     telemetry.update();
 
                     // Swoop towards skystone to pick it up.
+                    robot.driveTrain.strafeInches(26, 0.35);
+                    robot.driveTrain.turnToDeg(9, 0.2);
                     robot.intake.setSpeed(0.5);
-                    robot.driveTrain.applyMovement(0.147,0.175, 0.079);
-                    sleep(2600);
-                    robot.driveTrain.brake();
-
+                    robot.driveTrain.straightInches(34, 0.25);
+                    //robot.driveTrain.applyMovement(0.15,0.175, 0.081);
+                    sleep(1250);
+                    robot.intake.rest();
+                    robot.driveTrain.backwardInches(32, 0.4);
+                    robot.driveTrain.turnToDeg(0, 0.3);
 
                     currentState = ProgramStates.TRANSPORTING;
 
                     sleep(260);
-                    robot.intake.rest();
                     telemetry.addData("Ladies and gentlemen!", "We gottem.");
 
-                    // Back up and straighten out robot.
+                    // Straighten out robot.
                     robot.driveTrain.turnToDeg(0, 0.2);
                     sleep(250);
-                    robot.driveTrain.backwardInches(28, 0.40);
-                    sleep(150);
-                    robot.driveTrain.turnToDeg(0, 0.2);
 
                     // Go back to original position
                     //if (skystonesDelivered < 2) {
