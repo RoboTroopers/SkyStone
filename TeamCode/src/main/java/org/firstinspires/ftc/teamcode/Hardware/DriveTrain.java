@@ -4,11 +4,14 @@ package org.firstinspires.ftc.teamcode.Hardware;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.teamcode.Globals.DriveConstants;
 import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
 import org.firstinspires.ftc.teamcode.ppProject.company.Range;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.max;
+import static java.lang.Math.subtractExact;
 import static java.lang.Math.toRadians;
 import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.inchesToTicks;
 import static org.firstinspires.ftc.teamcode.Utilities.GamerMath.angleWrapDeg;
@@ -58,10 +61,10 @@ public class DriveTrain {
 
         //Moves robot on field forward and sideways, rotates by turn
         //movement_x multiplied by 1.5 because mechanum drive strafes sideways slower than forwards/backwards
-        double lf_power_raw = straight + turn - (strafe*1.5);
-        double lr_power_raw = straight + turn + (strafe*1.5);
-        double rf_power_raw = straight - turn + (strafe*1.5);
-        double rr_power_raw = straight - turn - (strafe*1.5);
+        double lf_power_raw = straight - turn - (strafe*1.5);
+        double lr_power_raw = straight - turn + (strafe*1.5);
+        double rf_power_raw = straight + turn + (strafe*1.5);
+        double rr_power_raw = straight + turn - (strafe*1.5);
 
         // Find greatest power
         double maxRawPower = Math.max(Math.max(abs(lf_power_raw), abs(rf_power_raw)), Math.max(abs(lr_power_raw), abs(rr_power_raw)));
@@ -279,46 +282,6 @@ public class DriveTrain {
 
 
 
-    public void turnInches(double inches,
-                               double maxSpeed) {
-        brake();
-        resetEncoders();
-
-        double minSpeed = 0.08;
-        double deaccelRate = 2;
-
-        final int targetPos = inchesToTicks(inches);
-        final int initialError = targetPos - getAvgMotorPosAbs();
-        final int acceptableError = 5;
-
-
-        double error = targetPos - getAvgMotorPosAbs();
-
-        // While the error is not within acceptable error range, move to the desired position.
-        while (abs(error) > acceptableError) {
-            error = targetPos - getAvgMotorPosAbs(); // Error = desired - actual.
-            double speed = (error/initialError)*deaccelRate; // Speed is proportional to the error
-
-            // Keep speed within min and max, no matter if speed is positive or negative.
-            if (speed < 0)
-                speed = clamp(speed, -maxSpeed, -minSpeed);
-            if (speed > 0)
-                speed = clamp(speed, minSpeed, maxSpeed);
-
-            applyMovement(0, 0, speed);
-
-            robot.opMode.telemetry.addData("LeftFrontMotor", leftFront.getPower());
-
-            robot.opMode.telemetry.addData("Desired distance", targetPos);
-            robot.opMode.telemetry.addData("Avg pos", getAvgMotorPosAbs());
-            robot.opMode.telemetry.addData("Distance error", error);
-
-            robot.opMode.telemetry.addData("anyMotorsBusy", anyMotorsBusy());
-
-            robot.opMode.telemetry.update();
-        }
-        brake();
-    }
 
 
 
@@ -371,7 +334,6 @@ public class DriveTrain {
     }
 
 
-
     /** Turns drivetrain to a specific absolute angle in degrees.
      *  Positive angles are clockwise, negative angles are counterclockwise.
      */
@@ -382,39 +344,74 @@ public class DriveTrain {
 
         setMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        ///
         maxSpeed = abs(maxSpeed);
-
-        final double initialError = desiredDeg - robot.sensors.getWorldAngleDeg(); // Error = desired - actual
+        final double initialAngle = robot.sensors.getWorldAngleDeg();
+        final double initialError = angleWrapDeg(desiredDeg - initialAngle); // Error = desired - actual
         double errorDeg = initialError;
 
         final double rotationAccuracyRange = 0.65;
         final double minSpeed = 0.115;
         final double deaccelRate = 2.85;
 
+
         while (Math.abs(errorDeg) > rotationAccuracyRange) {
 
-            errorDeg = angleWrapDeg(desiredDeg-robot.sensors.getWorldAngleDeg()); // Error = desired - actual
-            double errorRatio = (errorDeg/initialError);
+            errorDeg = angleWrapDeg(desiredDeg - robot.sensors.getWorldAngleDeg()); // Error = desired - actual
+            double errorRatio = (errorDeg / initialError);
 
-            // Keep speed slower than maxSpeed.
-            double turnSpeed = -(errorRatio*maxSpeed*deaccelRate);
+            // Keep speed between maxSpeed and minSpeed.
+            double turnSpeed = (errorRatio * maxSpeed * deaccelRate);
             if (turnSpeed > 0)
                 turnSpeed = clamp(turnSpeed, minSpeed, maxSpeed);
             if (turnSpeed < 0)
                 turnSpeed = clamp(turnSpeed, -maxSpeed, -minSpeed);
 
-            turn(turnSpeed);
+            turn(turnSpeed); //
 
             robot.opMode.telemetry.addData("Angle", robot.sensors.getWorldAngleDeg());
+            robot.opMode.telemetry.addData("Raw Error (Deg)", desiredDeg - robot.sensors.getWorldAngleDeg());
             robot.opMode.telemetry.addData("Error (Deg)", errorDeg);
             robot.opMode.telemetry.addData("InitialError", initialError);
             robot.opMode.telemetry.addData("ErrorRatio", errorRatio);
             robot.opMode.telemetry.addData("TurnSpeed", turnSpeed);
             robot.opMode.telemetry.update();
-
         }
 
-        robot.driveTrain.brake();
+        brake();/*
+
+            setMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+            maxSpeed = abs(maxSpeed);
+
+            final double initialDeg = robot.sensors.getWorldAngleDeg();
+            final double initialError = initialDeg - desiredDeg;
+
+            double errorDeg = initialError;
+
+            double rotationAccuracyRange = toRadians(2);
+            double minSpeed = 0.01;
+            double rotationAccuracyRange = 0.65;
+            double minSpeed = 0.115;
+            double deaccelRate = 2.85;
+
+            while ((Math.abs(errorDeg) > rotationAccuracyRange)) {
+                errorDeg = desiredDeg-robot.sensors.getWorldAngleDeg(); // Error = desired - actual
+                double sign = errorDeg/abs(errorDeg); // Get sign to know which way to turn. idk why the math doesn't do this automatically but this works.
+                double rawSpeed = (errorDeg/initialError);
+
+                double turnSpeed = Range.clip((rawSpeed*maxSpeed), -maxSpeed, maxSpeed);
+                // Keep speed slower than maxSpeed.
+                double turnSpeed = Range.clip((rawSpeed*maxSpeed*deaccelRate), -maxSpeed, maxSpeed);
+                // Keep speed faster than minSpeed to eliminate steady-state error.
+                if (turnSpeed < 0 && turnSpeed > -minSpeed) turnSpeed = -minSpeed;
+                if (turnSpeed > 0 && turnSpeed < minSpeed) turnSpeed = minSpeed;
+
+                turn(turnSpeed);
+                turn(turnSpeed*sign);
+
+                robot.opMode.telemetry.addData("Angle", robot.sensors.getWorldAngleDeg());
+                robot.opMode.telemetry.addData("Error (Deg)", errorDeg);*/
     }
 
 

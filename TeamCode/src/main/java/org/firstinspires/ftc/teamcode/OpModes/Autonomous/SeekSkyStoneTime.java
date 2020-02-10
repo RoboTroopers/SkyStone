@@ -214,7 +214,7 @@ public class SeekSkyStoneTime extends LinearOpMode {
                     skystonesDelivered += 1;
 
                     //robot.driveTrain.turn(-0.155);
-                    robot.driveTrain.turnInches(11, -0.35);
+                    //robot.driveTrain.turnInches(11, -0.35);
                     sleep(850);
 
                     robot.intake.rest();

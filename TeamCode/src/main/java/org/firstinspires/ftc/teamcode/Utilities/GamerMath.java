@@ -7,7 +7,6 @@ public class GamerMath {
     public static int castRound(double number) { return (int)Math.round(number); }
 
 
-
     /** Ensure input is inside a certain range. */
     public static double clamp(double val, double min, double max) { return Math.max(min, Math.min(max, val)); }
 
@@ -34,12 +33,11 @@ public class GamerMath {
     }
 
 
-    //Keeps angle within -180 to 180 degrees while preserving angle measure
+    /** Keeps angle within -180 to 180 degrees while preserving angle measure */
     public static double angleWrapDeg(double angle) {
-        while (angle < -180) angle += 360;
-        while (angle > 180) angle -= 360;
+        if (angle <= -180) angle += 360;
+        if (angle > 180) angle -= 360;
         return angle;
-
     }
 
 }

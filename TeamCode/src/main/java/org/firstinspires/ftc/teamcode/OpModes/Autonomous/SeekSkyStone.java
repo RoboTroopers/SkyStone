@@ -251,6 +251,7 @@ public class SeekSkyStone extends LinearOpMode {
                 }
             }
 
+
             currentState = ProgramStates.PARKING;
             telemetry.addData("Program State", "Parking");
             robot.driveTrain.strafeInches(-25, 0.3);

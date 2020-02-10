@@ -6,9 +6,9 @@ public class StonePosChecker {
     /** Returns the ordinal number of the stone the camera is in front of based on encoder positions */
     public static int getFirstStoneNumRed(int encoderPos) {
         int stoneNum = 0;
-        if (encoderPos < 1295) { // Add some to this to give room for error.
+        if (encoderPos < 1400) { // Add some to this to give room for error.
             stoneNum = 1;
-        } else if (encoderPos < 1497) {
+        } else if (encoderPos < 1600) {
             stoneNum = 2;
         } else {
             stoneNum = 3;

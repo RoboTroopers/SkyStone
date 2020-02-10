@@ -52,6 +52,8 @@ public class PermissionValidatorWrapper extends PermissionValidatorActivity {
         add(Manifest.permission.READ_EXTERNAL_STORAGE);
         add(Manifest.permission.CAMERA);
         add(Manifest.permission.ACCESS_COARSE_LOCATION);
+        add(Manifest.permission.ACCESS_FINE_LOCATION);
+        add(Manifest.permission.READ_PHONE_STATE);
     }};
 
     private final static Class startApplication = FtcRobotControllerActivity.class;
