@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
-import android.graphics.Color;
-
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -9,19 +7,14 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.SensorREVColorDistance;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.teamcode.OpModes.Autonomous.AllianceColors;
-import org.firstinspires.ftc.teamcode.Utilities.GamerMath;
 import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
 
-import static java.lang.Math.toDegrees;
 import static java.lang.Thread.sleep;
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
 import static org.firstinspires.ftc.teamcode.Utilities.MiscUtil.pause;
-import static org.firstinspires.ftc.teamcode.ppProject.treamcode.MathFunctions.angleWrap;
 
 public class Sensors {
 
@@ -169,15 +162,13 @@ public class Sensors {
     }
 
 
-    public AllianceColors getSelected() {
-        AllianceColors allianceColor;
+    public boolean isRedSide() {
+        boolean isRed = false;
         if (allianceColorSelector.isPressed()) {
-            allianceColor = AllianceColors.RED;
-        } else {
-            allianceColor = AllianceColors.BLUE;
+            isRed = true;
         }
 
-        return allianceColor;
+        return isRed;
     }
 
 }
