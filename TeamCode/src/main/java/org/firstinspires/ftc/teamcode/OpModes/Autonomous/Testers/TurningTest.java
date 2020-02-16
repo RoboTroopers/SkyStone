@@ -11,7 +11,7 @@ import static org.firstinspires.ftc.teamcode.Utilities.MiscUtil.pause;
 
 
 @Autonomous(name = "TurningTest", group="Autonomous")
-
+@Disabled
 public class TurningTest extends LinearOpMode {
 
     private Robot perry = new Robot(this, OpModeTypes.AUTO);
@@ -36,7 +36,7 @@ public class TurningTest extends LinearOpMode {
             pause(500);
             perry.driveTrain.turnToDeg(-90, 0.3);
             pause(500);
-            perry.driveTrain.turnToDeg(90, 0.45);
+            perry.driveTrain.turnToDeg(-0, 0.45);
             pause(500);
             perry.driveTrain.turnToDeg(0, 0.4);
             pause(500);

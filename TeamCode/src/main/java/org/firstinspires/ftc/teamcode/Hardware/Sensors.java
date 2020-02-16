@@ -13,6 +13,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.SensorREVColorDist
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.teamcode.OpModes.Autonomous.AllianceColors;
 import org.firstinspires.ftc.teamcode.Utilities.GamerMath;
 import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
 
@@ -41,7 +42,7 @@ public class Sensors {
     public final double HOLDING_STONE_DIST = 6; // How many inches away the stone can be for pepeSMASH to goSMASH!
 
     public ColorSensor lineSensor;
-    public TouchSensor stoneBumpSensor;
+    public TouchSensor allianceColorSelector;
 
 
     //public DistanceSensor pulleySensor;
@@ -70,7 +71,7 @@ public class Sensors {
 
         lineSensor = aHwMap.get(ColorSensor.class, "lineSensor");
         distanceSensor = aHwMap.get(DistanceSensor.class, "stoneDistanceSensor");
-        stoneBumpSensor = aHwMap.get(TouchSensor.class, "stoneBumpSensor");
+        allianceColorSelector = aHwMap.get(TouchSensor.class, "stoneBumpSensor");
         if (robot.currentOpModeType == OpModeTypes.AUTO) {
             lineSensor.enableLed(true);
         }
@@ -162,17 +163,21 @@ public class Sensors {
     }
 
 
-    public boolean stoneFullyIn() {
-        return stoneBumpSensor.isPressed();
-    }
-
-
-
     // IDK how this works but it does
     public boolean isOverLine() {
         return lineSensor.argb() < 50364673;
     }
 
 
+    public AllianceColors getSelected() {
+        AllianceColors allianceColor;
+        if (allianceColorSelector.isPressed()) {
+            allianceColor = AllianceColors.RED;
+        } else {
+            allianceColor = AllianceColors.BLUE;
+        }
+
+        return allianceColor;
+    }
 
 }

@@ -11,7 +11,7 @@ import static org.firstinspires.ftc.teamcode.Globals.FieldConstants.TILE_LENGTH;
 
 
 @Autonomous(name = "Strafe Left Test", group="Autonomous")
-
+@Disabled
 public class StrafeLeftTest extends LinearOpMode {
 
     private Robot perry = new Robot(this, OpModeTypes.AUTO);

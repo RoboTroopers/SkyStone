@@ -23,7 +23,7 @@ public class Intake {
 
         leftIntake = aHwMap.get(DcMotor.class, "leftIntake");
         rightIntake = aHwMap.get(DcMotor.class, "rightIntake");
-        //rightIntake.setDirection(DcMotor.Direction.REVERSE);
+        rightIntake.setDirection(DcMotor.Direction.REVERSE);
 
         stoneYanker = aHwMap.get(Servo.class, "stoneYanker");
     }

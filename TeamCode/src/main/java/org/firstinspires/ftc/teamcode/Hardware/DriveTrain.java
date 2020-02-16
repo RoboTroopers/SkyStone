@@ -4,15 +4,7 @@ package org.firstinspires.ftc.teamcode.Hardware;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.teamcode.Globals.DriveConstants;
-import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
-import org.firstinspires.ftc.teamcode.ppProject.company.Range;
-
 import static java.lang.Math.abs;
-import static java.lang.Math.max;
-import static java.lang.Math.subtractExact;
-import static java.lang.Math.toRadians;
 import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.inchesToTicks;
 import static org.firstinspires.ftc.teamcode.Utilities.GamerMath.angleWrapDeg;
 import static org.firstinspires.ftc.teamcode.Utilities.GamerMath.castRound;
@@ -283,8 +275,6 @@ public class DriveTrain {
 
 
 
-
-
     public void strafeInches(double inches,
                                double maxSpeed) {
         brake();
@@ -297,7 +287,6 @@ public class DriveTrain {
         final int targetPos = inchesToTicks(inches);
         final int initialError = targetPos - getAvgMotorPosAbs();
         final int acceptableError = 8;
-
 
         double error = targetPos - leftFront.getCurrentPosition();
 
@@ -320,54 +309,43 @@ public class DriveTrain {
             applyMovement(0, speed*sign, 0);
 
             robot.opMode.telemetry.addData("LeftFrontMotor", leftFront.getPower());
-
             robot.opMode.telemetry.addData("Desired distance", targetPos);
             robot.opMode.telemetry.addData("Avg pos", leftFront.getCurrentPosition());
             robot.opMode.telemetry.addData("Distance error", error);
-
             robot.opMode.telemetry.addData("anyMotorsBusy", anyMotorsBusy());
 
             robot.opMode.telemetry.update();
         }
-
         brake();
     }
 
 
-    /** Turns drivetrain to a specific absolute angle in degrees.
-     *  Positive angles are clockwise, negative angles are counterclockwise.
-     */
+
+
     public void turnToDeg(double desiredDeg, double maxSpeed) {
 
         brake();
         resetEncoders();
 
-        setMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        ///
         maxSpeed = abs(maxSpeed);
         final double initialAngle = robot.sensors.getWorldAngleDeg();
-        final double initialError = angleWrapDeg(desiredDeg - initialAngle); // Error = desired - actual
+        final double initialError = angleWrapDeg(desiredDeg - initialAngle); // Error = desired - actual;
         double errorDeg = initialError;
 
-        final double rotationAccuracyRange = 0.65;
+        final double desiredRange = 0.65;
         final double minSpeed = 0.115;
         final double deaccelRate = 2.85;
 
+        while (Math.abs(errorDeg) > desiredRange) {
+            errorDeg = angleWrapDeg(desiredDeg - robot.sensors.getWorldAngleDeg());
 
-        while (Math.abs(errorDeg) > rotationAccuracyRange) {
+            double errorSign = errorDeg / abs(errorDeg);
+            double errorRatio = abs(errorDeg) / abs(initialError);
 
-            errorDeg = angleWrapDeg(desiredDeg - robot.sensors.getWorldAngleDeg()); // Error = desired - actual
-            double errorRatio = (errorDeg / initialError);
+            double turnSpeed = errorRatio * maxSpeed * deaccelRate;
+            turnSpeed = clamp(turnSpeed, minSpeed, maxSpeed);
 
-            // Keep speed between maxSpeed and minSpeed.
-            double turnSpeed = (errorRatio * maxSpeed * deaccelRate);
-            if (turnSpeed > 0)
-                turnSpeed = clamp(turnSpeed, minSpeed, maxSpeed);
-            if (turnSpeed < 0)
-                turnSpeed = clamp(turnSpeed, -maxSpeed, -minSpeed);
-
-            turn(turnSpeed); //
+            turn(turnSpeed * errorSign);
 
             robot.opMode.telemetry.addData("Angle", robot.sensors.getWorldAngleDeg());
             robot.opMode.telemetry.addData("Raw Error (Deg)", desiredDeg - robot.sensors.getWorldAngleDeg());
@@ -378,45 +356,12 @@ public class DriveTrain {
             robot.opMode.telemetry.update();
         }
 
-        brake();/*
-
-            setMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-            maxSpeed = abs(maxSpeed);
-
-            final double initialDeg = robot.sensors.getWorldAngleDeg();
-            final double initialError = initialDeg - desiredDeg;
-
-            double errorDeg = initialError;
-
-            double rotationAccuracyRange = toRadians(2);
-            double minSpeed = 0.01;
-            double rotationAccuracyRange = 0.65;
-            double minSpeed = 0.115;
-            double deaccelRate = 2.85;
-
-            while ((Math.abs(errorDeg) > rotationAccuracyRange)) {
-                errorDeg = desiredDeg-robot.sensors.getWorldAngleDeg(); // Error = desired - actual
-                double sign = errorDeg/abs(errorDeg); // Get sign to know which way to turn. idk why the math doesn't do this automatically but this works.
-                double rawSpeed = (errorDeg/initialError);
-
-                double turnSpeed = Range.clip((rawSpeed*maxSpeed), -maxSpeed, maxSpeed);
-                // Keep speed slower than maxSpeed.
-                double turnSpeed = Range.clip((rawSpeed*maxSpeed*deaccelRate), -maxSpeed, maxSpeed);
-                // Keep speed faster than minSpeed to eliminate steady-state error.
-                if (turnSpeed < 0 && turnSpeed > -minSpeed) turnSpeed = -minSpeed;
-                if (turnSpeed > 0 && turnSpeed < minSpeed) turnSpeed = minSpeed;
-
-                turn(turnSpeed);
-                turn(turnSpeed*sign);
-
-                robot.opMode.telemetry.addData("Angle", robot.sensors.getWorldAngleDeg());
-                robot.opMode.telemetry.addData("Error (Deg)", errorDeg);*/
+        brake();
     }
 
 
-    
-    
+
+
     /*
     public void myGoToPosition(double xInches, double yInches, double movementSpeed, double preferredAngle_rad, double turnSpeed) {
         double accuracyRange = inchesToTicks(0.5);
@@ -424,7 +369,7 @@ public class DriveTrain {
         double x = inchesToTicks(xInches);
         double y = inchesToTicks(yInches);
         double distanceToTarget;
-        
+
         double movement_x;
         double movement_y;
         double movement_turn;
@@ -487,7 +432,7 @@ public class DriveTrain {
         myGoToPosition(desiredXInches, desiredYInches, 0.1, desiredRadians, turnSpeed);
 
     }
-    
+
     */
 
 
