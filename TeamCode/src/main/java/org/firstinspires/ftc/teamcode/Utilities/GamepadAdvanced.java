@@ -56,6 +56,7 @@ public class GamepadAdvanced {
     public int leftBumperCooldown() { return left_bumper; }
     public int rightBumperCooldown() {return right_bumper; }
 
+    /** Useful functions to detect start of button press. */
     public boolean dpadUpOnce() { return 1 == dpad_up; }
     public boolean dpadDownOnce() { return 1 == dpad_down; }
     public boolean dpadLeftOnce() { return 1 == dpad_left; }

@@ -4,16 +4,14 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Utilities.CustomTelemetry;
-import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
 
 
-public class Robot {
+public class Robot implements HardwareComponent {
 
     //private ExpansionHubEx revMaster;
     //private ExpansionHubEx revSlave;
 
-
-    public DriveTrain driveTrain = new DriveTrain();
+    public DriveTrain driveTrain = new DriveTrain(this);
     public Intake intake = new Intake();
     public Outtake outtake = new Outtake();
     public Fingers fingers = new Fingers();
@@ -23,29 +21,25 @@ public class Robot {
 
 
     public OpMode opMode;
-    public OpModeTypes currentOpModeType;
 
 
 
-    public Robot (OpMode theOpMode, OpModeTypes opModeType) {
+    public Robot (OpMode theOpMode) {
         opMode = theOpMode;
-        currentOpModeType = opModeType;
-
-        CustomTelemetry customTelemetry = new CustomTelemetry(this);
     }
 
 
-    public void initHardware (HardwareMap aHwMap) {
+    public void init(HardwareMap aHwMap) {
         // get the two expansion hubs themselves
         //revMaster = aHwMap.get(ExpansionHubEx.class,"hub");
         //revSlave = aHwMap.get(ExpansionHubEx.class,"Slave");
 
-        driveTrain.initHardware(aHwMap, this);
-        intake.initHardware(aHwMap);
-        outtake.initHardware(aHwMap);
-        fingers.initHardware(aHwMap);
+        driveTrain.init(aHwMap);
+        intake.init(aHwMap);
+        outtake.init(aHwMap);
+        fingers.init(aHwMap);
 
-        sensors.initHardware(aHwMap, this);
+        sensors.init(aHwMap);
 
     }
 

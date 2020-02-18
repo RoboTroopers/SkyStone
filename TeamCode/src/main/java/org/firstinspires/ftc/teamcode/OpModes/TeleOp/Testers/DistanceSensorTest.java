@@ -5,11 +5,12 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
+import org.firstinspires.ftc.teamcode.Utilities.CustomTelemetry;
 
 
 @TeleOp(name = "Color Sensor Test")
-@Disabled
-public class ColorSensorTest extends OpMode {
+//@Disabled
+public class DistanceSensorTest extends OpMode {
 
     private Robot robot = new Robot(this);
 
@@ -24,11 +25,7 @@ public class ColorSensorTest extends OpMode {
 
     @Override
     public void loop() {
-        telemetry.addData("Hue", robot.sensors.lineSensor.argb());
-        telemetry.addData("Red", robot.sensors.lineSensor.red());
-        telemetry.addData("Green", robot.sensors.lineSensor.green());
-        telemetry.addData("Blue", robot.sensors.lineSensor.blue());
-        telemetry.addData("Over Line?", robot.sensors.isOverLine());
+        CustomTelemetry.sensorData(robot, telemetry);
         telemetry.update();
     }
 

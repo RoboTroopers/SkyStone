@@ -5,22 +5,19 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
-import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
-
-import static org.firstinspires.ftc.teamcode.Globals.FieldConstants.TILE_LENGTH;
 
 
 @Autonomous(name = "Do literally nothing lol", group="Autonomous")
 @Disabled
 public class LiterallyNothing extends LinearOpMode {
 
-    private Robot perry = new Robot(this, OpModeTypes.AUTO);
+    private Robot perry = new Robot(this);
 
 
     @Override
     public void runOpMode() {
 
-        perry.initHardware(hardwareMap);
+        perry.init(hardwareMap);
 
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start op mode");

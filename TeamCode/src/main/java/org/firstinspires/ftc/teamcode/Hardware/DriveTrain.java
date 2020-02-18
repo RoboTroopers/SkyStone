@@ -14,10 +14,9 @@ import static org.firstinspires.ftc.teamcode.Utilities.MiscUtil.pause;
 
 
 
-public class DriveTrain {
+public class DriveTrain implements HardwareComponent {
 
     public Robot robot;
-
 
     // Motors and servos
     public DcMotor leftFront;
@@ -26,9 +25,12 @@ public class DriveTrain {
     public DcMotor rightRear;
 
 
-    public void initHardware(HardwareMap aHwMap, Robot theRobot) {
-
+    public DriveTrain(Robot theRobot)  {
         robot = theRobot;
+    }
+
+
+    public void init(HardwareMap aHwMap) {
 
         leftFront = aHwMap.get(DcMotor.class, "leftFront");
         leftRear = aHwMap.get(DcMotor.class, "leftRear");
@@ -151,14 +153,6 @@ public class DriveTrain {
 
     public void resetEncoders() {
         setMotorModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        /*if (robot.currentOpModeType == OpModeTypes.AUTO) {
-
-            setMotorModes(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.opMode.telemetry.addData("RunToPosition", "Set");
-            robot.opMode.telemetry.update();
-        } else {
-            setMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        }*/
         setMotorModes(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 

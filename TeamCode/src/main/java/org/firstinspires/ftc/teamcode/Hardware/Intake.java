@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 
-public class Intake {
+public class Intake implements HardwareComponent {
 
     public DcMotor leftIntake;
     public DcMotor rightIntake;
@@ -14,23 +14,21 @@ public class Intake {
     public enum Directions {REST, SUCK, BLOW}
 
 
-    public Servo stoneYanker;
+    public Servo buildSiteYanker;
     public final double YANKED_POS = 0.92;
     public final double UNYANKED_POS = 0.6;
 
 
-    public void initHardware(HardwareMap aHwMap) {
-
+    public void init(HardwareMap aHwMap) {
         leftIntake = aHwMap.get(DcMotor.class, "leftIntake");
         rightIntake = aHwMap.get(DcMotor.class, "rightIntake");
         rightIntake.setDirection(DcMotor.Direction.REVERSE);
 
-        stoneYanker = aHwMap.get(Servo.class, "stoneYanker");
+        buildSiteYanker = aHwMap.get(Servo.class, "buildSiteYanker");
     }
 
 
     public void setSpeed(double speed) {
-
         leftIntake.setPower(speed);
         rightIntake.setPower(speed);
     }
@@ -38,7 +36,6 @@ public class Intake {
 
     // Set intake speed to suck in skystone
     public void suck() {
-
         leftIntake.setPower(SUCK_SPEED);
         rightIntake.setPower(SUCK_SPEED);
     }
@@ -46,18 +43,15 @@ public class Intake {
 
     // Set intake speed to adjust in skystone
     public void blow() {
-
         leftIntake.setPower(-SUCK_SPEED);
         rightIntake.setPower(-SUCK_SPEED);
     }
 
 
     public void rest() {
-
         leftIntake.setPower(0);
         rightIntake.setPower(0);
     }
-
 
 
     public Directions getDirection() {
@@ -67,10 +61,8 @@ public class Intake {
 
         if (intakeAvg < 0) {
             currentDirection = Directions.SUCK;
-
         } else if (intakeAvg > 0) {
             currentDirection = Directions.BLOW;
-
         } else {
             currentDirection = Directions.REST;
         }
@@ -79,14 +71,12 @@ public class Intake {
     }
 
 
-
-    public void yankStone() {
-        stoneYanker.setPosition(YANKED_POS);
+    public void yankBuildSite() {
+        buildSiteYanker.setPosition(YANKED_POS);
     }
 
-
-    public void unYankStone() {
-        stoneYanker.setPosition(UNYANKED_POS);
+    public void unYankBuildSite() {
+        buildSiteYanker.setPosition(UNYANKED_POS);
     }
 
 

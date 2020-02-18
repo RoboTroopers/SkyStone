@@ -1,5 +1,6 @@
-package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
+package org.firstinspires.ftc.teamcode.OpModes.TeleOp.Old;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -7,17 +8,16 @@ import org.firstinspires.ftc.teamcode.Hardware.Fingers;
 import org.firstinspires.ftc.teamcode.Hardware.Intake;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.Utilities.GamepadAdvanced;
-import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
-
 import static org.firstinspires.ftc.teamcode.ppProject.RobotUtilities.MovementVars.movement_turn;
 import static org.firstinspires.ftc.teamcode.ppProject.RobotUtilities.MovementVars.movement_x;
 import static org.firstinspires.ftc.teamcode.ppProject.RobotUtilities.MovementVars.movement_y;
 
 
 @TeleOp(name = "Mechanum Strafing TeleOp")
+@Disabled
 public class MechanumStrafingTeleOp extends OpMode {
 
-    private Robot robot = new Robot(this, OpModeTypes.TELEOP);
+    private Robot robot = new Robot(this);
 
     private double threshold = 0.0;
 
@@ -32,7 +32,7 @@ public class MechanumStrafingTeleOp extends OpMode {
 
     @Override
     public void init() {
-        robot.initHardware(hardwareMap);
+        robot.init(hardwareMap);
 
         gamepad1Advanced = new GamepadAdvanced(gamepad1);
         gamepad2Advanced = new GamepadAdvanced(gamepad2);
@@ -42,7 +42,7 @@ public class MechanumStrafingTeleOp extends OpMode {
     @Override
     public void start(){
 
-        robot.outtake.armMid();
+        //robot.outtake.armMid();
         robot.fingers.pepeSMASHIn();
 
     }
@@ -129,7 +129,7 @@ public class MechanumStrafingTeleOp extends OpMode {
 
 
         if (gamepad2Advanced.leftBumperOnce()) {
-
+/*
             if (robot.outtake.arm.getPosition() != robot.outtake.ARM_OUT_POS) {
                 depositStoneTimer = 0; // Starts timer to pick up the stone and place it on the ground
                 resetArmTimer = 1000; // Arbitrary value above timer threshold
@@ -138,16 +138,16 @@ public class MechanumStrafingTeleOp extends OpMode {
                 resetArmTimer = 0;
                 depositStoneTimer = 1000;
 
-            }
+            }*/
         }
 
 
         if (gamepad1Advanced.XOnce()) {
 
-            if (robot.intake.stoneYanker.getPosition() != robot.intake.YANKED_POS) {
-                robot.intake.yankStone();
+            if (robot.intake.buildSiteYanker.getPosition() != robot.intake.YANKED_POS) {
+                robot.intake.yankBuildSite();
             } else {
-                robot.intake.unYankStone();
+                robot.intake.unYankBuildSite();
             }
         }
 
@@ -156,12 +156,12 @@ public class MechanumStrafingTeleOp extends OpMode {
             robot.fingers.pepeSMASHIn();
         }
 
-        /*
-        if (robot.sensors.stoneFullyIn()) {
+
+        if (robot.sensors.holdingStone()) {
             depositStoneTimer = 0;
             resetArmTimer = 1000;
-        }*/
-
+        }
+/*
         if (depositStoneTimer <= 110) {
 
             if (depositStoneTimer == 2) {
@@ -192,7 +192,7 @@ public class MechanumStrafingTeleOp extends OpMode {
             }
             resetArmTimer += 1;
         }
-
+*/
 
         if (gamepad1Advanced.AOnce()) {
             if (robot.fingers.getPepeSMASHState() != Fingers.States.OUT) {
@@ -208,7 +208,7 @@ public class MechanumStrafingTeleOp extends OpMode {
         gamepad1Advanced.update();
         gamepad2Advanced.update();
 
-
+/*
         telemetry.addData("Status", "Running");
 
         telemetry.addData("front left power", robot.driveTrain.leftFront.getPower());
@@ -219,8 +219,8 @@ public class MechanumStrafingTeleOp extends OpMode {
         //telemetry.addData("left intake power", robot.intake.leftIntake.getPower());
         //telemetry.addData("right intake power", robot.intake.rightIntake.getPower());
 
-        telemetry.addData("arm pos", robot.outtake.getArmPos());
-        telemetry.addData("wrist pos", -robot.outtake.getWristPos());
+        telemetry.addData("arm pos", robot.outtake.getElbow());
+        //telemetry.addData("wrist pos", -robot.outtake.getWristPos());
         telemetry.addData("claw pos", robot.outtake.getClawPos());
 
         telemetry.addData("finger pos", robot.fingers.pepeSMASH.getPosition());
@@ -228,7 +228,7 @@ public class MechanumStrafingTeleOp extends OpMode {
         telemetry.addData("deposit stone timer", depositStoneTimer);
         telemetry.addData("reset arm timer", resetArmTimer);
         telemetry.update();
-
+*/
     }
 }
 

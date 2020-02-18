@@ -1,23 +1,23 @@
 package org.firstinspires.ftc.teamcode.OpModes.TeleOp.Testers;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
-import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
 
 
 @TeleOp(name = "Gyro Test")
-//@Disabled
+@Disabled
 public class GyroTest extends OpMode {
 
-    Robot robot = new Robot(this, OpModeTypes.TELEOP);
+    Robot robot = new Robot(this);
 
 
 
     @Override
     public void init() {
-        robot.initHardware(hardwareMap);
+        robot.init(hardwareMap);
     }
 
 

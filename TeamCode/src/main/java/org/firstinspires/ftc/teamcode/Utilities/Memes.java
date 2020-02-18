@@ -14,8 +14,7 @@ class Memes {
                     " but there is so much lag it annoys me. - Neil";
 
 
-
-    public static long spedness = 10;
+    public static long spedness = Long.MAX_VALUE;
 
 
 }

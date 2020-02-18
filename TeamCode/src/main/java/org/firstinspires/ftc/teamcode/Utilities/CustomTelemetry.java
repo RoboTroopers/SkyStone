@@ -7,19 +7,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Robot;
 
 public class CustomTelemetry {
 
-    private Robot robot;
-    public Telemetry telemetry;
-
-
-    public CustomTelemetry(Robot theRobot) {
-
-        robot =  theRobot;
-        telemetry = robot.opMode.telemetry;
-
-    }
-
-
-    public void driveTrainSpeedData() {
+    public static void speedData(Robot robot, Telemetry telemetry) {
         telemetry.addData("Base Speed",
                 "\n" +
                         "(%.1f)---(%.1f)\n" +
@@ -35,7 +23,7 @@ public class CustomTelemetry {
 
 
 
-    public void encoderData() {
+    public static void encoderData(Robot robot, Telemetry telemetry) {
         telemetry.addData("Base Speed",
                 "\n" +
                         "(%.1f)---(%.1f)\n" +
@@ -50,16 +38,12 @@ public class CustomTelemetry {
     }
 
 
-/*
-    public void sensorData() {
+    public static void sensorData(Robot robot, Telemetry telemetry) {
         telemetry.addData("Angle", robot.sensors.getWorldAngleDeg());
-        telemetry.addData("LineSensor Hue", robot.sensors.getLineSensorHSV()[0]);
-        telemetry.addData("LineSensor Sat", robot.sensors.getLineSensorHSV()[1]);
-        telemetry.addData("LineSensor Val", robot.sensors.getLineSensorHSV()[2]);
+        telemetry.addData("Is over Line", robot.sensors.isOverLine());
+        telemetry.addData("Red side", robot.sensors.isRedSide());
         telemetry.addData("Distance from Sensor", robot.sensors.getDistance());
-
-        telemetry.addData("Distance from Sensor", robot.sensors.stoneFullyIn());
-    }*/
+    }
 
 
 }

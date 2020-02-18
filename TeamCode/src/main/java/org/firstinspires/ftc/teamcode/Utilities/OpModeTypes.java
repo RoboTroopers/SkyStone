@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.Utilities;
 
-public enum OpModeTypes {
+enum OpModeTypes {
 
     AUTO,
     TELEOP,

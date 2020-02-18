@@ -39,7 +39,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
-import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
 import org.firstinspires.ftc.teamcode.Utilities.StonePosChecker;
 
 import java.util.List;
@@ -66,7 +65,7 @@ public class SeekSkyStoneColor extends LinearOpMode {
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
 
-    public Robot robot = new Robot(this, OpModeTypes.AUTO);
+    public Robot robot = new Robot(this);
     //Thread odometryThread = new Thread(new OdometryThread(robot));
 
     private int skystonesDelivered = 0;
@@ -122,7 +121,7 @@ public class SeekSkyStoneColor extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        robot.initHardware(hardwareMap);
+        robot.init(hardwareMap);
 
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
@@ -209,7 +208,7 @@ public class SeekSkyStoneColor extends LinearOpMode {
                         robot.driveTrain.strafeInches(28, 0.35);
                         robot.driveTrain.turnToDeg(12, 0.25);
                     } else {
-                        robot.driveTrain.strafeInches(-28, 0.35);
+                        robot.driveTrain.strafeInches(-2, 0.35); // Test
                         robot.driveTrain.turnToDeg(-12, 0.25);
                     }
 

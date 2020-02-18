@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.OpModes.Autonomous;
+package org.firstinspires.ftc.teamcode.OpModes.Autonomous.Old;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -40,7 +40,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
-import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
 
 import java.util.List;
 
@@ -66,7 +65,7 @@ public class SeekSkyStoneTime extends LinearOpMode {
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
 
-    public Robot robot = new Robot(this, OpModeTypes.AUTO);
+    public Robot robot = new Robot(this);
     //Thread odometryThread = new Thread(new OdometryThread(robot));
 
     private int skystonesDelivered = 0;
@@ -119,7 +118,7 @@ public class SeekSkyStoneTime extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        robot.initHardware(hardwareMap);
+        robot.init(hardwareMap);
 
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.

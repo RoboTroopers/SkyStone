@@ -4,27 +4,19 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
 import static org.firstinspires.ftc.teamcode.Utilities.MiscUtil.pause;
 
-public class Outtake {
+public class Outtake implements HardwareComponent{
 
 
-    public DcMotor pulley;
+    public DcMotor leftPulley;
+    public DcMotor rightPulley;
 
-    public Servo arm;
+    public Servo leftElbow;
+    public Servo rightElbow;
 
-    public final double ARM_IN_POS = 0.7;
-    public final double ARM_MID_POS = 0.4;
-    public final double ARM_OUT_POS = 0;
-
-    public Servo wrist;
-
-    public final double WRIST_IN_POS = 0.9;
-    public final double WRIST_MID_POS = 0.7;
-    public final double WRIST_OUT_POS = 0;
-
+    public final double ELBOW_IN_POS = 0.7;
+    public final double ELBOW_OUT_POS = 0;
 
     public Servo claw;
 
@@ -32,18 +24,14 @@ public class Outtake {
     public final double CLAW_CLOSED_POS = 0.95;
 
 
-    //public DistanceSensor pulleySensor;
 
 
-    public void initHardware(HardwareMap aHwMap) {
+    public void init(HardwareMap aHwMap) {
+        leftPulley = aHwMap.get(DcMotor.class, "leftPulley");
+        rightPulley = aHwMap.get(DcMotor.class, "rightPulley");
 
-        pulley = aHwMap.get(DcMotor.class, "pulley");
-        //pulleySensor = aHwMap.get(DistanceSensor.class, "pulleySensor");
-
-        arm = aHwMap.get(Servo.class, "arm");
-
-        wrist = aHwMap.get(Servo.class, "wrist");
-        //wrist.setDirection(Servo.Direction.REVERSE);
+        leftElbow = aHwMap.get(Servo.class, "leftElbow");
+        rightElbow = aHwMap.get(Servo.class, "rightElbow");
 
         claw = aHwMap.get(Servo.class, "claw");
 
@@ -51,55 +39,37 @@ public class Outtake {
 
 
     public void setPulleySpeed(double speed) {
-        pulley.setPower(speed);
+        leftPulley.setPower(speed);
+        rightPulley.setPower(speed);
     }
 
     public void stopPulley() {
-        pulley.setPower(0);
+        setPulleySpeed(0);
     }
 
     public double getPulleySpeed() {
-        return pulley.getPower();
+        return (leftPulley.getPower() + rightPulley.getPower())/2;
     }
 
-    /*
-    public double getPulleyHeight() {
-
-        double height = pulleySensor.getDistance(DistanceUnit.INCH);
-        return height;
-    }*/
 
 
     // Set the arm to certain positions and set the wrist position to compensate, keeping the claw parallel to the ground
-    public void armMid() {
-
-        arm.setPosition(ARM_MID_POS);
-        wrist.setPosition(WRIST_MID_POS);
+    public void zombieArms() {
+        leftElbow.setPosition(ELBOW_OUT_POS);
+        rightElbow.setPosition(ELBOW_OUT_POS);
     }
 
 
-    public void armIn() {
-
-        arm.setPosition(ARM_IN_POS);
-        wrist.setPosition(WRIST_IN_POS);
+    public void submit() {
+        leftElbow.setPosition(ELBOW_IN_POS);
+        rightElbow.setPosition(ELBOW_IN_POS);
     }
 
 
-    public void armOut() {
-
-        arm.setPosition(ARM_OUT_POS);
-        wrist.setPosition(WRIST_OUT_POS);
+    public double getElbow() {
+        return (leftElbow.getPosition()+rightElbow.getPosition())/2;
     }
 
-
-    public double getArmPos() {
-        return arm.getPosition();
-    }
-
-
-    public double getWristPos() {
-        return wrist.getPosition();
-    }
 
 
     public void closeClaw() {
@@ -112,6 +82,26 @@ public class Outtake {
 
     public double getClawPos() {
         return claw.getPosition();
+    }
+
+    public void autoLift() {
+        closeClaw();
+        pause(500);
+        setPulleySpeed(0.05);
+        zombieArms();
+        pause(500);
+        stopPulley();
+    }
+
+
+    public void autoDeposit() {
+        zombieArms();
+        pause(2000);
+        openClaw();
+        setPulleySpeed(-0.05);
+        submit();
+        pause(500);
+        stopPulley();
     }
 
 

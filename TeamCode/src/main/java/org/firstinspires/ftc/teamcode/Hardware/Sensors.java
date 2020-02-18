@@ -10,15 +10,11 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
 
-import static java.lang.Thread.sleep;
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
 import static org.firstinspires.ftc.teamcode.Utilities.MiscUtil.pause;
 
-public class Sensors {
-
-    private Robot robot;
+public class Sensors implements HardwareComponent {
 
     // Sensors
     public BNO055IMU imu;
@@ -32,7 +28,9 @@ public class Sensors {
     public DistanceSensor distanceSensor;
 
     public final double WALL_DETECT_DIST = 13; // Max inches robot can detect wall at using distance sensor
-    public final double HOLDING_STONE_DIST = 6; // How many inches away the stone can be for pepeSMASH to goSMASH!
+    public final double HOLDING_STONE_DIST = 3; // How many inches away the stone can be for pepeSMASH to goSMASH!
+    public final double INTAKING_DIST = 10; // Farthest distance stone can be from distance sensor
+
 
     public ColorSensor lineSensor;
     public TouchSensor allianceColorSelector;
@@ -41,9 +39,8 @@ public class Sensors {
     //public DistanceSensor pulleySensor;
 
 
-    public void initHardware(HardwareMap aHwMap, Robot theRobot) {
+    public void init(HardwareMap aHwMap) {
 
-        robot = theRobot;
         imu = aHwMap.get(BNO055IMU.class, "imu");
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -65,9 +62,7 @@ public class Sensors {
         lineSensor = aHwMap.get(ColorSensor.class, "lineSensor");
         distanceSensor = aHwMap.get(DistanceSensor.class, "stoneDistanceSensor");
         allianceColorSelector = aHwMap.get(TouchSensor.class, "stoneBumpSensor");
-        if (robot.currentOpModeType == OpModeTypes.AUTO) {
-            lineSensor.enableLed(true);
-        }
+        lineSensor.enableLed(true);
 
     }
 
@@ -99,21 +94,6 @@ public class Sensors {
 
     public double getWorldAngleRad() { return (imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).thirdAngle); }
 
-
-
-    /*
-    public boolean intookStone() {
-        // Color sensor detects if yellow stone is above stone holding cell
-        float hue = getColorSensorHSV(stoneSensor)[0];
-
-        boolean isPossessing = false;
-
-        if (hue > 40 && hue < 70) {
-            isPossessing = true;
-        }
-
-        return isPossessing;
-    }*/
 
 
     //Gets distance from sensor in back of robot to anything in the front of the robot
@@ -149,6 +129,20 @@ public class Sensors {
         boolean holdingStone = false;
 
         if (distanceInches < HOLDING_STONE_DIST) {
+            holdingStone = true;
+        }
+
+        return holdingStone;
+    }
+
+
+    // If stone is at the distance considered to be inside the intake
+    public boolean intakingStone() {
+
+        double distanceInches = distanceSensor.getDistance(INCH);
+        boolean holdingStone = false;
+
+        if (distanceInches < INTAKING_DIST && distanceInches > HOLDING_STONE_DIST) {
             holdingStone = true;
         }
 

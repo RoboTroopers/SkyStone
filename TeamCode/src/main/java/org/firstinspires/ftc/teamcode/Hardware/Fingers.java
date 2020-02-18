@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.R;
 
 
-public class Fingers {
+public class Fingers implements HardwareComponent {
 
 
     public Servo pepeSMASH;
@@ -17,7 +17,8 @@ public class Fingers {
     public enum States { IN, OUT }
 
 
-    public void initHardware(HardwareMap aHwMap) {
+    @Override
+    public void init(HardwareMap aHwMap) {
         pepeSMASH = aHwMap.get(Servo.class, "pepeSMASH");
 
     }

@@ -6,18 +6,17 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
-import org.firstinspires.ftc.teamcode.Utilities.OpModeTypes;
 
 @Autonomous(name = "TestDrive", group = "Autonomous")
 @Disabled
 public class TestDrive extends LinearOpMode {
 
-    private Robot robot = new Robot(this, OpModeTypes.AUTO);
+    private Robot robot = new Robot(this);
 
     @Override
     public void runOpMode() {
         //robot.odometry.setPosition(0, 0, 0);
-        robot.initHardware(hardwareMap);
+        robot.init(hardwareMap);
         //Thread t1 = new Thread(new OdometryThread(robot));
         
         waitForStart();
