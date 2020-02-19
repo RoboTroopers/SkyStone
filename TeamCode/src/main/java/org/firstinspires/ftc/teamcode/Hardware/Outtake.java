@@ -1,9 +1,17 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.Utilities.GamerMath;
+
+import static java.lang.Math.abs;
+import static java.lang.Math.min;
+import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
 import static org.firstinspires.ftc.teamcode.Utilities.MiscUtil.pause;
 
 public class Outtake implements HardwareComponent{
@@ -12,11 +20,9 @@ public class Outtake implements HardwareComponent{
     public DcMotor leftPulley;
     public DcMotor rightPulley;
 
-    public Servo leftElbow;
-    public Servo rightElbow;
+    public CRServo leftElbow;
+    public CRServo rightElbow;
 
-    public final double ELBOW_IN_POS = 0.7;
-    public final double ELBOW_OUT_POS = 0;
 
     public Servo claw;
 
@@ -24,16 +30,23 @@ public class Outtake implements HardwareComponent{
     public final double CLAW_CLOSED_POS = 0.95;
 
 
+    public DistanceSensor heightSensor;
+
+    public final double HEIGHT_MAX = 2;
+    public final double HEIGHT_MID = 5;
+    public final double HEIGHT_MIN = 10;
+
 
 
     public void init(HardwareMap aHwMap) {
         leftPulley = aHwMap.get(DcMotor.class, "leftPulley");
         rightPulley = aHwMap.get(DcMotor.class, "rightPulley");
 
-        leftElbow = aHwMap.get(Servo.class, "leftElbow");
-        rightElbow = aHwMap.get(Servo.class, "rightElbow");
+        leftElbow = aHwMap.get(CRServo.class, "leftElbow");
+        rightElbow = aHwMap.get(CRServo.class, "rightElbow");
 
         claw = aHwMap.get(Servo.class, "claw");
+        heightSensor = aHwMap.get(DistanceSensor.class, "heightSensor");
 
     }
 
@@ -42,6 +55,7 @@ public class Outtake implements HardwareComponent{
         leftPulley.setPower(speed);
         rightPulley.setPower(speed);
     }
+
 
     public void stopPulley() {
         setPulleySpeed(0);
@@ -55,19 +69,31 @@ public class Outtake implements HardwareComponent{
 
     // Set the arm to certain positions and set the wrist position to compensate, keeping the claw parallel to the ground
     public void zombieArms() {
-        leftElbow.setPosition(ELBOW_OUT_POS);
-        rightElbow.setPosition(ELBOW_OUT_POS);
+        double speed = 0.5;
+        leftElbow.setPower(speed);
+        rightElbow.setPower(speed);
+
+        pause(500);
+
+        leftElbow.setPower(0);
+        rightElbow.setPower(0);
     }
 
 
     public void submit() {
-        leftElbow.setPosition(ELBOW_IN_POS);
-        rightElbow.setPosition(ELBOW_IN_POS);
+        double speed = 0.5;
+        leftElbow.setPower(speed);
+        rightElbow.setPower(speed);
+
+        pause(500);
+
+        leftElbow.setPower(0);
+        rightElbow.setPower(0);
     }
 
 
     public double getElbow() {
-        return (leftElbow.getPosition()+rightElbow.getPosition())/2;
+        return (leftElbow.getPower()+rightElbow.getPower())/2;
     }
 
 
@@ -84,24 +110,68 @@ public class Outtake implements HardwareComponent{
         return claw.getPosition();
     }
 
-    public void autoLift() {
-        closeClaw();
-        pause(500);
-        setPulleySpeed(0.05);
-        zombieArms();
-        pause(500);
+
+    public double getHeight() {
+        return heightSensor.getDistance(INCH);
+    }
+
+
+    public void liftToHeight(double height, double maxSpeed) {
+        final double initialError = height-getHeight();
+        final double minSpeed = 0.075;
+        final double acceptableRange = 0.5;
+
+        double error = initialError;
+
+        while (abs(error) < acceptableRange) {
+            error = height-getHeight();
+            double errorRatio = error/initialError;
+            // Set speed proportional to error if error is between minSpeed and maxSpeed.
+            setPulleySpeed(GamerMath.clamp(errorRatio, maxSpeed, minSpeed));
+        }
+
         stopPulley();
     }
 
 
-    public void autoDeposit() {
+
+    public void liftToMax() {
+        liftToHeight(HEIGHT_MAX, 0.1);
+    }
+
+    public void resetToMid() {
+        liftToHeight(HEIGHT_MID, 0.1);
+    }
+
+    public void lowerToMax() {
+        liftToHeight(HEIGHT_MIN, 0.1);
+    }
+
+
+
+    public void autoLift() {
+        resetToMid();
+        closeClaw();
+        pause(1000);
+        liftToMax();
         zombieArms();
-        pause(2000);
+    }
+
+
+    public void autoDeposit() {
+        lowerToMax();
         openClaw();
-        setPulleySpeed(-0.05);
+        pause(1000);
+        liftToMax();
         submit();
         pause(500);
-        stopPulley();
+        resetToMid();
+    }
+
+
+    public void fullAutoLiftDeposit() {
+        autoLift();
+        autoDeposit();
     }
 
 
@@ -115,9 +185,7 @@ public class Outtake implements HardwareComponent{
         closeClaw();
         pause(1500);
         armOut();
-
     }
-
 
     public void depositStone() {
         liftStone();
@@ -125,8 +193,8 @@ public class Outtake implements HardwareComponent{
         openClaw();
         pause(1000);
         armMid();
-
     }*/
+
 
 
 

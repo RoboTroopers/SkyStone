@@ -29,7 +29,6 @@ public class DriveConstants {
      *
      * CIRCUMDIAMETER: Diameter of the circumcircle of the robot, really the distance between ground contact points
      * of 2 diagonal wheels (hypotenuse of wheelbase and track width)
-     *
      */
 
     public static final double CIRCUMDIAMETER = Math.hypot(WHEEL_BASE, TRACK_WIDTH);
@@ -44,15 +43,11 @@ public class DriveConstants {
 
 
     public static int inchesToTicks(double inches) {
-        double ticks = (inches / WHEEL_CIRCUMFERENCE) * ENCODER_TICKS_PER_REV;
-        return (int)ticks;
-
+        return (int)((inches / WHEEL_CIRCUMFERENCE) * ENCODER_TICKS_PER_REV);
     }
 
     public static double ticksToInches(double ticks) {
-        double inches = (ticks * WHEEL_CIRCUMFERENCE) / ENCODER_TICKS_PER_REV;
-        return inches;
-
+        return (ticks * WHEEL_CIRCUMFERENCE) / ENCODER_TICKS_PER_REV;
     }
 
 

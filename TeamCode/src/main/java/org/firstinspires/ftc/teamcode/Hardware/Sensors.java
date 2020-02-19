@@ -25,9 +25,8 @@ public class Sensors implements HardwareComponent {
     //public DcMotor rightVerticalEncoder;
 
 
-    public DistanceSensor distanceSensor;
+    public DistanceSensor stoneDistanceSensor;
 
-    public final double WALL_DETECT_DIST = 13; // Max inches robot can detect wall at using distance sensor
     public final double HOLDING_STONE_DIST = 3; // How many inches away the stone can be for pepeSMASH to goSMASH!
     public final double INTAKING_DIST = 10; // Farthest distance stone can be from distance sensor
 
@@ -60,8 +59,8 @@ public class Sensors implements HardwareComponent {
         //resetEncoders();
 
         lineSensor = aHwMap.get(ColorSensor.class, "lineSensor");
-        distanceSensor = aHwMap.get(DistanceSensor.class, "stoneDistanceSensor");
-        allianceColorSelector = aHwMap.get(TouchSensor.class, "stoneBumpSensor");
+        stoneDistanceSensor = aHwMap.get(DistanceSensor.class, "stoneDistanceSensor");
+        allianceColorSelector = aHwMap.get(TouchSensor.class, "touchSensor");
         lineSensor.enableLed(true);
 
     }
@@ -97,35 +96,16 @@ public class Sensors implements HardwareComponent {
 
 
     //Gets distance from sensor in back of robot to anything in the front of the robot
-    public double getDistance() {
-        return distanceSensor.getDistance(INCH);
+    public double getStoneDistance() {
+        return stoneDistanceSensor.getDistance(INCH);
     }
 
-    // Gets distance from front of the robot to anything it front of it
-    public double getDistanceFromFront() {
-        return getDistance()-WALL_DETECT_DIST;
-    }
-
-
-    /** If the distance sensor detects a wall at 13 inches (sensor distance from front of robot)
-     * This won't work if a stone or anything is blocking the distance sensor
-     */
-    public boolean frontTouchingWall() {
-
-        double distanceInches = distanceSensor.getDistance(INCH);
-        boolean frontTouchingWall = false;
-
-        if (distanceInches < WALL_DETECT_DIST) {
-            frontTouchingWall = true;
-        }
-        return frontTouchingWall;
-    }
 
 
     // If stone is within distance to be considered inside robot
     public boolean holdingStone() {
 
-        double distanceInches = distanceSensor.getDistance(INCH);
+        double distanceInches = getStoneDistance();
         boolean holdingStone = false;
 
         if (distanceInches < HOLDING_STONE_DIST) {
@@ -139,7 +119,7 @@ public class Sensors implements HardwareComponent {
     // If stone is at the distance considered to be inside the intake
     public boolean intakingStone() {
 
-        double distanceInches = distanceSensor.getDistance(INCH);
+        double distanceInches = getStoneDistance();
         boolean holdingStone = false;
 
         if (distanceInches < INTAKING_DIST && distanceInches > HOLDING_STONE_DIST) {

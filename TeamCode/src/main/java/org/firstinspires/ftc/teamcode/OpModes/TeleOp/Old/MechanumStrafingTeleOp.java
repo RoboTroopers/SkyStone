@@ -151,7 +151,7 @@ public class MechanumStrafingTeleOp extends OpMode {
             }
         }
 
-
+/*
         if (robot.sensors.holdingStone()) {
             robot.fingers.pepeSMASHIn();
         }
@@ -160,7 +160,7 @@ public class MechanumStrafingTeleOp extends OpMode {
         if (robot.sensors.holdingStone()) {
             depositStoneTimer = 0;
             resetArmTimer = 1000;
-        }
+        }*/
 /*
         if (depositStoneTimer <= 110) {
 

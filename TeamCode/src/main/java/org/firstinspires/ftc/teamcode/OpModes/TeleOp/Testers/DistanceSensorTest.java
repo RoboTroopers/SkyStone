@@ -18,14 +18,17 @@ public class DistanceSensorTest extends OpMode {
     @Override
     public void init() {
         robot.init(hardwareMap);
-        robot.sensors.lineSensor.enableLed(true);
+        //robot.sensors.lineSensor.enableLed(true);
     }
 
 
 
     @Override
     public void loop() {
-        CustomTelemetry.sensorData(robot, telemetry);
+        //CustomTelemetry.sensorData(robot, telemetry);
+        telemetry.addData("Pulley height", robot.outtake.getHeight());
+        telemetry.addData("Stone distance", robot.sensors.getStoneDistance());
+
         telemetry.update();
     }
 

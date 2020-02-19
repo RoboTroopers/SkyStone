@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Hardware.Fingers;
 import org.firstinspires.ftc.teamcode.Hardware.Intake;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
+import org.firstinspires.ftc.teamcode.Utilities.CustomTelemetry;
 import org.firstinspires.ftc.teamcode.Utilities.GamepadAdvanced;
 
 import static org.firstinspires.ftc.teamcode.ppProject.RobotUtilities.MovementVars.movement_turn;
@@ -35,10 +36,19 @@ public class GrucciMechanumTeleop extends OpMode {
 
 
     @Override
+    public void init_loop() {
+        CustomTelemetry.ok(telemetry);
+        telemetry.update();
+    }
+
+
+
+    @Override
     public void start(){
         robot.outtake.submit();
         robot.fingers.pepeSMASHIn();
     }
+
 
 
     private void gamepad1Controls() {
@@ -57,7 +67,7 @@ public class GrucciMechanumTeleop extends OpMode {
         }
 
         if (Math.abs(gamepad1.right_stick_x) >= threshold) {
-            movement_turn = -gamepad1.right_stick_x*0.5; // 0.5 is turn reduction multiplier
+            movement_turn = gamepad1.right_stick_x*0.5; // 0.5 is turn reduction multiplier
         } else {
             movement_turn = 0;
         }
@@ -118,17 +128,16 @@ public class GrucciMechanumTeleop extends OpMode {
             robot.outtake.stopPulley();
         }
 
+        if (gamepad2Advanced.BOnce()) {
+
+            robot.outtake.openClaw();
+            robot.outtake.submit();
+        }
 
         if (gamepad2Advanced.AOnce()) {
 
             robot.outtake.closeClaw();
             robot.outtake.zombieArms();
-        }
-
-        if (gamepad2Advanced.BOnce()) {
-
-            robot.outtake.openClaw();
-            robot.outtake.submit();
         }
 
 
@@ -159,12 +168,15 @@ public class GrucciMechanumTeleop extends OpMode {
         telemetry.addData("right pulley speed", robot.outtake.rightPulley.getPower());
         telemetry.addData("arm pos", robot.outtake.getElbow());
         telemetry.addData("claw pos", robot.outtake.getClawPos());
-        telemetry.addData("left elbow pos", robot.outtake.leftElbow.getPosition());
-        telemetry.addData("right elbow pos", robot.outtake.rightElbow.getPosition());
+        telemetry.addData("left elbow pos", robot.outtake.leftElbow.getPower());
+        telemetry.addData("right elbow pos", robot.outtake.rightElbow.getPower());
+
+        CustomTelemetry.memeData(telemetry);
 
         //telemetry.addData("finger pos", robot.fingers.pepeSMASH.getPosition());
 
         telemetry.update();
     }
+
 
 }
