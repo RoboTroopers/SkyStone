@@ -1,12 +1,13 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import com.qualcomm.robotcore.R;
 
 
-public class Fingers implements HardwareComponent {
+public class Fingers extends HardwareComponent {
 
 
     public Servo pepeSMASH;
@@ -14,7 +15,13 @@ public class Fingers implements HardwareComponent {
     public final double PEPESMASH_IN_POS = 0.1;
     public final double PEPESMASH_OUT_POS = 0.55;
 
+
     public enum States { IN, OUT }
+
+
+    public Fingers(Robot theRobot, OpMode opMode) {
+        super(theRobot, opMode);
+    }
 
 
     @Override

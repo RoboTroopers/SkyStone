@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -14,14 +14,14 @@ import static java.lang.Math.min;
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
 import static org.firstinspires.ftc.teamcode.Utilities.MiscUtil.pause;
 
-public class Outtake implements HardwareComponent{
+public class Outtake extends HardwareComponent {
 
 
     public DcMotor leftPulley;
     public DcMotor rightPulley;
 
-    public CRServo leftElbow;
-    public CRServo rightElbow;
+    public CRServo leftTail;
+    public CRServo rightTail;
 
 
     public Servo claw;
@@ -37,13 +37,17 @@ public class Outtake implements HardwareComponent{
     public final double HEIGHT_MIN = 10;
 
 
+    public Outtake(Robot theRobot, OpMode opMode) {
+        super(theRobot, opMode);
+    }
+
 
     public void init(HardwareMap aHwMap) {
         leftPulley = aHwMap.get(DcMotor.class, "leftPulley");
         rightPulley = aHwMap.get(DcMotor.class, "rightPulley");
 
-        leftElbow = aHwMap.get(CRServo.class, "leftElbow");
-        rightElbow = aHwMap.get(CRServo.class, "rightElbow");
+        leftTail = aHwMap.get(CRServo.class, "leftTail");
+        rightTail = aHwMap.get(CRServo.class, "rightTail");
 
         claw = aHwMap.get(Servo.class, "claw");
         heightSensor = aHwMap.get(DistanceSensor.class, "heightSensor");
@@ -68,34 +72,33 @@ public class Outtake implements HardwareComponent{
 
 
     // Set the arm to certain positions and set the wrist position to compensate, keeping the claw parallel to the ground
-    public void zombieArms() {
+    public void thrustTail() {
         double speed = 0.5;
-        leftElbow.setPower(speed);
-        rightElbow.setPower(speed);
+        leftTail.setPower(speed);
+        rightTail.setPower(speed);
 
         pause(500);
 
-        leftElbow.setPower(0);
-        rightElbow.setPower(0);
+        leftTail.setPower(0);
+        rightTail.setPower(0);
     }
 
 
-    public void submit() {
+    public void retractTail() {
         double speed = 0.5;
-        leftElbow.setPower(speed);
-        rightElbow.setPower(speed);
+        leftTail.setPower(speed);
+        rightTail.setPower(speed);
 
         pause(500);
 
-        leftElbow.setPower(0);
-        rightElbow.setPower(0);
+        leftTail.setPower(0);
+        rightTail.setPower(0);
     }
 
 
     public double getElbow() {
-        return (leftElbow.getPower()+rightElbow.getPower())/2;
+        return (leftTail.getPower()+ rightTail.getPower())/2;
     }
-
 
 
     public void closeClaw() {
@@ -154,7 +157,7 @@ public class Outtake implements HardwareComponent{
         closeClaw();
         pause(1000);
         liftToMax();
-        zombieArms();
+        thrustTail();
     }
 
 
@@ -163,7 +166,7 @@ public class Outtake implements HardwareComponent{
         openClaw();
         pause(1000);
         liftToMax();
-        submit();
+        retractTail();
         pause(500);
         resetToMid();
     }
@@ -173,7 +176,6 @@ public class Outtake implements HardwareComponent{
         autoLift();
         autoDeposit();
     }
-
 
 /*
     public void liftStone() {
@@ -194,8 +196,6 @@ public class Outtake implements HardwareComponent{
         pause(1000);
         armMid();
     }*/
-
-
 
 
 }

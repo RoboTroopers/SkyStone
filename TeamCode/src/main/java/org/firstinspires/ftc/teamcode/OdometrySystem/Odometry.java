@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.OdometrySystem;
 
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
-import org.firstinspires.ftc.teamcode.Utilities.FieldPosition;
+import org.firstinspires.ftc.teamcode.Utilities.Unused.FieldPosition;
 
 import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.ticksToInches;
 

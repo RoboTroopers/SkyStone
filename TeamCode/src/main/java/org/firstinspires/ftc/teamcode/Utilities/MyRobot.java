@@ -30,12 +30,12 @@ class MyRobot {
     public MyRobot(OpMode activeOpMode) {
 
         opMode = activeOpMode;
-
-        driveTrain = new DriveTrain(new Robot(opMode));
-        intake = new Intake();
-        outtake = new Outtake();
-        fingers = new Fingers();
-        sensors = new Sensors();
+/*
+        driveTrain = new DriveTrain(this, OpMode);
+        intake = new Intake(this, OpMode);
+        outtake = new Outtake(this, OpMode);
+        fingers = new Fingers(this, OpMode);
+        sensors = new Sensors(this, OpMode);
 
 
         hwComponents.add(driveTrain);
@@ -43,7 +43,7 @@ class MyRobot {
         hwComponents.add(outtake);
         hwComponents.add(fingers);
         hwComponents.add(sensors);
-
+*/
         for (HardwareComponent hwComponent: hwComponents) {
             hwComponent.init(opMode.hardwareMap);
         }

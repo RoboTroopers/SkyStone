@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -14,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
 import static org.firstinspires.ftc.teamcode.Utilities.MiscUtil.pause;
 
-public class Sensors implements HardwareComponent {
+public class Sensors extends HardwareComponent {
 
     // Sensors
     public BNO055IMU imu;
@@ -34,8 +36,14 @@ public class Sensors implements HardwareComponent {
     public ColorSensor lineSensor;
     public TouchSensor allianceColorSelector;
 
-
     //public DistanceSensor pulleySensor;
+
+
+
+    public Sensors(Robot theRobot, OpMode opMode) {
+        super(theRobot, opMode);
+    }
+
 
 
     public void init(HardwareMap aHwMap) {
@@ -65,20 +73,19 @@ public class Sensors implements HardwareComponent {
 
     }
 
-
+    @Deprecated
     public double getHorizontalEncoder() { return horizontalEncoder.getCurrentPosition(); }
 
-
+    @Deprecated
     public double getVerticalEncoder() {
 
         return verticalEncoder.getCurrentPosition();
         //double leftValue = leftVerticalEncoder.getCurrentPosition();
         //double rightValue = rightVerticalEncoder.getCurrentPosition();
         //return (leftValue + rightValue)/2;
-
     }
 
-
+    @Deprecated
     public void resetEncoders() {
 
         horizontalEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

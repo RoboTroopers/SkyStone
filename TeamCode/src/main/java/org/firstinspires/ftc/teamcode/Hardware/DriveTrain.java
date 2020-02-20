@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.teamcode.ppProject.treamcode.ppMode;
 
 import static java.lang.Math.abs;
 import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.inchesToTicks;
@@ -14,7 +17,7 @@ import static org.firstinspires.ftc.teamcode.Utilities.MiscUtil.pause;
 
 
 
-public class DriveTrain implements HardwareComponent {
+public class DriveTrain extends HardwareComponent {
 
     public Robot robot;
 
@@ -25,8 +28,8 @@ public class DriveTrain implements HardwareComponent {
     public DcMotor rightRear;
 
 
-    public DriveTrain(Robot theRobot)  {
-        robot = theRobot;
+    public DriveTrain(Robot theRobot, OpMode opMode)  {
+        super(theRobot, opMode);
     }
 
 
@@ -208,14 +211,14 @@ public class DriveTrain implements HardwareComponent {
 
             applyMovement(speed, 0, 0);
 
-            robot.opMode.telemetry.addData("LeftFrontMotor", leftFront.getPower());
+            telemetry.addData("LeftFrontMotor", leftFront.getPower());
 
-            robot.opMode.telemetry.addData("Desired distance", targetPos);
-            robot.opMode.telemetry.addData("Avg pos", getAvgMotorPosAbs());
-            robot.opMode.telemetry.addData("Distance error", error);
-            robot.opMode.telemetry.addData("anyMotorsBusy", anyMotorsBusy());
+            telemetry.addData("Desired distance", targetPos);
+            telemetry.addData("Avg pos", getAvgMotorPosAbs());
+            telemetry.addData("Distance error", error);
+            telemetry.addData("anyMotorsBusy", anyMotorsBusy());
 
-            robot.opMode.telemetry.update();
+            telemetry.update();
         }
         brake();
     }
@@ -254,14 +257,14 @@ public class DriveTrain implements HardwareComponent {
             speed = clampSigned(speed, minSpeed, maxSpeed);
             applyMovement(-speed, 0, 0);
 
-            robot.opMode.telemetry.addData("LeftFrontMotor", leftFront.getPower());
+            telemetry.addData("LeftFrontMotor", leftFront.getPower());
 
-            robot.opMode.telemetry.addData("Desired distance", targetPos);
-            robot.opMode.telemetry.addData("Avg pos", getAvgMotorPosAbs());
-            robot.opMode.telemetry.addData("Distance error", error);
-            robot.opMode.telemetry.addData("anyMotorsBusy", anyMotorsBusy());
+            telemetry.addData("Desired distance", targetPos);
+            telemetry.addData("Avg pos", getAvgMotorPosAbs());
+            telemetry.addData("Distance error", error);
+            telemetry.addData("anyMotorsBusy", anyMotorsBusy());
 
-            robot.opMode.telemetry.update();
+            telemetry.update();
         }
         brake();
     }
@@ -302,13 +305,13 @@ public class DriveTrain implements HardwareComponent {
 
             applyMovement(0, speed*sign, 0);
 
-            robot.opMode.telemetry.addData("LeftFrontMotor", leftFront.getPower());
-            robot.opMode.telemetry.addData("Desired distance", targetPos);
-            robot.opMode.telemetry.addData("Avg pos", leftFront.getCurrentPosition());
-            robot.opMode.telemetry.addData("Distance error", error);
-            robot.opMode.telemetry.addData("anyMotorsBusy", anyMotorsBusy());
+            telemetry.addData("LeftFrontMotor", leftFront.getPower());
+            telemetry.addData("Desired distance", targetPos);
+            telemetry.addData("Avg pos", leftFront.getCurrentPosition());
+            telemetry.addData("Distance error", error);
+            telemetry.addData("anyMotorsBusy", anyMotorsBusy());
 
-            robot.opMode.telemetry.update();
+            telemetry.update();
         }
         brake();
     }
@@ -341,93 +344,17 @@ public class DriveTrain implements HardwareComponent {
 
             turn(turnSpeed * errorSign);
 
-            robot.opMode.telemetry.addData("Angle", robot.sensors.getWorldAngleDeg());
-            robot.opMode.telemetry.addData("Raw Error (Deg)", desiredDeg - robot.sensors.getWorldAngleDeg());
-            robot.opMode.telemetry.addData("Error (Deg)", errorDeg);
-            robot.opMode.telemetry.addData("InitialError", initialError);
-            robot.opMode.telemetry.addData("ErrorRatio", errorRatio);
-            robot.opMode.telemetry.addData("TurnSpeed", turnSpeed);
-            robot.opMode.telemetry.update();
+            telemetry.addData("Angle", robot.sensors.getWorldAngleDeg());
+            telemetry.addData("Raw Error (Deg)", desiredDeg - robot.sensors.getWorldAngleDeg());
+            telemetry.addData("Error (Deg)", errorDeg);
+            telemetry.addData("InitialError", initialError);
+            telemetry.addData("ErrorRatio", errorRatio);
+            telemetry.addData("TurnSpeed", turnSpeed);
+            telemetry.update();
         }
 
         brake();
     }
-
-
-
-
-    /*
-    public void myGoToPosition(double xInches, double yInches, double movementSpeed, double preferredAngle_rad, double turnSpeed) {
-        double accuracyRange = inchesToTicks(0.5);
-        double rotAccuracyRange = toRadians(2);
-        double x = inchesToTicks(xInches);
-        double y = inchesToTicks(yInches);
-        double distanceToTarget;
-
-        double movement_x;
-        double movement_y;
-        double movement_turn;
-
-        boolean translationComplete = false;
-        boolean rotationComplete = false;
-
-        while (!(translationComplete || rotationComplete)) {
-            distanceToTarget = Math.hypot(x -robot.odometry.worldXPosition, y - robot.odometry.worldYPosition);
-
-            double absoluteAngleToTarget = Math.atan2(y - robot.odometry.worldYPosition, x - robot.odometry.worldXPosition);
-            double relativeAngleToPoint = MathFunctions.angleWrap(absoluteAngleToTarget - (robot.sensors.getWorldAngleRad() - toRadians(90)));
-
-            double relativeXToPoint = Math.cos(relativeAngleToPoint) * distanceToTarget;
-            double relativeYToPoint = Math.sin(relativeAngleToPoint) * distanceToTarget;
-
-            double movementXPower = relativeXToPoint / (Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint));
-            double movementYPower = relativeYToPoint / (Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint));
-
-            movement_x = movementXPower * movementSpeed;
-            movement_y = movementYPower * movementSpeed;
-
-            double relativeTurnAngle = relativeAngleToPoint - toRadians(180) + preferredAngle_rad;
-            movement_turn = Range.clip(relativeTurnAngle / toRadians(30), -1, 1) * turnSpeed;
-
-            translationComplete = (Math.abs(distanceToTarget) < accuracyRange);
-            rotationComplete = (Math.abs(distanceToTarget) < rotAccuracyRange);
-
-            if (translationComplete) {
-                movement_x = 0;
-                movement_y = 0;
-
-            }
-
-            if (rotationComplete) {
-                movement_turn = 0;
-
-            }
-
-            robot.driveTrain.applyMovement(movement_x, movement_y, movement_turn);
-        }
-        robot.driveTrain.brake();
-    }
-
-
-    // Stations the robot in current position
-    public void brakePID() {
-        double desiredXInches = robot.odometry.getXPosInches();
-        double desiredYInches = robot.odometry.getYPosInches();
-        double desiredAngle_rad = robot.sensors.getWorldAngleRad();
-        robot.driveTrain.brake();
-        myGoToPosition(desiredXInches, desiredYInches, 0.1, desiredAngle_rad, 0.1);
-
-    }
-
-
-    public void turnPID(double desiredRadians, double turnSpeed) {
-        double desiredXInches = robot.odometry.getXPosInches();
-        double desiredYInches = robot.odometry.getYPosInches();
-        myGoToPosition(desiredXInches, desiredYInches, 0.1, desiredRadians, turnSpeed);
-
-    }
-
-    */
 
 
 }

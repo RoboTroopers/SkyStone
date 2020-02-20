@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.ppProject.treamcode;
 
 import static org.firstinspires.ftc.teamcode.ppProject.company.Robot.worldXPosition;
 
-public class MyOpMode extends OpMode {
+public class MyOpMode extends ppMode {
 
     @Override
     public void init() {

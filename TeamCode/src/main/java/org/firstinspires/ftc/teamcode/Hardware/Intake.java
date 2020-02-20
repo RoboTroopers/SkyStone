@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 
-public class Intake implements HardwareComponent {
+public class Intake extends HardwareComponent {
 
     public DcMotor leftIntake;
     public DcMotor rightIntake;
@@ -17,6 +18,11 @@ public class Intake implements HardwareComponent {
     public Servo buildSiteYanker;
     public final double YANKED_POS = 0.92;
     public final double UNYANKED_POS = 0.6;
+
+
+    public Intake(Robot theRobot, OpMode opMode) {
+        super(theRobot, opMode);
+    }
 
 
     public void init(HardwareMap aHwMap) {

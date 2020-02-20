@@ -24,6 +24,7 @@ public class GrucciMechanumTeleop extends OpMode {
 
     private GamepadAdvanced gamepad1Advanced;
     private GamepadAdvanced gamepad2Advanced;
+    private CustomTelemetry customTelemetry = new CustomTelemetry(robot, telemetry);
 
 
     @Override
@@ -37,7 +38,7 @@ public class GrucciMechanumTeleop extends OpMode {
 
     @Override
     public void init_loop() {
-        CustomTelemetry.ok(telemetry);
+        customTelemetry.ok();
         telemetry.update();
     }
 
@@ -45,7 +46,7 @@ public class GrucciMechanumTeleop extends OpMode {
 
     @Override
     public void start(){
-        robot.outtake.submit();
+        robot.outtake.retractTail();
         robot.fingers.pepeSMASHIn();
     }
 
@@ -131,13 +132,13 @@ public class GrucciMechanumTeleop extends OpMode {
         if (gamepad2Advanced.BOnce()) {
 
             robot.outtake.openClaw();
-            robot.outtake.submit();
+            robot.outtake.retractTail();
         }
 
         if (gamepad2Advanced.AOnce()) {
 
             robot.outtake.closeClaw();
-            robot.outtake.zombieArms();
+            robot.outtake.thrustTail();
         }
 
 
@@ -168,10 +169,10 @@ public class GrucciMechanumTeleop extends OpMode {
         telemetry.addData("right pulley speed", robot.outtake.rightPulley.getPower());
         telemetry.addData("arm pos", robot.outtake.getElbow());
         telemetry.addData("claw pos", robot.outtake.getClawPos());
-        telemetry.addData("left elbow pos", robot.outtake.leftElbow.getPower());
-        telemetry.addData("right elbow pos", robot.outtake.rightElbow.getPower());
+        telemetry.addData("left elbow pos", robot.outtake.leftTail.getPower());
+        telemetry.addData("right elbow pos", robot.outtake.rightTail.getPower());
 
-        CustomTelemetry.memeData(telemetry);
+        customTelemetry.memeData();
 
         //telemetry.addData("finger pos", robot.fingers.pepeSMASH.getPosition());
 
