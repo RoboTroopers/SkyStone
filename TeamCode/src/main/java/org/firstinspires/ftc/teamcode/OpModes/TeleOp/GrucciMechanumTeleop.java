@@ -14,7 +14,7 @@ import static org.firstinspires.ftc.teamcode.ppProject.RobotUtilities.MovementVa
 import static org.firstinspires.ftc.teamcode.ppProject.RobotUtilities.MovementVars.movement_y;
 
 
-@TeleOp(name = "Mechanum Strafing TeleOp")
+@TeleOp(name = "Grucci Mechanum TeleOp")
 public class GrucciMechanumTeleop extends OpMode {
 
     private final Robot robot = new Robot(this);
@@ -139,6 +139,13 @@ public class GrucciMechanumTeleop extends OpMode {
 
             robot.outtake.closeClaw();
             robot.outtake.thrustTail();
+        }
+
+
+        if (Math.abs(gamepad2.right_stick_y) >= threshold) {
+            robot.outtake.setTailSpeed(gamepad2.right_stick_y);
+        } else {
+            robot.outtake.stopTail();
         }
 
 

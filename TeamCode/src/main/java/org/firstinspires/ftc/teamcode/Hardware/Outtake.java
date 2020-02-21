@@ -20,8 +20,8 @@ public class Outtake extends HardwareComponent {
     public DcMotor leftPulley;
     public DcMotor rightPulley;
 
-    public CRServo leftTail;
-    public CRServo rightTail;
+    public CRServo leftTail; //TODO: use only one tail
+    public CRServo rightTail; // <-- Delete this boi
 
 
     public Servo claw;
@@ -69,6 +69,14 @@ public class Outtake extends HardwareComponent {
         return (leftPulley.getPower() + rightPulley.getPower())/2;
     }
 
+
+    public void setTailSpeed(double speed) {
+        leftTail.setPower(speed);
+    }
+
+    public void stopTail() {
+        setTailSpeed(0);
+    }
 
 
     // Set the arm to certain positions and set the wrist position to compensate, keeping the claw parallel to the ground
