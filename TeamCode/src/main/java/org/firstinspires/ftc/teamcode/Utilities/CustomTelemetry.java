@@ -63,7 +63,7 @@ public class CustomTelemetry {
     public void sensorData() {
         telemetry.addData("Angle", robot.sensors.getWorldAngleDeg());
         telemetry.addData("Is over Line", robot.sensors.isOverLine());
-        telemetry.addData("Red side", robot.sensors.isRedSide());
+        telemetry.addData("Red side", robot.sensors.isRedSelected());
         telemetry.addData("Distance from stone", robot.sensors.getStoneDistance());
         telemetry.addData("Holding stone", robot.sensors.holdingStone());
         telemetry.addData("Intaking stone", robot.sensors.intakingStone());

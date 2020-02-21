@@ -71,7 +71,7 @@ public class SeekSkyStoneColor extends LinearOpMode {
     private int skystonesDelivered = 0;
     private int firstSkystoneNum; // The ordinal number that the skystone is positioned, with the stone closest to the skybridge being 1 and farthest being 6;
 
-    private final boolean isRed = robot.sensors.isRedSide();
+    private final boolean isRed = robot.sensors.isRedSelected();
 
     private enum ProgramStates {
 
@@ -273,9 +273,7 @@ public class SeekSkyStoneColor extends LinearOpMode {
 
 
 
-
     private void initVuforiaWebcam() {
-
          // Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
 
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();

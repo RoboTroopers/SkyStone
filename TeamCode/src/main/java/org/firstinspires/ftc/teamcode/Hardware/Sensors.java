@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -101,14 +100,14 @@ public class Sensors extends HardwareComponent {
     public double getWorldAngleRad() { return (imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).thirdAngle); }
 
 
-
+    @Deprecated
     //Gets distance from sensor in back of robot to anything in the front of the robot
     public double getStoneDistance() {
         return stoneDistanceSensor.getDistance(INCH);
     }
 
 
-
+    @Deprecated
     // If stone is within distance to be considered inside robot
     public boolean holdingStone() {
 
@@ -123,6 +122,7 @@ public class Sensors extends HardwareComponent {
     }
 
 
+    @Deprecated
     // If stone is at the distance considered to be inside the intake
     public boolean intakingStone() {
 
@@ -143,7 +143,7 @@ public class Sensors extends HardwareComponent {
     }
 
 
-    public boolean isRedSide() {
+    public boolean isRedSelected() {
         boolean isRed = false;
         if (allianceColorSelector.isPressed()) {
             isRed = true;
