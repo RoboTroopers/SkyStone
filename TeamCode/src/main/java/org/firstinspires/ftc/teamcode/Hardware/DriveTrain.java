@@ -5,8 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.ppProject.treamcode.ppMode;
-
 import static java.lang.Math.abs;
 import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.inchesToTicks;
 import static org.firstinspires.ftc.teamcode.Utilities.GamerMath.angleWrapDeg;
@@ -49,7 +47,6 @@ public class DriveTrain extends HardwareComponent {
         rightRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         resetEncoders();
-
     }
 
 
@@ -195,7 +192,7 @@ public class DriveTrain extends HardwareComponent {
         double error = targetPos - getAvgMotorPosAbs();
 
         // While the error is not within acceptable error range, move to the desired position.
-        while (abs(error) > acceptableError) {
+        while (abs(error) > acceptableError && !opModeStopRequested()) {
             error = targetPos - getAvgMotorPosAbs(); // Error = desired - actual.
             double speed = (error/initialError); // Speed is proportional to the error
 
@@ -242,7 +239,7 @@ public class DriveTrain extends HardwareComponent {
         double error = targetPos - getAvgMotorPosAbs();
 
         // While the error is not within acceptable error range, move to the desired position.
-        while (abs(error) > acceptableError) {
+        while (abs(error) > acceptableError && !opModeStopRequested()) {
             error = targetPos - getAvgMotorPosAbs(); // Error = desired - actual.
             double speed = (error/initialError); // Speed is proportional to the error
 
@@ -288,7 +285,7 @@ public class DriveTrain extends HardwareComponent {
         double error = targetPos - leftFront.getCurrentPosition();
 
         // While the error is not within acceptable error range, move to the desired position.
-        while (abs(error) > acceptableError) {
+        while (abs(error) > acceptableError && !opModeStopRequested()) {
             error = targetPos - leftFront.getCurrentPosition(); // Error = desired - actual.
             double sign = error/abs(error);
             double speed = abs(error/initialError); // Speed is proportional to the error
@@ -333,7 +330,7 @@ public class DriveTrain extends HardwareComponent {
         final double minSpeed = 0.115;
         final double deaccelRate = 2.85;
 
-        while (Math.abs(errorDeg) > desiredRange) {
+        while (Math.abs(errorDeg) > desiredRange && !opModeStopRequested()) {
             errorDeg = angleWrapDeg(desiredDeg - robot.sensors.getWorldAngleDeg());
 
             double errorSign = errorDeg / abs(errorDeg);

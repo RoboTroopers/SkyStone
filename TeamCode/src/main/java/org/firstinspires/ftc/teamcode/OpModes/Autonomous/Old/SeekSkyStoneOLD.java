@@ -119,7 +119,7 @@ public class SeekSkyStoneOLD extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        robot.init(hardwareMap);
+
 
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.

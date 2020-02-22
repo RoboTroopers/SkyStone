@@ -79,12 +79,25 @@ public class Outtake extends HardwareComponent {
     }
 
 
-    // Set the arm to certain positions and set the wrist position to compensate, keeping the claw parallel to the ground
     public void thrustTail() {
         double speed = 0.5;
         leftTail.setPower(speed);
         rightTail.setPower(speed);
+    }
 
+
+    public void retractTail() {
+
+        double speed = -0.5;
+        leftTail.setPower(speed);
+        rightTail.setPower(speed);
+
+    }
+
+
+    // Set the arm to certain positions and set the wrist position to compensate, keeping the claw parallel to the ground
+    public void thrustTailAuto() {
+        thrustTail();
         pause(500);
 
         leftTail.setPower(0);
@@ -92,11 +105,8 @@ public class Outtake extends HardwareComponent {
     }
 
 
-    public void retractTail() {
-        double speed = 0.5;
-        leftTail.setPower(speed);
-        rightTail.setPower(speed);
-
+    public void retractTailAuto() {
+        retractTail();
         pause(500);
 
         leftTail.setPower(0);
@@ -134,7 +144,7 @@ public class Outtake extends HardwareComponent {
 
         double error = initialError;
 
-        while (abs(error) < acceptableRange) {
+        while (abs(error) < acceptableRange && !opModeStopRequested()) {
             error = height-getHeight();
             double errorRatio = error/initialError;
             // Set speed proportional to error if error is between minSpeed and maxSpeed.
@@ -154,7 +164,7 @@ public class Outtake extends HardwareComponent {
         liftToHeight(HEIGHT_MID, 0.1);
     }
 
-    public void lowerToMax() {
+    public void lowerToMin() {
         liftToHeight(HEIGHT_MIN, 0.1);
     }
 
@@ -163,19 +173,19 @@ public class Outtake extends HardwareComponent {
     public void autoLift() {
         resetToMid();
         closeClaw();
-        pause(1000);
+        pause(400);
         liftToMax();
-        thrustTail();
+        thrustTailAuto();
     }
 
 
     public void autoDeposit() {
-        lowerToMax();
+        lowerToMin();
         openClaw();
-        pause(1000);
+        pause(300);
         liftToMax();
-        retractTail();
-        pause(500);
+        retractTailAuto();
+        pause(300);
         resetToMid();
     }
 

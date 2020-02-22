@@ -9,15 +9,15 @@ import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.Utilities.CustomTelemetry;
 import org.firstinspires.ftc.teamcode.Utilities.GamepadAdvanced;
 
-import static org.firstinspires.ftc.teamcode.ppProject.RobotUtilities.MovementVars.movement_turn;
-import static org.firstinspires.ftc.teamcode.ppProject.RobotUtilities.MovementVars.movement_x;
-import static org.firstinspires.ftc.teamcode.ppProject.RobotUtilities.MovementVars.movement_y;
+import static org.firstinspires.ftc.teamcode.Utilities.Useless.ppProject.RobotUtilities.MovementVars.movement_turn;
+import static org.firstinspires.ftc.teamcode.Utilities.Useless.ppProject.RobotUtilities.MovementVars.movement_x;
+import static org.firstinspires.ftc.teamcode.Utilities.Useless.ppProject.RobotUtilities.MovementVars.movement_y;
 
 
 @TeleOp(name = "Grucci Mechanum TeleOp")
 public class GrucciMechanumTeleop extends OpMode {
 
-    private final Robot robot = new Robot(this);
+    private Robot robot = new Robot(this);
 
     private final double threshold = 0.0;
 
@@ -26,6 +26,11 @@ public class GrucciMechanumTeleop extends OpMode {
     private GamepadAdvanced gamepad2Advanced;
     private CustomTelemetry customTelemetry = new CustomTelemetry(robot, telemetry);
 
+    private int liftTimer = 1000;
+    private int depositTimer = 1000;
+
+    private boolean tailOut = false;
+
 
     @Override
     public void init() {
@@ -33,26 +38,23 @@ public class GrucciMechanumTeleop extends OpMode {
 
         gamepad1Advanced = new GamepadAdvanced(gamepad1);
         gamepad2Advanced = new GamepadAdvanced(gamepad2);
-    }
 
-
-    @Override
-    public void init_loop() {
         customTelemetry.ok();
         telemetry.update();
     }
 
 
-
     @Override
     public void start(){
-        robot.outtake.retractTail();
+
+        robot.outtake.retractTailAuto();
         robot.fingers.pepeSMASHIn();
     }
 
 
-
-    private void gamepad1Controls() {
+    @Override
+    public void loop() {
+    //private void gamepad1Controls() {
 
         // Control over horizontal and vertical movement amounts with one joystick, and turn amount using the other.
         if (Math.abs(gamepad1.left_stick_y) >= threshold) {
@@ -117,28 +119,16 @@ public class GrucciMechanumTeleop extends OpMode {
         }
 
         gamepad1Advanced.update();
-    }
+    //}
 
 
 
-    private void gamepad2Controls() {
+    //private void gamepad2Controls() {
 
         if (Math.abs(gamepad2.left_stick_y) >= threshold) {
             robot.outtake.setPulleySpeed(gamepad2.left_stick_y);
         } else {
             robot.outtake.stopPulley();
-        }
-
-        if (gamepad2Advanced.BOnce()) {
-
-            robot.outtake.openClaw();
-            robot.outtake.retractTail();
-        }
-
-        if (gamepad2Advanced.AOnce()) {
-
-            robot.outtake.closeClaw();
-            robot.outtake.thrustTail();
         }
 
 
@@ -149,17 +139,44 @@ public class GrucciMechanumTeleop extends OpMode {
         }
 
 
+        // Use timer instead of sleep to not block other controls so they can work in parallel.
+        if (gamepad2Advanced.leftBumperOnce()) {
+            robot.outtake.closeClaw();
+            liftTimer = 0;
+            tailOut = true;
+        }
+
+        // Hold tail out for as long as possible
+        if (liftTimer > 30 && tailOut) {
+            robot.outtake.thrustTail();
+        }
+
+        liftTimer++;
+
+
+        if (gamepad2Advanced.rightBumperOnce()) {
+            robot.outtake.openClaw();
+            depositTimer = 0;
+            tailOut = false;
+        }
+
+        if (depositTimer == 36) {
+            robot.outtake.retractTail();
+        }
+
+        depositTimer++;
+
+
         gamepad2Advanced.update();
-    }
 
 
 
     // Run until the end of the match (driver presses STOP)
-    @Override
-    public void loop() {
+    //@Override
+    //public void loop() {
 
-        gamepad1Controls();
-        gamepad2Controls();
+        //gamepad1Controls();
+        //gamepad2Controls();
 
 
         telemetry.addData("Status", "Running");
@@ -182,6 +199,11 @@ public class GrucciMechanumTeleop extends OpMode {
         customTelemetry.memeData();
 
         //telemetry.addData("finger pos", robot.fingers.pepeSMASH.getPosition());
+
+        if (this.getRuntime() < 9) {
+            customTelemetry.nerd();
+        }
+
 
         telemetry.update();
     }

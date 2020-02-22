@@ -17,7 +17,7 @@ public class BasicTeleopDrive extends OpMode {
 
     @Override
     public void init() {
-        robot.init(hardwareMap);
+
     }
 
 

@@ -6,16 +6,14 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Robot {
 
-    public OpMode opMode;
+    public final OpMode opMode;
+    public final DriveTrain driveTrain;
+    public final Intake intake;
+    public final Outtake outtake;
+    public final Fingers fingers;
 
-    public DriveTrain driveTrain;
-    public Intake intake;
-    public Outtake outtake;
-    public Fingers fingers;
-
-    public Sensors sensors;
+    public final Sensors sensors;
     //public Odometry odometry = new Odometry(this);
-
 
 
     public Robot (OpMode opMode) {
@@ -30,18 +28,14 @@ public class Robot {
 
 
     public void init(HardwareMap aHwMap) {
-        // get the two expansion hubs themselves
-        //  revMaster = aHwMap.get(ExpansionHubEx.class,"hub");
-        //revSlave = aHwMap.get(ExpansionHubEx.class,"Slave");
-
         driveTrain.init(aHwMap);
         intake.init(aHwMap);
         outtake.init(aHwMap);
         fingers.init(aHwMap);
-
         sensors.init(aHwMap);
-
     }
+
+
 
 
 }

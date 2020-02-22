@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -17,8 +18,18 @@ public abstract class HardwareComponent {
         this.robot = theRobot;
         this.opMode = opMode;
         telemetry = opMode.telemetry;
+        //init(robot.hardwareMap);
     }
 
+
     public abstract void init(HardwareMap HwMap);
+
+
+    public boolean opModeStopRequested() {
+        if (opMode instanceof LinearOpMode) {
+            return ((LinearOpMode) opMode).isStopRequested();
+        }
+        else return false;
+    }
 
 }

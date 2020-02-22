@@ -8,9 +8,9 @@ import org.firstinspires.ftc.teamcode.Hardware.Fingers;
 import org.firstinspires.ftc.teamcode.Hardware.Intake;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.Utilities.GamepadAdvanced;
-import static org.firstinspires.ftc.teamcode.ppProject.RobotUtilities.MovementVars.movement_turn;
-import static org.firstinspires.ftc.teamcode.ppProject.RobotUtilities.MovementVars.movement_x;
-import static org.firstinspires.ftc.teamcode.ppProject.RobotUtilities.MovementVars.movement_y;
+import static org.firstinspires.ftc.teamcode.Utilities.Useless.ppProject.RobotUtilities.MovementVars.movement_turn;
+import static org.firstinspires.ftc.teamcode.Utilities.Useless.ppProject.RobotUtilities.MovementVars.movement_x;
+import static org.firstinspires.ftc.teamcode.Utilities.Useless.ppProject.RobotUtilities.MovementVars.movement_y;
 
 
 @TeleOp(name = "Mechanum Strafing TeleOp")
@@ -32,7 +32,7 @@ public class MechanumStrafingTeleOp extends OpMode {
 
     @Override
     public void init() {
-        robot.init(hardwareMap);
+
 
         gamepad1Advanced = new GamepadAdvanced(gamepad1);
         gamepad2Advanced = new GamepadAdvanced(gamepad2);

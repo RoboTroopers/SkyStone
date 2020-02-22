@@ -71,7 +71,7 @@ public class SeekSkyStoneColor extends LinearOpMode {
     private int skystonesDelivered = 0;
     private int firstSkystoneNum; // The ordinal number that the skystone is positioned, with the stone closest to the skybridge being 1 and farthest being 6;
 
-    private final boolean isRed = robot.sensors.isRedSelected();
+    private boolean isRed;
 
     private enum ProgramStates {
 
@@ -143,7 +143,13 @@ public class SeekSkyStoneColor extends LinearOpMode {
 
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start op mode");
+        telemetry.addData("Robot", robot);
+        if (robot.sensors != null) {
+            telemetry.addData("Sensors", robot.sensors);
+        }
         telemetry.update();
+
+        isRed = robot.sensors.isRedSelected();
 
         waitForStart();
 
@@ -169,21 +175,21 @@ public class SeekSkyStoneColor extends LinearOpMode {
 
                     while (nearestSkystone == null && opModeIsActive()) {
                         nearestSkystone = getNearestSkystone();
-                        telemetry.addData("Program State", "Scanning");
+                        telemetry.addData("Program State", "Sca+nning");
                         //telemetry.update();
-                        if (isRed) {
+                        if (robot.sensors.isRedSelected()) {
                             robot.driveTrain.strafe(-0.27);
                         } else  {
                             robot.driveTrain.strafe(0.27);
                         }
                         // Store the position of the first skystone to know which one to pick up next.
-                        firstSkystoneNum = StonePosChecker.getFirstStoneNumRed(robot.driveTrain.getAvgMotorPosAbs());
+                        //firstSkystoneNum = StonePosChecker.getFirstStoneNumRed(robot.driveTrain.getAvgMotorPosAbs());
                         telemetry.addData("Encoder Pos", robot.driveTrain.getAvgMotorPosAbs());
                         telemetry.addData("Stone pos", firstSkystoneNum);
                         telemetry.update();
                     }
 
-                    firstSkystoneNum = StonePosChecker.getFirstStoneNumRed(robot.driveTrain.getAvgMotorPosAbs());
+                    //firstSkystoneNum = StonePosChecker.getFirstStoneNumRed(robot.driveTrain.getAvgMotorPosAbs());
                     telemetry.addData("Encoder Pos", robot.driveTrain.getAvgMotorPosAbs());
                     telemetry.addData("Stone pos", firstSkystoneNum);
                     telemetry.update();
@@ -204,11 +210,11 @@ public class SeekSkyStoneColor extends LinearOpMode {
                     telemetry.update();
 
                     // Swoop towards skystone to pick it up.
-                    if (isRed) {
+                    if (robot.sensors.isRedSelected()) {
                         robot.driveTrain.strafeInches(28, 0.35);
                         robot.driveTrain.turnToDeg(12, 0.25);
                     } else {
-                        robot.driveTrain.strafeInches(-2, 0.35); // Test
+                        robot.driveTrain.strafeInches(-2, 0.25); // Test
                         robot.driveTrain.turnToDeg(-12, 0.25);
                     }
 
@@ -227,7 +233,7 @@ public class SeekSkyStoneColor extends LinearOpMode {
                     sleep(250);
 
                     // Go back to original position
-                    if (isRed) {
+                    if (robot.sensors.isRedSelected()) {
                         robot.driveTrain.strafeInches(TILE_LENGTH * 1.6, 0.45);
                         robot.driveTrain.strafe(0.3);
                     } else {
@@ -236,18 +242,19 @@ public class SeekSkyStoneColor extends LinearOpMode {
                     }
 
                     robot.sensors.lineSensor.enableLed(true);
-                    while (!robot.sensors.isOverLine()) {
+                    while (!robot.sensors.isOverLine() && !opModeIsActive()) {
                         telemetry.addData("", robot.sensors.lineSensor.argb());
                         telemetry.update();
                     }
 
                     robot.sensors.lineSensor.enableLed(false);
-                    if (isRed) {
+                    if (robot.sensors.isRedSelected()) {
                         robot.driveTrain.strafeInches(25, 0.35);
                     } else {
                         robot.driveTrain.strafeInches(-25, 0.35);
                     }
 
+                    //robot.outtake.fullAutoLiftDeposit();
                     robot.intake.blow();
                     sleep(1000);
                     robot.intake.rest();
@@ -259,7 +266,7 @@ public class SeekSkyStoneColor extends LinearOpMode {
 
             currentState = ProgramStates.PARKING;
             telemetry.addData("Program State", "Parking");
-            if (isRed) {
+            if (robot.sensors.isRedSelected()) {
                 robot.driveTrain.strafeInches(-25, 0.3);
             }
             robot.sensors.lineSensor.enableLed(false);
@@ -343,5 +350,3 @@ public class SeekSkyStoneColor extends LinearOpMode {
     }
 
 }
-
-

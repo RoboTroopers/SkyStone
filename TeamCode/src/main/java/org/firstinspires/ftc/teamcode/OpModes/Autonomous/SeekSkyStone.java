@@ -172,13 +172,13 @@ public class SeekSkyStone extends LinearOpMode {
 
                         robot.driveTrain.strafe(-0.27);
                         // Store the position of the first skystone to know which one to pick up next.
-                        firstSkystoneNum = StonePosChecker.getFirstStoneNumRed(robot.driveTrain.getAvgMotorPosAbs());
+                        //firstSkystoneNum = StonePosChecker.getFirstStoneNumRed(robot.driveTrain.getAvgMotorPosAbs());
                         telemetry.addData("Encoder Pos", robot.driveTrain.getAvgMotorPosAbs());
                         telemetry.addData("Stone pos", firstSkystoneNum);
                         telemetry.update();
                     }
 
-                    firstSkystoneNum = StonePosChecker.getFirstStoneNumRed(robot.driveTrain.getAvgMotorPosAbs());
+                    //firstSkystoneNum = StonePosChecker.getFirstStoneNumRed(robot.driveTrain.getAvgMotorPosAbs());
                     telemetry.addData("Encoder Pos", robot.driveTrain.getAvgMotorPosAbs());
                     telemetry.addData("Stone pos", firstSkystoneNum);
                     telemetry.update();
@@ -229,7 +229,7 @@ public class SeekSkyStone extends LinearOpMode {
                     robot.driveTrain.strafe(0.3);
 
                     robot.sensors.lineSensor.enableLed(true);
-                    while (!robot.sensors.isOverLine()) {
+                    while (!robot.sensors.isOverLine() && !opModeIsActive()) {
                         telemetry.addData("", robot.sensors.lineSensor.argb());
                         telemetry.update();
                     }

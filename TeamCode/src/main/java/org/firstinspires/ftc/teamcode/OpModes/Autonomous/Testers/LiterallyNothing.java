@@ -17,7 +17,7 @@ public class LiterallyNothing extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        perry.init(hardwareMap);
+
 
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start op mode");

@@ -16,7 +16,7 @@ public class TestDrive extends LinearOpMode {
     @Override
     public void runOpMode() {
         //robot.odometry.setPosition(0, 0, 0);
-        robot.init(hardwareMap);
+
         //Thread t1 = new Thread(new OdometryThread(robot));
         
         waitForStart();

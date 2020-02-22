@@ -17,7 +17,7 @@ public class YankIt extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        robot.init(hardwareMap);
+
 
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start op mode");

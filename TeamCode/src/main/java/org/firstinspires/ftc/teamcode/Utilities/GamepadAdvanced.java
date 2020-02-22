@@ -33,6 +33,8 @@ public class GamepadAdvanced {
         if (gamepad.dpad_right) { ++dpad_right; } else { dpad_right = 0; }
         if (gamepad.left_bumper) { ++left_bumper; } else { left_bumper = 0; }
         if (gamepad.right_bumper) { ++right_bumper; } else { right_bumper = 0; }
+        if (gamepad.left_trigger > 0) { ++left_trigger; } else { left_trigger = 0;}
+        if (gamepad.right_trigger > 0) { ++right_trigger; } else { right_trigger = 0;}
 
         left_stick_x = gamepad.left_stick_x;
         left_stick_y = gamepad.left_stick_y;
@@ -52,6 +54,8 @@ public class GamepadAdvanced {
     public boolean B() { return 0 < b; }
     public boolean leftBumper() { return 0 < left_bumper; }
     public boolean rightBumper() { return 0 < right_bumper; }
+    public boolean leftTrigger() { return 0 < left_trigger; }
+    public boolean rightTrigger() { return 0 < right_trigger; }
 
     public int leftBumperCooldown() { return left_bumper; }
     public int rightBumperCooldown() {return right_bumper; }
@@ -67,6 +71,8 @@ public class GamepadAdvanced {
     public boolean BOnce() { return 1 == b; }
     public boolean leftBumperOnce() { return 1 == left_bumper; }
     public boolean rightBumperOnce() { return 1 == right_bumper; }
+    public boolean leftTriggerOnce() { return 1 == left_trigger; }
+    public boolean rightTriggerOnce() { return 1 == right_trigger; }
 
 
 
