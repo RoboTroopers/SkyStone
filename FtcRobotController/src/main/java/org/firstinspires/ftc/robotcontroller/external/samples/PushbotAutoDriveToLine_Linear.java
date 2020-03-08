@@ -72,7 +72,7 @@ public class PushbotAutoDriveToLine_Linear extends LinearOpMode {
         /* Initialize the drive system variables.
          * The init() method of the hardware class does all the work here
          */
-        robot.init(hardwareMap);
+
 
         // If there are encoders connected, switch to RUN_USING_ENCODER mode for greater accuracy
         // robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
