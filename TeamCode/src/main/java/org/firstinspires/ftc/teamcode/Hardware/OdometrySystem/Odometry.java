@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Hardware.HardwareComponent;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
-import org.firstinspires.ftc.teamcode.Utilities.Useless.FieldPosition;
+import org.firstinspires.ftc.teamcode.Utilities.FieldPosition;
 
 import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.ticksToInches;
 
