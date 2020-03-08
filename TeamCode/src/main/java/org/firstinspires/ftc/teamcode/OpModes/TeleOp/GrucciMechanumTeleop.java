@@ -9,9 +9,9 @@ import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.Utilities.CustomTelemetry;
 import org.firstinspires.ftc.teamcode.Utilities.GamepadAdvanced;
 
-import static org.firstinspires.ftc.teamcode.Utilities.Useless.ppProject.RobotUtilities.MovementVars.movement_turn;
-import static org.firstinspires.ftc.teamcode.Utilities.Useless.ppProject.RobotUtilities.MovementVars.movement_x;
-import static org.firstinspires.ftc.teamcode.Utilities.Useless.ppProject.RobotUtilities.MovementVars.movement_y;
+import static org.firstinspires.ftc.ppProject.RobotUtilities.MovementVars.movement_turn;
+import static org.firstinspires.ftc.ppProject.RobotUtilities.MovementVars.movement_x;
+import static org.firstinspires.ftc.ppProject.RobotUtilities.MovementVars.movement_y;
 
 
 @TeleOp(name = "Grucci Mechanum TeleOp")

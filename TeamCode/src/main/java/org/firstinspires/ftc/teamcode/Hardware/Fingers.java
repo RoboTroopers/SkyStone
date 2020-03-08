@@ -27,7 +27,6 @@ public class Fingers extends HardwareComponent {
     @Override
     public void init(HardwareMap aHwMap) {
         pepeSMASH = aHwMap.get(Servo.class, "pepeSMASH");
-
     }
 
 
@@ -35,14 +34,12 @@ public class Fingers extends HardwareComponent {
         pepeSMASH.setPosition(PEPESMASH_IN_POS);
     }
 
-
     public void pepeSMASHOut() {
         pepeSMASH.setPosition(PEPESMASH_OUT_POS);
     }
 
 
     public States getPepeSMASHState() {
-
         States fingerState;
 
         if (pepeSMASH.getPosition() == PEPESMASH_OUT_POS) {

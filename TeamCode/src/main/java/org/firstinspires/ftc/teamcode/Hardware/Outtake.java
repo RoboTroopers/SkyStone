@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.Utilities.GamerMath;
+import org.firstinspires.ftc.teamcode.Utilities.MyMath;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.min;
@@ -148,7 +148,7 @@ public class Outtake extends HardwareComponent {
             error = height-getHeight();
             double errorRatio = error/initialError;
             // Set speed proportional to error if error is between minSpeed and maxSpeed.
-            setPulleySpeed(GamerMath.clamp(errorRatio, maxSpeed, minSpeed));
+            setPulleySpeed(MyMath.clamp(errorRatio, maxSpeed, minSpeed));
         }
 
         stopPulley();

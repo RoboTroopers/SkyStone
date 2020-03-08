@@ -20,12 +20,6 @@ public class Sensors extends HardwareComponent {
     // Sensors
     public BNO055IMU imu;
 
-    public DcMotor horizontalEncoder;
-    public DcMotor verticalEncoder;
-    //public DcMotor leftVerticalEncoder;
-    //public DcMotor rightVerticalEncoder;
-
-
     public DistanceSensor stoneDistanceSensor;
 
     public final double HOLDING_STONE_DIST = 3; // How many inches away the stone can be for pepeSMASH to goSMASH!
@@ -38,15 +32,12 @@ public class Sensors extends HardwareComponent {
     //public DistanceSensor pulleySensor;
 
 
-
     public Sensors(Robot theRobot, OpMode opMode) {
         super(theRobot, opMode);
     }
 
 
-
     public void init(HardwareMap aHwMap) {
-
         imu = aHwMap.get(BNO055IMU.class, "imu");
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -59,40 +50,12 @@ public class Sensors extends HardwareComponent {
 
         while (!imu.isGyroCalibrated()) pause(15);
 
-        //horizontalEncoder = aHwMap.get(DcMotor.class, "horizontalEncoder");
-        //verticalEncoder = aHwMap.get(DcMotor.class, "verticalEncoder");
-        //leftVerticalEncoder = aHwMap.get(DcMotor.class, "leftVerticalEncoder");
-        //rightVerticalEncoder = aHwMap.get(DcMotor.class, "rightVerticalEncoder");
-        //resetEncoders();
-
         lineSensor = aHwMap.get(ColorSensor.class, "lineSensor");
         stoneDistanceSensor = aHwMap.get(DistanceSensor.class, "stoneDistanceSensor");
         allianceColorSelector = aHwMap.get(TouchSensor.class, "touchSensor");
         lineSensor.enableLed(true);
-
     }
 
-    @Deprecated
-    public double getHorizontalEncoder() { return horizontalEncoder.getCurrentPosition(); }
-
-    @Deprecated
-    public double getVerticalEncoder() {
-
-        return verticalEncoder.getCurrentPosition();
-        //double leftValue = leftVerticalEncoder.getCurrentPosition();
-        //double rightValue = rightVerticalEncoder.getCurrentPosition();
-        //return (leftValue + rightValue)/2;
-    }
-
-    @Deprecated
-    public void resetEncoders() {
-
-        horizontalEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        verticalEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        horizontalEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        verticalEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
 
 
     public double getWorldAngleDeg() { return (imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle); }
@@ -125,7 +88,6 @@ public class Sensors extends HardwareComponent {
     @Deprecated
     // If stone is at the distance considered to be inside the intake
     public boolean intakingStone() {
-
         double distanceInches = getStoneDistance();
         boolean holdingStone = false;
 

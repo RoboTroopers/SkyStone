@@ -18,14 +18,14 @@ public abstract class HardwareComponent {
         this.robot = theRobot;
         this.opMode = opMode;
         telemetry = opMode.telemetry;
-        //init(robot.hardwareMap);
+        //Don't run init until opMode is run, since init == null until then.
     }
 
 
     public abstract void init(HardwareMap HwMap);
 
 
-    public boolean opModeStopRequested() {
+    protected boolean opModeStopRequested() {
         if (opMode instanceof LinearOpMode) {
             return ((LinearOpMode) opMode).isStopRequested();
         }

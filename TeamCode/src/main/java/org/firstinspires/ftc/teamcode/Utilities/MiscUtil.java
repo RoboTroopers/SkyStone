@@ -2,8 +2,7 @@ package org.firstinspires.ftc.teamcode.Utilities;
 
 
 public class MiscUtil {
-    
-    
+
     public static void pause(int sleepTime) {
         try {
             Thread.sleep(sleepTime);
@@ -11,11 +10,5 @@ public class MiscUtil {
             e.printStackTrace();
         }
     }
-
-
-    public static long getCurrentTime() { return System.currentTimeMillis(); }
-
-
-
 
 }
