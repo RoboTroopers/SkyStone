@@ -1,10 +1,8 @@
-package org.firstinspires.ftc.teamcode.Hardware;
+package org.firstinspires.ftc.teamcode.Hardware.OLD;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-
-import com.qualcomm.robotcore.R;
 
 
 public class Fingers extends HardwareComponent {
@@ -19,7 +17,7 @@ public class Fingers extends HardwareComponent {
     public enum States { IN, OUT }
 
 
-    public Fingers(Robot theRobot, OpMode opMode) {
+    public Fingers(OLDRobot theRobot, OpMode opMode) {
         super(theRobot, opMode);
     }
 

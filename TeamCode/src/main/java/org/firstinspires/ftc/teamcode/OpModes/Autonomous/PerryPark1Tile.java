@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.OpModes.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.Hardware.Robot;
+import org.firstinspires.ftc.teamcode.Hardware.OLD.OLDRobot;
 
 import static org.firstinspires.ftc.teamcode.Globals.FieldConstants.TILE_LENGTH;
 
@@ -12,7 +12,7 @@ import static org.firstinspires.ftc.teamcode.Globals.FieldConstants.TILE_LENGTH;
 //@Disabled
 public class PerryPark1Tile extends LinearOpMode {
 
-    private Robot perry = new Robot(this);
+    private OLDRobot perry = new OLDRobot(this);
 
 
     @Override

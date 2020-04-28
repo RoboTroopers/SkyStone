@@ -1,19 +1,18 @@
-package org.firstinspires.ftc.teamcode.Hardware.OdometrySystem;
+package org.firstinspires.ftc.teamcode.Hardware.OLD.OdometrySystem;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.Hardware.HardwareComponent;
-import org.firstinspires.ftc.teamcode.Hardware.Robot;
-import org.firstinspires.ftc.teamcode.Utilities.FieldPosition;
+import org.firstinspires.ftc.teamcode.Hardware.OLD.HardwareComponent;
+import org.firstinspires.ftc.teamcode.Hardware.OLD.OLDRobot;
 
 import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.ticksToInches;
 
 
 public class Odometry extends HardwareComponent {
 
-    private Robot robot;
+    private OLDRobot robot;
 
     private Thread thread;
 
@@ -49,7 +48,7 @@ public class Odometry extends HardwareComponent {
     public double verticalEncoderLast;
     
     
-    public Odometry(Robot theRobot, OpMode opMode) {
+    public Odometry(OLDRobot theRobot, OpMode opMode) {
         super(theRobot, opMode);
         thread = new Thread(new OdometryThread(theRobot));
         thread.start();
@@ -88,12 +87,6 @@ public class Odometry extends HardwareComponent {
         //verticalEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftVerticalEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightVerticalEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
-
-
-    public void setPosition(FieldPosition fieldPos) {
-        worldXPosition = fieldPos.fieldXTicks;
-        worldYPosition = fieldPos.fieldYTicks;
     }
     
     

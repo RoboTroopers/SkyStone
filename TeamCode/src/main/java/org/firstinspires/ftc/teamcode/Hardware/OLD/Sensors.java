@@ -1,9 +1,8 @@
-package org.firstinspires.ftc.teamcode.Hardware;
+package org.firstinspires.ftc.teamcode.Hardware.OLD;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
@@ -13,7 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
-import static org.firstinspires.ftc.teamcode.Utilities.MiscUtil.pause;
+import static org.firstinspires.ftc.teamcode.Util.MiscUtil.pause;
 
 public class Sensors extends HardwareComponent {
 
@@ -32,7 +31,7 @@ public class Sensors extends HardwareComponent {
     //public DistanceSensor pulleySensor;
 
 
-    public Sensors(Robot theRobot, OpMode opMode) {
+    public Sensors(OLDRobot theRobot, OpMode opMode) {
         super(theRobot, opMode);
     }
 

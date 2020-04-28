@@ -39,7 +39,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.teamcode.Hardware.Robot;
+import org.firstinspires.ftc.teamcode.Hardware.OLD.OLDRobot;
 
 import java.util.List;
 
@@ -65,7 +65,7 @@ public class SeekSkyStoneOLD extends LinearOpMode {
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
 
-    public Robot robot = new Robot(this);
+    public OLDRobot robot = new OLDRobot(this);
     //Thread odometryThread = new Thread(new OdometryThread(robot));
 
     private final double skystoneAngleOffset = -5; // How many degrees to add to skystone angle for robot to center on

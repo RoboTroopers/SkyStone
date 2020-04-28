@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Hardware;
+package org.firstinspires.ftc.teamcode.Hardware.OLD;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -6,22 +6,20 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.ppProject.treamcode.MathFunctions;
-import org.firstinspires.ftc.teamcode.Utilities.MyMath;
+import org.firstinspires.ftc.teamcode.Util.MyMath;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.toRadians;
 import static org.firstinspires.ftc.teamcode.Globals.DriveConstants.inchesToTicks;
-import static org.firstinspires.ftc.teamcode.Utilities.MyMath.angleWrapDeg;
-import static org.firstinspires.ftc.teamcode.Utilities.MyMath.castRound;
-import static org.firstinspires.ftc.teamcode.Utilities.MyMath.clamp;
-import static org.firstinspires.ftc.teamcode.Utilities.MyMath.clampSigned;
-import static org.firstinspires.ftc.teamcode.Utilities.MiscUtil.pause;
+import static org.firstinspires.ftc.teamcode.Util.MyMath.angleWrapDeg;
+import static org.firstinspires.ftc.teamcode.Util.MyMath.castRound;
+import static org.firstinspires.ftc.teamcode.Util.MyMath.clamp;
+import static org.firstinspires.ftc.teamcode.Util.MyMath.clampSigned;
+import static org.firstinspires.ftc.teamcode.Util.MiscUtil.pause;
 
 
 
 public class DriveTrain extends HardwareComponent {
-
-    public Robot robot;
 
     // Motors and servos
     public DcMotor leftFront;
@@ -30,7 +28,7 @@ public class DriveTrain extends HardwareComponent {
     public DcMotor rightRear;
 
 
-    public DriveTrain(Robot theRobot, OpMode opMode)  {
+    public DriveTrain(OLDRobot theRobot, OpMode opMode)  {
         super(theRobot, opMode);
     }
 

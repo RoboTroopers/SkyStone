@@ -1,8 +1,6 @@
-package org.firstinspires.ftc.teamcode.Utilities;
+package org.firstinspires.ftc.teamcode.Util;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
-
-
 
 
 public class GamepadAdvanced {

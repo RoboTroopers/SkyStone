@@ -4,13 +4,13 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.Hardware.Robot;
+import org.firstinspires.ftc.teamcode.Hardware.OLD.OLDRobot;
 
 @Autonomous(name = "BackwardsTest", group="Autonomous")
 @Disabled
 public class BackwardsTest extends LinearOpMode {
 
-    private Robot perry = new Robot(this);
+    private OLDRobot perry = new OLDRobot(this);
 
 
     @Override

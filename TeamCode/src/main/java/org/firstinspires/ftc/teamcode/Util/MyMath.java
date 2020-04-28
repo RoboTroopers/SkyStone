@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Utilities;
+package org.firstinspires.ftc.teamcode.Util;
 
 import org.firstinspires.ftc.ppProject.core.Point;
 
@@ -12,34 +12,44 @@ import static java.lang.Math.sqrt;
 public class MyMath {
 
 
-    // Cast rounded value to int because idk why it doesn't do this by default.
     public static int castRound(double number) { return (int)Math.round(number); }
 
-
     /** Ensure input is inside a certain range. */
-    public static double clamp(double val, double min, double max) { return Math.max(min, Math.min(max, val)); }
+    public static double clamp(double val, double a, double b) {
+        double min = a, max = b;
+        if (a > b) {
+            max = a;
+            min = b;
+        }
+        return Math.max(min, Math.min(max, val));
+    }
 
-    public static int clamp(int val, int min, int max) { return Math.max(min, Math.min(max, val)); }
+
+    public static int clamp(int val, int a, int b) {
+        return (int) clamp((double) val, a, b);
+    }
 
 
     /** Ensure input is within range, but if the number is negative flip the signs
      * (prevents forcing absolute value to be used).
      */
-    public static double clampSigned(double val, double min, double max) {
+    public static double clampSigned(double val, double a, double b) {
         double number;
-        if (val >= 0.0)
-            number = clamp(val, min, max);
-        else number = clamp(-val, -max, -min);
+
+        if (val >= 0.0) {
+            number = clamp(val, a, b);
+        } else {
+            number = clamp(-val, -a, -b);
+        }
         return number;
     }
 
-    public static int clampSigned(int val, int min, int max) {
-        int number;
-        if (val >= 0)
-            number = clamp(val, min, max);
-        else number = clamp(-val, -max, -min);
-        return number;
+
+    /** Converts a number in one range to a number with the same proportions to another range */
+    public static double map(double val, double a1, double a2, double b1, double b2) {
+        return (val - a1) / (a2 - a1) * (b2 - b1) + b1;
     }
+
 
 
     /** Keeps angle within -180 to 180 degrees while preserving angle measure */

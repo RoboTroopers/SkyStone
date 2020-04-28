@@ -3,11 +3,11 @@ package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Hardware.Fingers;
-import org.firstinspires.ftc.teamcode.Hardware.Intake;
-import org.firstinspires.ftc.teamcode.Hardware.Robot;
-import org.firstinspires.ftc.teamcode.Utilities.CustomTelemetry;
-import org.firstinspires.ftc.teamcode.Utilities.GamepadAdvanced;
+import org.firstinspires.ftc.teamcode.Hardware.OLD.Fingers;
+import org.firstinspires.ftc.teamcode.Hardware.OLD.Intake;
+import org.firstinspires.ftc.teamcode.Hardware.OLD.OLDRobot;
+import org.firstinspires.ftc.teamcode.Util.CustomTelemetry;
+import org.firstinspires.ftc.teamcode.Util.GamepadAdvanced;
 
 import static org.firstinspires.ftc.ppProject.RobotUtilities.MovementVars.movement_turn;
 import static org.firstinspires.ftc.ppProject.RobotUtilities.MovementVars.movement_x;
@@ -17,14 +17,14 @@ import static org.firstinspires.ftc.ppProject.RobotUtilities.MovementVars.moveme
 @TeleOp(name = "Grucci Mechanum TeleOp")
 public class GrucciMechanumTeleop extends OpMode {
 
-    private Robot robot = new Robot(this);
+    private OLDRobot robot = new OLDRobot(this);
 
     private final double threshold = 0.0;
 
 
     private GamepadAdvanced gamepad1Advanced;
     private GamepadAdvanced gamepad2Advanced;
-    private CustomTelemetry customTelemetry = new CustomTelemetry(robot, telemetry);
+    //private CustomTelemetry customTelemetry = new CustomTelemetry(robot, telemetry);
 
     private int liftTimer = 1000;
     private int depositTimer = 1000;
@@ -39,7 +39,7 @@ public class GrucciMechanumTeleop extends OpMode {
         gamepad1Advanced = new GamepadAdvanced(gamepad1);
         gamepad2Advanced = new GamepadAdvanced(gamepad2);
 
-        customTelemetry.ok();
+        //customTelemetry.ok();
         telemetry.update();
     }
 
@@ -196,12 +196,12 @@ public class GrucciMechanumTeleop extends OpMode {
         telemetry.addData("left elbow pos", robot.outtake.leftTail.getPower());
         telemetry.addData("right elbow pos", robot.outtake.rightTail.getPower());
 
-        customTelemetry.memeData();
+        //customTelemetry.memeData();
 
         //telemetry.addData("finger pos", robot.fingers.pepeSMASH.getPosition());
 
         if (this.getRuntime() < 9) {
-            customTelemetry.nerd();
+            //customTelemetry.nerd();
         }
 
 

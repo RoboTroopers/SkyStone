@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Hardware;
+package org.firstinspires.ftc.teamcode.Hardware.OLD;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -7,12 +7,12 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.Utilities.MyMath;
+import org.firstinspires.ftc.teamcode.Util.MyMath;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.min;
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
-import static org.firstinspires.ftc.teamcode.Utilities.MiscUtil.pause;
+import static org.firstinspires.ftc.teamcode.Util.MiscUtil.pause;
 
 public class Outtake extends HardwareComponent {
 
@@ -37,7 +37,7 @@ public class Outtake extends HardwareComponent {
     public final double HEIGHT_MIN = 10;
 
 
-    public Outtake(Robot theRobot, OpMode opMode) {
+    public Outtake(OLDRobot theRobot, OpMode opMode) {
         super(theRobot, opMode);
     }
 

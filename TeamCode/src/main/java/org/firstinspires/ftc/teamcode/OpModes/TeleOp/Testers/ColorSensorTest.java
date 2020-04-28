@@ -4,14 +4,14 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Hardware.Robot;
+import org.firstinspires.ftc.teamcode.Hardware.OLD.OLDRobot;
 
 
 @TeleOp(name = "Color Sensor Test")
 @Disabled
 public class ColorSensorTest extends OpMode {
 
-    private Robot robot = new Robot(this);
+    private OLDRobot robot = new OLDRobot(this);
 
 
     @Override

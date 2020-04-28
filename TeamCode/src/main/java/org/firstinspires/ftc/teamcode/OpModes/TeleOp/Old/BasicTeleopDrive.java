@@ -4,14 +4,14 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Hardware.Robot;
+import org.firstinspires.ftc.teamcode.Hardware.OLD.OLDRobot;
 
 
 @TeleOp(name = "BasicTeleopDrive")
 @Disabled
 public class BasicTeleopDrive extends OpMode {
 
-    Robot robot = new Robot(this);
+    OLDRobot robot = new OLDRobot(this);
 
 
 

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Hardware;
+package org.firstinspires.ftc.teamcode.Hardware.OLD;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -20,7 +20,7 @@ public class Intake extends HardwareComponent {
     public final double UNYANKED_POS = 0.6;
 
 
-    public Intake(Robot theRobot, OpMode opMode) {
+    public Intake(OLDRobot theRobot, OpMode opMode) {
         super(theRobot, opMode);
     }
 

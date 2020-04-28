@@ -4,10 +4,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Hardware.Fingers;
-import org.firstinspires.ftc.teamcode.Hardware.Intake;
-import org.firstinspires.ftc.teamcode.Hardware.Robot;
-import org.firstinspires.ftc.teamcode.Utilities.GamepadAdvanced;
+import org.firstinspires.ftc.teamcode.Hardware.OLD.Fingers;
+import org.firstinspires.ftc.teamcode.Hardware.OLD.Intake;
+import org.firstinspires.ftc.teamcode.Hardware.OLD.OLDRobot;
+import org.firstinspires.ftc.teamcode.Util.GamepadAdvanced;
 import static org.firstinspires.ftc.ppProject.RobotUtilities.MovementVars.movement_turn;
 import static org.firstinspires.ftc.ppProject.RobotUtilities.MovementVars.movement_x;
 import static org.firstinspires.ftc.ppProject.RobotUtilities.MovementVars.movement_y;
@@ -17,7 +17,7 @@ import static org.firstinspires.ftc.ppProject.RobotUtilities.MovementVars.moveme
 @Disabled
 public class MechanumStrafingTeleOp extends OpMode {
 
-    private Robot robot = new Robot(this);
+    private OLDRobot robot = new OLDRobot(this);
 
     private double threshold = 0.0;
 

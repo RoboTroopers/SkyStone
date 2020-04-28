@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Hardware;
+package org.firstinspires.ftc.teamcode.Hardware.OLD;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -9,16 +9,16 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public abstract class HardwareComponent {
 
-    protected Robot robot;
+    protected OLDRobot robot;
     protected OpMode opMode;
     protected Telemetry telemetry;
 
 
-    public HardwareComponent(Robot theRobot, OpMode opMode) {
+    public HardwareComponent(OLDRobot theRobot, OpMode opMode) {
         this.robot = theRobot;
         this.opMode = opMode;
         telemetry = opMode.telemetry;
-        //Don't run init until opMode is run, since init == null until then.
+        //Don't run init until opMode is run, since hwMap == null until then.
     }
 
 

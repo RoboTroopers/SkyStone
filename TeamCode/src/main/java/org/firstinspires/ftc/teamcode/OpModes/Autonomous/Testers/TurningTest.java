@@ -4,16 +4,16 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.Hardware.Robot;
+import org.firstinspires.ftc.teamcode.Hardware.OLD.OLDRobot;
 
-import static org.firstinspires.ftc.teamcode.Utilities.MiscUtil.pause;
+import static org.firstinspires.ftc.teamcode.Util.MiscUtil.pause;
 
 
 @Autonomous(name = "TurningTest", group="Autonomous")
 @Disabled
 public class TurningTest extends LinearOpMode {
 
-    private Robot perry = new Robot(this);
+    private OLDRobot perry = new OLDRobot(this);
 
 
     @Override

@@ -4,14 +4,14 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.Hardware.Robot;
+import org.firstinspires.ftc.teamcode.Hardware.OLD.OLDRobot;
 
 
 @Autonomous(name = "Yank it baby", group="Autonomous")
 @Disabled
 public class YankIt extends LinearOpMode {
 
-    private Robot robot = new Robot(this);
+    private OLDRobot robot = new OLDRobot(this);
 
 
     @Override
