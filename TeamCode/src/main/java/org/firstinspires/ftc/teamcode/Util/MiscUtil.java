@@ -11,4 +11,11 @@ public class MiscUtil {
         }
     }
 
+
+    public static boolean anyTrue(boolean[] array) {
+        for(boolean b: array)
+            if (b) return true;
+        return false;
+    }
+
 }

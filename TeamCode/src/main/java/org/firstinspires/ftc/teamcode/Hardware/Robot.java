@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Math.abs;
+import static org.firstinspires.ftc.teamcode.Util.MiscUtil.anyTrue;
 import static org.firstinspires.ftc.teamcode.Util.MiscUtil.pause;
 import static org.firstinspires.ftc.teamcode.Util.MyMath.angleWrapDeg;
 import static org.firstinspires.ftc.teamcode.Util.MyMath.clampSigned;
@@ -91,35 +92,6 @@ public class Robot {
     }
 
 
-    public void setBaseMode(DcMotor.RunMode runMode) {
-        for (DcMotor motor: base) {
-            motor.setMode(runMode);
-        }
-    }
-
-
-    public void brake() {
-        for (DcMotor motor: base) {
-            motor.setPower(0);
-        }
-    }
-
-    public void resetBase() {
-        setBaseMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        setBaseMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
-
-
-    @Untested
-    public int getAvgMotorPos() {
-        int pos = 0;
-        for (DcMotor motor: base) {
-            pos += motor.getCurrentPosition();
-        }
-        return pos/base.size();
-    }
-
-
     public void setBase(double lf, double lr, double rf, double rr) {
         // Change motor powers only if they have changed
         if (leftFront.getPower() != lf)
@@ -134,12 +106,58 @@ public class Robot {
     }
 
 
+    public void setBase(double[] powers) {
+        // Change motor powers only if they have changed
+        setBase(powers[0], powers[1], powers[2], powers[3]);
+    }
+
+
+
+    public void brake() {
+        for (DcMotor motor: base) {
+            motor.setPower(0);
+        }
+    }
+
+    public void setBaseMode(DcMotor.RunMode runMode) {
+        for (DcMotor motor: base) {
+            motor.setMode(runMode);
+        }
+    }
+
+
+    public void resetBase() {
+        setBaseMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        setBaseMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+
+
+    public int[] getMotorPos() {
+        return new int[] {
+                leftFront.getCurrentPosition(),
+                leftRear.getCurrentPosition(),
+                rightFront.getCurrentPosition(),
+                rightRear.getCurrentPosition()
+        };
+    }
+
+
+    public int getAvgMotorPos() {
+        int pos = 0;
+        for (DcMotor motor: base) {
+            pos += motor.getCurrentPosition();
+        }
+        return pos/base.size();
+    }
+
+
 
     public void applyMovement(double straight, double strafe, double turn) {
         setBaseMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         //Move robot on field forward and sideways, rotates by turn
-        //movement_x multiplied by 1.5 because mecanum drive strafes sideways slower than forwards/backwards
+        //movement_x multiplied by 1.5 because mechanum drive strafes sideways slower than forwards/backwards
         double lf = straight - turn - (strafe * 1.5);
         double lr = straight - turn + (strafe * 1.5);
         double rf = straight + turn + (strafe * 1.5);
@@ -169,28 +187,37 @@ public class Robot {
 
     /** Same principle as applyMovement but with encoder powers rather than motor speeds. */
     @Untested
-    public void applyEncoderMovement(double straight, double strafe, double turn, double power) {
-        final double minSpeed = 0.08; // Minimum speed kept to prevent steady-state error;
+    public void applyEncoderMovement(int straight, int strafe, int turn, double maxPower) {
+        final double minPower = 0.08; // Minimum power kept to prevent steady-state error;
+        final int acceptableError = 5;
         // Cross your fingers this works.
-        double lf_desired = straight - turn - (strafe * 1.5);
-        double lr_desired = straight - turn + (strafe * 1.5);
-        double rf_desired = straight + turn + (strafe * 1.5);
-        double rr_desired = straight + turn - (strafe * 1.5);
+        int[] desired = new int[] {
+            straight - turn - (int) (strafe * 1.5),
+            straight - turn + (int) (strafe * 1.5),
+            straight + turn + (int) (strafe * 1.5),
+            straight + turn - (int) (strafe * 1.5)
+        };
 
-        while (!opModeStopRequested()) {
-            // Calculate motor encoder errors based on desired - actual formula.
-            double lf_error = lf_desired - leftFront.getCurrentPosition();
-            double lr_error = lr_desired - leftRear.getCurrentPosition();
-            double rf_error = rf_desired - rightFront.getCurrentPosition();
-            double rr_error = rr_desired - rightRear.getCurrentPosition();
+        boolean[] stopped = new boolean[4];
 
-            // Map motor speeds from encoder range to speed range, decreasing as error approaches 0;
-            double lf = map(lf_error, lf_desired, 0, power, minSpeed);
-            double lr = map(lr_error, lr_desired, 0, power, minSpeed);
-            double rf = map(rf_error, rf_desired, 0, power, minSpeed);
-            double rr = map(rr_error, rr_desired, 0, power, minSpeed);
+        while (!opModeStopRequested() && anyTrue(stopped)) {
+            double[] powers = new double[4];
 
-            setBase(lf, lr, rf, rr);
+            for (int i = 0; i < base.size(); i++) {
+                // Calculate error for every motor in base.
+                int desiredPos = desired[i];
+                int error = desiredPos - getMotorPos()[i];
+                if (error > acceptableError) {
+                    // Power is max at original error and min at 0 error;
+                    powers[i] = map(error, desiredPos, 0, maxPower, minPower);
+                } else if (error < -acceptableError) {
+                    // Power is max at original error and min at 0 error;
+                    powers[i] = map(error, desiredPos, 0, maxPower, minPower);
+                } else {
+                    stopped[i] = true;
+                }
+            }
+            setBase(powers);
         }
     }
 
