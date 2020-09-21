@@ -1,7 +1,9 @@
-package org.firstinspires.ftc;
+package org.firstinspires.ftc.opmodes;
+
+import org.firstinspires.ftc.Bot;
 
 /**
- * Sets the desired
+ * Progresses through stages, setting target position and angle of bot depending on the stage
  */
 
 public class Auton extends Bot

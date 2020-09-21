@@ -1,16 +1,22 @@
-package org.firstinspires.ftc;
+package org.firstinspires.ftc.opmodes;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import org.firstinspires.ftc.Bot;
+import org.firstinspires.ftc.util.GamepadPressTracker;
 
 public class TeleOp extends Bot
 {
+    private static final double threshold = 0.05;
+    private static final double turnSpeed = 0.5;
 
-    private double threshold = 0.05;
+    private GamepadPressTracker gamepadPressTracker1;
+    private GamepadPressTracker gamepadPressTracker2;
 
     @Override
     public void init()
     {
         super.init();
+        gamepadPressTracker1 = new GamepadPressTracker(gamepad1);
+        gamepadPressTracker2 = new GamepadPressTracker(gamepad2);
     }
 
     // Run until the end of the match (driver presses STOP)
@@ -36,7 +42,7 @@ public class TeleOp extends Bot
 
         if (Math.abs(gamepad1.right_stick_x) >= threshold)
         {
-            movementTurn = -gamepad1.right_stick_x * 0.5;
+            movementTurn = -gamepad1.right_stick_x * turnSpeed;
         }
 
         applyMovement(movementY, movementX, movementTurn);

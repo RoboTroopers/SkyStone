@@ -23,7 +23,7 @@ Hardware:	This is not an actual OpMode, but a helper class that is used to descr
             Teams can copy one of these to create their own robot definition.
 
 Pushbot:	This is a Sample OpMode that uses the Pushbot robot hardware as a base.
-            It may be used to provide some standard baseline Pushbot opmodes, or
+            It may be used to provide some standard baseline Pushbot org.firstinspires.ftc.opmodes, or
             to demonstrate how a particular sensor or concept can be used directly on the
             Pushbot chassis.
 
