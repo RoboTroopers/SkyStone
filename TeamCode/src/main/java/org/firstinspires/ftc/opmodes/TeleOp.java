@@ -1,22 +1,22 @@
 package org.firstinspires.ftc.opmodes;
 
-import org.firstinspires.ftc.Bot;
-import org.firstinspires.ftc.util.GamepadPressTracker;
+import org.firstinspires.ftc.RoboTrooper;
+import org.firstinspires.ftc.util.GamepadTimer;
 
-public class TeleOp extends Bot
+public class TeleOp extends RoboTrooper
 {
     private static final double threshold = 0.05;
     private static final double turnSpeed = 0.5;
 
-    private GamepadPressTracker gamepadPressTracker1;
-    private GamepadPressTracker gamepadPressTracker2;
+    private GamepadTimer gamepad1Timer;
+    private GamepadTimer gamepad2Timer;
 
     @Override
     public void init()
     {
         super.init();
-        gamepadPressTracker1 = new GamepadPressTracker(gamepad1);
-        gamepadPressTracker2 = new GamepadPressTracker(gamepad2);
+        gamepad1Timer = new GamepadTimer(gamepad1);
+        gamepad2Timer = new GamepadTimer(gamepad2);
     }
 
     // Run until the end of the match (driver presses STOP)
@@ -24,6 +24,8 @@ public class TeleOp extends Bot
     public void loop()
     {
         super.init();
+        gamepad1Timer.update();
+        gamepad2Timer.update();
 
         double movementY = 0;
         double movementX = 0;

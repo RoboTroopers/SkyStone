@@ -1,12 +1,12 @@
 package org.firstinspires.ftc.opmodes;
 
-import org.firstinspires.ftc.Bot;
+import org.firstinspires.ftc.RoboTrooper;
 
 /**
  * Progresses through stages, setting target position and angle of bot depending on the stage
  */
 
-public class Auton extends Bot
+public class Auton extends RoboTrooper
 {
     // Distance from target position and angle necessary to move on to next movement stage.
     private static final double posErrorThreshold = 3;
@@ -64,9 +64,6 @@ public class Auton extends Bot
          && Math.abs(targetAngle - getWorldAngle()) < angleErrorThreshold)
         {
             currentStage += 1;
-            targetX = getWorldXPos();
-            targetY = getWorldYPos();
-            targetAngle = getWorldAngle();
         }
     }
 

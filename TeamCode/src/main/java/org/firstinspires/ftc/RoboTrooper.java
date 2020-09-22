@@ -11,7 +11,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.util.MathMethods;
 import org.firstinspires.ftc.util.UtilMethods;
 
-public class Bot extends OpMode
+import static java.lang.Math.abs;
+
+public class RoboTrooper extends OpMode
 {
     public DcMotor frontLeft;
     public DcMotor frontRight;
@@ -20,14 +22,15 @@ public class Bot extends OpMode
 
     public BNO055IMU imu;
 
-    public DcMotor xEncoder;
-    public DcMotor yEncoder;
+    public DcMotor horizontalEncoder;
+    public DcMotor verticalEncoder;
+    public DcMotor verticalEncoder2;
 
     private double worldXPos = 0;
     private double worldYPos = 0;
 
-    private double xEncoderLast = 0;
-    private double yEncoderLast = 0;
+    private double horizontalEncoderLast = 0;
+    private double verticalEncoderLast = 0;
 
 
     public void init()
@@ -39,16 +42,16 @@ public class Bot extends OpMode
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
 
-        xEncoder = hardwareMap.dcMotor.get("xEncoder");
-        yEncoder = hardwareMap.dcMotor.get("yEncoder");
-
+        horizontalEncoder = hardwareMap.dcMotor.get("horizontalEncoder");
+        verticalEncoder = hardwareMap.dcMotor.get("verticalEncoder1");
+        verticalEncoder2 = hardwareMap.dcMotor.get("verticalEncoder2");
     }
 
     public double getWorldAngle()
     {
         Orientation angles = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS);
         // Since the imu is rotated on its x-axis 90 degrees, the x-axis is the one that points up.
-        return angles.firstAngle;
+        return Math.toRadians(angles.firstAngle);
     }
 
     public double getWorldXPos()
@@ -63,35 +66,40 @@ public class Bot extends OpMode
 
     public void updatePos()
     {
-        double relativeXChange = xEncoder.getCurrentPosition() - xEncoderLast;
-        double relativeYChange = yEncoder.getCurrentPosition() - yEncoderLast;
+        double horizontalReading = horizontalEncoder.getCurrentPosition();
+        double verticalReading = (verticalEncoder.getCurrentPosition() - verticalEncoder2.getCurrentPosition())/2.0;
+        double angleReading = getWorldAngle();
 
-        double worldAngleRad = Math.toRadians(getWorldAngle());
+        double horizontalChange = horizontalReading - horizontalEncoderLast;
+        double verticalChange =  verticalReading   - verticalEncoderLast;
 
         // Position where the robot would be if the robot had not strafed
-        double forwardShiftX = relativeYChange * Math.cos(worldAngleRad);
-        double forwardShiftY = relativeYChange * Math.sin(worldAngleRad);
+        double forwardShiftX = verticalChange * Math.cos(angleReading);
+        double forwardShiftY = verticalChange * Math.sin(angleReading);
 
         // How far the robot's position has shifted as a result of strafing
-        double strafeShiftX = relativeXChange * Math.cos(worldAngleRad);
-        double strafeShiftY = relativeXChange * Math.sin(worldAngleRad);
+        double strafeShiftX = horizontalChange * Math.cos(angleReading);
+        double strafeShiftY = horizontalChange * Math.sin(angleReading);
 
         worldXPos += forwardShiftX + strafeShiftX;
         worldYPos += forwardShiftY + strafeShiftY;
 
-        xEncoderLast = xEncoder.getCurrentPosition();
-        yEncoderLast = xEncoder.getCurrentPosition();
+        horizontalEncoderLast = horizontalReading;
+        verticalEncoderLast = verticalReading;
+
+        telemetry.addData("world x:", worldXPos);
+        telemetry.addData("world y:", worldYPos);
     }
 
 
-    public void applyMovement(double forward, double sideways, double turn)
+    // Set powers of motors according to direction parameters.
+    public void applyMovement(double vertical, double horizontal, double turn)
     {
-        //Moves robot on field forward and sideways, rotates by turn
-        //movement_x multiplied by 1.5 because mechanum drive strafes sideways slower than forwards/backwards
-        double frontLeftRaw = forward + turn - (sideways*1.5);
-        double frontRightRaw = forward - turn + (sideways*1.5);
-        double rearLeftRaw = forward + turn + (sideways*1.5);
-        double rearRightRaw = forward - turn - (sideways*1.5);
+        // Sideways multiplied by 1.5 because mechanum drive strafes sideways slower than forwards/backwards
+        double frontLeftRaw =  vertical + turn - (horizontal*1.5);
+        double frontRightRaw = vertical - turn + (horizontal*1.5);
+        double rearLeftRaw =   vertical + turn + (horizontal*1.5);
+        double rearRightRaw =  vertical - turn - (horizontal*1.5);
 
         // Find greatest power
         double maxRawPower = Math.max(Math.max(frontLeftRaw, frontRightRaw), Math.max(rearLeftRaw, rearRightRaw));
@@ -109,26 +117,13 @@ public class Bot extends OpMode
         rearLeftRaw *= scaleDownFactor;
         rearRightRaw *= scaleDownFactor;
 
-        // Changes motor powers only if they have changed
-        if (frontLeft.getPower() != frontLeftRaw)
-        {
-            frontLeft.setPower(frontLeftRaw);
-        }
-        if (frontRight.getPower() != frontRightRaw)
-        {
-            frontRight.setPower(frontRightRaw);
-        }
-        if (rearLeft.getPower() != rearLeftRaw)
-        {
-            rearLeft.setPower(rearLeftRaw);
-        }
-        if (rearRight.getPower() != rearRightRaw)
-        {
-            rearRight.setPower(rearRightRaw);
-        }
+        frontLeft.setPower(frontLeftRaw);
+        frontRight.setPower(frontRightRaw);
+        rearLeft.setPower(rearLeftRaw);
+        rearRight.setPower(rearRightRaw);
     }
 
-
+    // idk
     public void glideToPos(double xPos, double yPos, double xSpeed, double ySpeed, double preferredAngle, double turnSpeed)
     {
         double absoluteDist = Math.hypot(xPos - worldXPos, yPos - worldYPos);
@@ -143,9 +138,8 @@ public class Bot extends OpMode
         double xPower = relativeX / denominator;
         double yPower = relativeY / denominator;
 
-
         double turnPower = relativeAngle - Math.toRadians(180) + preferredAngle;
-        turnPower = MathMethods.clamp(turnPower/Math.toRadians(30), -1, 1);
+        turnPower = MathMethods.clamp(turnPower * 2, -1, 1);
 
         final double turnSlowThreshold = 10;
         if (absoluteDist < turnSlowThreshold)
@@ -156,6 +150,51 @@ public class Bot extends OpMode
         applyMovement(yPower * ySpeed, xPower * xSpeed, turnPower * turnSpeed);
     }
 
+    // idk even more
+    public void glideRelative(double xDist, double yDist, double xSpeed, double ySpeed, double turnAngle, double turnSpeed)
+    {
+        final double minSpeed = 0.025;
+
+        double xError = xDist - getWorldXPos();
+        double yError = yDist - getWorldYPos();
+        double turnError = MathMethods.angleWrap(turnAngle - getWorldAngle());
+
+        if (abs(turnError) > 180) {
+            turnError = 360 - turnError;
+        }
+
+        double xPower = xError/xDist;
+        if (xPower > 0)
+        {
+            xPower = MathMethods.clamp(xPower, minSpeed, xSpeed);
+        }
+        if (xPower < 0)
+        {
+            xPower = MathMethods.clamp(xPower, -xSpeed, minSpeed);
+        }
+
+        double yPower = yError/xDist;
+        if (yPower > 0)
+        {
+            yPower = MathMethods.clamp(yPower, minSpeed, ySpeed);
+        }
+        if (yPower < 0)
+        {
+            yPower = MathMethods.clamp(yPower, -ySpeed, minSpeed);
+        }
+
+        double turnPower = turnError/turnAngle;
+        if (turnPower > 0)
+        {
+            turnPower = MathMethods.clamp(turnPower, minSpeed, turnSpeed);
+        }
+        if (turnSpeed < 0)
+        {
+            yPower = MathMethods.clamp(turnPower, -turnSpeed, minSpeed);
+        }
+
+        applyMovement(yPower * ySpeed, xPower * xSpeed, turnPower * turnSpeed);
+    }
 
     @Override
     public void loop()
